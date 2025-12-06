@@ -60,8 +60,8 @@ const userBadges: UserBadge[] = [
   { id: "5", name: "Ocean Guardian", description: "Complete 5 water conservation tasks", iconUrl: undefined, locked: true },
 ];
 
-export default function Dashboard() {
-  const levelProgress = 65; // Percentage to next level
+export default function UserDashboard() {
+  const levelProgress = 65;
   const currentLevel = 5;
 
   return (
