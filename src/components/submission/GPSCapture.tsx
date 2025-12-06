@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Navigation, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { MapPin, Navigation, AlertCircle, CheckCircle2, Loader2, RefreshCw } from "lucide-react";
 
 interface GPSCaptureProps {
   onLocationCapture: (lat: number, lng: number, accuracy: number) => void;
@@ -25,6 +25,19 @@ export function GPSCapture({ onLocationCapture, requiredLocation, currentLocatio
     return R * c;
   };
 
+  const getErrorMessage = (error: GeolocationPositionError): string => {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        return "Location access denied. Please enable location permissions in your browser settings.";
+      case error.POSITION_UNAVAILABLE:
+        return "Location unavailable. Please check your GPS/location settings and try again.";
+      case error.TIMEOUT:
+        return "Location request timed out. Please ensure you're in an area with good GPS signal and try again.";
+      default:
+        return "Unable to get location. Please try again.";
+    }
+  };
+
   const captureLocation = () => {
     if (!navigator.geolocation) {
       setError("Geolocation is not supported by your browser");
@@ -34,6 +47,7 @@ export function GPSCapture({ onLocationCapture, requiredLocation, currentLocatio
     setLoading(true);
     setError(null);
 
+    // First try with high accuracy
     navigator.geolocation.getCurrentPosition(
       (position) => {
         onLocationCapture(
@@ -44,12 +58,35 @@ export function GPSCapture({ onLocationCapture, requiredLocation, currentLocatio
         setLoading(false);
       },
       (err) => {
-        setError(err.message);
-        setLoading(false);
+        // If high accuracy fails, try with lower accuracy as fallback
+        if (err.code === err.TIMEOUT) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              onLocationCapture(
+                position.coords.latitude,
+                position.coords.longitude,
+                position.coords.accuracy
+              );
+              setLoading(false);
+            },
+            (fallbackErr) => {
+              setError(getErrorMessage(fallbackErr));
+              setLoading(false);
+            },
+            {
+              enableHighAccuracy: false,
+              timeout: 30000,
+              maximumAge: 60000
+            }
+          );
+        } else {
+          setError(getErrorMessage(err));
+          setLoading(false);
+        }
       },
       {
         enableHighAccuracy: true,
-        timeout: 10000,
+        timeout: 30000,
         maximumAge: 0
       }
     );
@@ -116,24 +153,42 @@ export function GPSCapture({ onLocationCapture, requiredLocation, currentLocatio
           )}
 
           {error && (
-            <div className="flex items-center gap-2 text-destructive text-sm">
-              <AlertCircle className="h-4 w-4" />
-              {error}
+            <div className="flex flex-col items-center gap-2 p-3 rounded-lg bg-destructive/10 text-destructive text-sm text-center max-w-sm">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                <span>{error}</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Tip: Make sure location services are enabled and you're in an open area for better GPS signal.
+              </p>
             </div>
           )}
 
-          <Button
-            variant={currentLocation ? "outline" : "default"}
-            onClick={captureLocation}
-            disabled={loading}
-          >
-            {loading ? (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
-              <Navigation className="h-4 w-4 mr-2" />
+          <div className="flex gap-2">
+            <Button
+              variant={currentLocation ? "outline" : "default"}
+              onClick={captureLocation}
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Navigation className="h-4 w-4 mr-2" />
+              )}
+              {loading ? "Getting location..." : currentLocation ? "Update Location" : "Get My Location"}
+            </Button>
+            
+            {error && (
+              <Button
+                variant="ghost"
+                onClick={captureLocation}
+                disabled={loading}
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Retry
+              </Button>
             )}
-            {currentLocation ? "Update Location" : "Get My Location"}
-          </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
