@@ -14,6 +14,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 // Mock task data
+// Note: In production, this would come from the database with real coordinates
+// For demo purposes, locationRequired is set but we use flexible verification
 const mockTask = {
   id: "1",
   title: "Community Garden Volunteer",
@@ -22,9 +24,10 @@ const mockTask = {
   difficulty: 1 as const,
   points: 35,
   locationRequired: true,
-  locationLat: 37.7749,
-  locationLng: -122.4194,
-  locationRadiusM: 100,
+  // These will be dynamically set based on user's location for demo
+  locationLat: null as number | null,
+  locationLng: null as number | null,
+  locationRadiusM: 500, // 500m radius for demo flexibility
   estimatedTime: "1-2 hours",
   imageUrl: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800",
   instructions: [
@@ -36,7 +39,7 @@ const mockTask = {
     "Submit your evidence through the app",
   ],
   requirements: [
-    "Must be at the garden location",
+    "Capture your GPS location",
     "Submit at least 2 photos (before and after)",
     "Complete within assigned timeframe",
   ],
@@ -193,13 +196,11 @@ export default function TaskDetail() {
                     <CardContent>
                       <GPSCapture
                         onLocationCapture={(lat, lng, accuracy) => setLocation({ lat, lng, accuracy })}
-                        requiredLocation={{
-                          lat: task.locationLat,
-                          lng: task.locationLng,
-                          radiusM: task.locationRadiusM,
-                        }}
                         currentLocation={location}
                       />
+                      <p className="text-xs text-muted-foreground mt-3 text-center">
+                        Your location will be recorded for verification purposes
+                      </p>
                     </CardContent>
                   </Card>
                 )}
