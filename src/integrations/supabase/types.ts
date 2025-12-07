@@ -47,6 +47,101 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_attempts: {
+        Row: {
+          completed_at: string
+          correct_answers: number
+          id: string
+          points_earned: number
+          quiz_id: string
+          score: number
+          started_at: string
+          time_taken_seconds: number
+          total_questions: number
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          correct_answers?: number
+          id?: string
+          points_earned?: number
+          quiz_id: string
+          score?: number
+          started_at?: string
+          time_taken_seconds: number
+          total_questions?: number
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          correct_answers?: number
+          id?: string
+          points_earned?: number
+          quiz_id?: string
+          score?: number
+          started_at?: string
+          time_taken_seconds?: number
+          total_questions?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_attempts_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          base_points: number
+          category: Database["public"]["Enums"]["quiz_category"]
+          created_at: string
+          created_by: string | null
+          description: string | null
+          difficulty: Database["public"]["Enums"]["quiz_difficulty"]
+          id: string
+          is_active: boolean
+          level: number
+          questions: Json
+          time_limit_seconds: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          base_points?: number
+          category: Database["public"]["Enums"]["quiz_category"]
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          difficulty?: Database["public"]["Enums"]["quiz_difficulty"]
+          id?: string
+          is_active?: boolean
+          level?: number
+          questions?: Json
+          time_limit_seconds?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          base_points?: number
+          category?: Database["public"]["Enums"]["quiz_category"]
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          difficulty?: Database["public"]["Enums"]["quiz_difficulty"]
+          id?: string
+          is_active?: boolean
+          level?: number
+          questions?: Json
+          time_limit_seconds?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -80,6 +175,8 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "student"
+      quiz_category: "innovation" | "environment"
+      quiz_difficulty: "easy" | "medium" | "hard"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -208,6 +305,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "student"],
+      quiz_category: ["innovation", "environment"],
+      quiz_difficulty: ["easy", "medium", "hard"],
     },
   },
 } as const

@@ -14,6 +14,9 @@ import Tasks from "./pages/Tasks";
 import TaskDetail from "./pages/TaskDetail";
 import Rewards from "./pages/Rewards";
 import AdminSubmissions from "./pages/AdminSubmissions";
+import Quizzes from "./pages/Quizzes";
+import QuizPlay from "./pages/QuizPlay";
+import AdminQuizzes from "./pages/AdminQuizzes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -54,9 +57,24 @@ const App = () => (
                 <Rewards />
               </ProtectedRoute>
             } />
+            <Route path="/quizzes" element={
+              <ProtectedRoute>
+                <Quizzes />
+              </ProtectedRoute>
+            } />
+            <Route path="/quiz/:id" element={
+              <ProtectedRoute>
+                <QuizPlay />
+              </ProtectedRoute>
+            } />
             <Route path="/admin/submissions" element={
               <ProtectedRoute requiredRole="admin">
                 <AdminSubmissions />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/quizzes" element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminQuizzes />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

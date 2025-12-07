@@ -16,13 +16,14 @@ export function Navbar({ isAuthenticated = false, userRole = "student", onLogout
   const navLinks = isAuthenticated
     ? userRole === "admin"
       ? [
-          { href: "/dashboard", label: "Dashboard" },
+          { href: "/admin", label: "Dashboard" },
           { href: "/admin/submissions", label: "Review" },
-          { href: "/admin/tasks", label: "Manage Tasks" },
+          { href: "/admin/quizzes", label: "Quizzes" },
         ]
       : [
           { href: "/dashboard", label: "Dashboard" },
           { href: "/tasks", label: "Tasks" },
+          { href: "/quizzes", label: "Quizzes" },
           { href: "/rewards", label: "Rewards" },
         ]
     : [

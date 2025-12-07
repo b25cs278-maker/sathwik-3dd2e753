@@ -1,3 +1,4 @@
+import { useNavigate, Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { StatsCard } from "@/components/dashboard/StatsCard";
@@ -7,11 +8,11 @@ import { TaskCard, Task } from "@/components/tasks/TaskCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Zap, Target, CheckCircle2, Clock, ChevronRight, 
-  TrendingUp, Calendar, ArrowRight
+  TrendingUp, Calendar, ArrowRight, Brain
 } from "lucide-react";
-import { Link } from "react-router-dom";
 
 // Mock data
 const userStats = {
@@ -61,12 +62,19 @@ const userBadges: UserBadge[] = [
 ];
 
 export default function UserDashboard() {
+  const { user, role, signOut } = useAuth();
+  const navigate = useNavigate();
   const levelProgress = 65;
   const currentLevel = 5;
 
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/login");
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      <Navbar isAuthenticated={true} userRole="student" />
+      <Navbar isAuthenticated={!!user} userRole={role || "student"} onLogout={handleLogout} />
       
       <main className="container py-8">
         {/* Welcome Section */}

@@ -1,16 +1,17 @@
+import { useNavigate, Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Users, FileCheck, AlertCircle, TrendingUp, 
   ClipboardList, Gift, Settings, ChevronRight,
   CheckCircle2, XCircle, Clock, BarChart3,
-  Plus, Eye
+  Plus, Eye, Brain
 } from "lucide-react";
-import { Link } from "react-router-dom";
 
 // Mock admin data
 const adminStats = {
@@ -69,9 +70,17 @@ const topPerformers = [
 ];
 
 export default function AdminDashboard() {
+  const { user, role, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/login");
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      <Navbar isAuthenticated={true} userRole="admin" />
+      <Navbar isAuthenticated={!!user} userRole={role || "admin"} onLogout={handleLogout} />
       
       <main className="container py-8">
         {/* Header */}
