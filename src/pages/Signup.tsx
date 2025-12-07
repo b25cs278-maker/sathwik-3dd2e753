@@ -7,12 +7,14 @@ import { Label } from "@/components/ui/label";
 import { Leaf, Mail, Lock, User, Loader2, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { signupSchema } from "@/lib/validations/auth";
 
 export default function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string }>({});
   const navigate = useNavigate();
   const { toast } = useToast();
   const { signUp, user } = useAuth();
@@ -32,9 +34,24 @@ export default function Signup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+    
+    // Validate with zod schema
+    const result = signupSchema.safeParse({ name, email, password });
+    if (!result.success) {
+      const fieldErrors: { name?: string; email?: string; password?: string } = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0] === "name") fieldErrors.name = err.message;
+        if (err.path[0] === "email") fieldErrors.email = err.message;
+        if (err.path[0] === "password") fieldErrors.password = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
     setLoading(true);
     
-    const { error } = await signUp(email, password, name);
+    const { error } = await signUp(result.data.email, result.data.password, result.data.name);
     
     if (error) {
       setLoading(false);
@@ -91,10 +108,13 @@ export default function Signup() {
                   placeholder="John Doe"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="pl-10"
-                  required
+                  className={`pl-10 ${errors.name ? "border-destructive" : ""}`}
+                  aria-invalid={!!errors.name}
                 />
               </div>
+              {errors.name && (
+                <p className="text-xs text-destructive">{errors.name}</p>
+              )}
             </div>
             
             <div className="space-y-2">
@@ -107,10 +127,13 @@ export default function Signup() {
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10"
-                  required
+                  className={`pl-10 ${errors.email ? "border-destructive" : ""}`}
+                  aria-invalid={!!errors.email}
                 />
               </div>
+              {errors.email && (
+                <p className="text-xs text-destructive">{errors.email}</p>
+              )}
             </div>
             
             <div className="space-y-2">
@@ -123,10 +146,13 @@ export default function Signup() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10"
-                  required
+                  className={`pl-10 ${errors.password ? "border-destructive" : ""}`}
+                  aria-invalid={!!errors.password}
                 />
               </div>
+              {errors.password && (
+                <p className="text-xs text-destructive">{errors.password}</p>
+              )}
               <div className="space-y-1 mt-2">
                 {passwordRequirements.map((req, i) => (
                   <div key={i} className="flex items-center gap-2 text-xs">
