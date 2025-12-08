@@ -1,4 +1,5 @@
 import { useNavigate, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { StatsCard } from "@/components/dashboard/StatsCard";
@@ -9,24 +10,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Zap, Target, CheckCircle2, Clock, ChevronRight, 
   TrendingUp, Calendar, ArrowRight, Brain
 } from "lucide-react";
-
-// Mock data
-const userStats = {
-  points: 1250,
-  tasksCompleted: 23,
-  streak: 7,
-  rank: 156,
-};
-
-const recentSubmissions = [
-  { id: "1", taskTitle: "Park Cleanup", status: "approved", points: 50, date: "2 hours ago" },
-  { id: "2", taskTitle: "Recycling Drop-off", status: "pending", points: 25, date: "Yesterday" },
-  { id: "3", taskTitle: "Tree Planting", status: "approved", points: 100, date: "3 days ago" },
-];
 
 const suggestedTasks: Task[] = [
   {
@@ -61,11 +49,50 @@ const userBadges: UserBadge[] = [
   { id: "5", name: "Ocean Guardian", description: "Complete 5 water conservation tasks", iconUrl: undefined, locked: true },
 ];
 
+interface UserStats {
+  points: number;
+  quizzesCompleted: number;
+  totalQuizPoints: number;
+}
+
 export default function UserDashboard() {
   const { user, role, signOut } = useAuth();
   const navigate = useNavigate();
-  const levelProgress = 65;
-  const currentLevel = 5;
+  const [profile, setProfile] = useState<{ name: string | null; points: number } | null>(null);
+  const [userStats, setUserStats] = useState<UserStats>({ points: 0, quizzesCompleted: 0, totalQuizPoints: 0 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchUserData() {
+      if (!user) return;
+      
+      // Fetch profile and quiz attempts in parallel
+      const [profileRes, attemptsRes] = await Promise.all([
+        supabase.from("profiles").select("name, points").eq("id", user.id).maybeSingle(),
+        supabase.from("quiz_attempts").select("points_earned").eq("user_id", user.id)
+      ]);
+
+      if (profileRes.data) {
+        setProfile(profileRes.data);
+      }
+
+      if (attemptsRes.data) {
+        const totalQuizPoints = attemptsRes.data.reduce((sum, a) => sum + a.points_earned, 0);
+        setUserStats({
+          points: (profileRes.data?.points || 0) + totalQuizPoints,
+          quizzesCompleted: attemptsRes.data.length,
+          totalQuizPoints,
+        });
+      }
+
+      setLoading(false);
+    }
+
+    fetchUserData();
+  }, [user]);
+
+  const levelProgress = Math.min(100, (userStats.points % 500) / 5);
+  const currentLevel = Math.floor(userStats.points / 500) + 1;
 
   const handleLogout = async () => {
     await signOut();
@@ -80,40 +107,47 @@ export default function UserDashboard() {
         {/* Welcome Section */}
         <div className="mb-8 animate-slide-up">
           <h1 className="text-3xl font-display font-bold text-foreground mb-2">
-            Welcome back, Alex! 👋
+            Welcome back, {profile?.name || user?.email?.split('@')[0] || 'Student'}! 👋
           </h1>
           <p className="text-muted-foreground">
-            You're on a {userStats.streak}-day streak. Keep up the great work!
+            You have {userStats.points.toLocaleString()} total points from {userStats.quizzesCompleted} quizzes.
           </p>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 animate-slide-up delay-100">
-          <StatsCard
-            title="Total Points"
-            value={userStats.points.toLocaleString()}
-            icon={Zap}
-            color="sun"
-            trend={{ value: 12, positive: true }}
-          />
-          <StatsCard
-            title="Tasks Completed"
-            value={userStats.tasksCompleted}
-            icon={CheckCircle2}
-            color="leaf"
-          />
-          <StatsCard
-            title="Current Streak"
-            value={`${userStats.streak} days`}
-            icon={TrendingUp}
-            color="primary"
-          />
-          <StatsCard
-            title="Global Rank"
-            value={`#${userStats.rank}`}
-            icon={Target}
-            color="sky"
-          />
+          <Link to="/quizzes">
+            <StatsCard
+              title="Total Points"
+              value={loading ? "..." : userStats.points.toLocaleString()}
+              icon={Zap}
+              color="sun"
+            />
+          </Link>
+          <Link to="/quizzes">
+            <StatsCard
+              title="Quizzes Completed"
+              value={loading ? "..." : userStats.quizzesCompleted}
+              icon={Brain}
+              color="leaf"
+            />
+          </Link>
+          <Link to="/quizzes">
+            <StatsCard
+              title="Quiz Points"
+              value={loading ? "..." : userStats.totalQuizPoints.toLocaleString()}
+              icon={TrendingUp}
+              color="primary"
+            />
+          </Link>
+          <Link to="/tasks">
+            <StatsCard
+              title="Level"
+              value={loading ? "..." : currentLevel}
+              icon={Target}
+              color="sky"
+            />
+          </Link>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -177,30 +211,30 @@ export default function UserDashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-muted-foreground" />
-                  Recent Activity
+                  Your Stats
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {recentSubmissions.map((submission) => (
-                  <div key={submission.id} className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-foreground text-sm">{submission.taskTitle}</p>
-                      <p className="text-xs text-muted-foreground">{submission.date}</p>
-                    </div>
-                    <div className="text-right">
-                      <Badge variant={submission.status === "approved" ? "success" : "pending"}>
-                        {submission.status}
-                      </Badge>
-                      {submission.status === "approved" && (
-                        <p className="text-xs text-eco-leaf mt-1">+{submission.points} pts</p>
-                      )}
-                    </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-foreground text-sm">Total Points</p>
+                    <p className="text-xs text-muted-foreground">From quizzes</p>
                   </div>
-                ))}
-                <Button variant="ghost" className="w-full" size="sm">
-                  View All Activity
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
+                  <Badge variant="success">{userStats.totalQuizPoints} pts</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-foreground text-sm">Quizzes Taken</p>
+                    <p className="text-xs text-muted-foreground">Completed</p>
+                  </div>
+                  <Badge variant="secondary">{userStats.quizzesCompleted}</Badge>
+                </div>
+                <Link to="/quizzes">
+                  <Button variant="ghost" className="w-full" size="sm">
+                    Take More Quizzes
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
 
