@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { TaskCard, Task } from "@/components/tasks/TaskCard";
@@ -6,7 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Filter, MapPin, Recycle, TreePine, Droplets, Users, Zap } from "lucide-react";
+import { Search, Filter, MapPin, Recycle, TreePine, Droplets, Users, Zap, Loader2 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const categories = [
   { id: "all", name: "All Tasks", icon: Zap },
@@ -16,81 +19,49 @@ const categories = [
   { id: "community", name: "Community", icon: Users },
 ];
 
-const mockTasks: Task[] = [
-  {
-    id: "1",
-    title: "Community Garden Volunteer",
-    description: "Help maintain the local community garden by weeding, watering, and caring for plants.",
-    category: "Conservation",
-    difficulty: 1,
-    points: 35,
-    locationRequired: true,
-    estimatedTime: "1-2 hours",
-    imageUrl: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400",
-  },
-  {
-    id: "2",
-    title: "Beach Cleanup Challenge",
-    description: "Join the weekend beach cleanup and help remove plastic waste from the shoreline.",
-    category: "Community",
-    difficulty: 2,
-    points: 75,
-    locationRequired: true,
-    estimatedTime: "2-3 hours",
-    imageUrl: "https://images.unsplash.com/photo-1618477461853-cf6ed80faba5?w=400",
-  },
-  {
-    id: "3",
-    title: "Recycling Drop-off",
-    description: "Collect and properly sort recyclable materials from your home and drop them off at the local center.",
-    category: "Recycling",
-    difficulty: 1,
-    points: 25,
-    locationRequired: true,
-    estimatedTime: "30 mins",
-    imageUrl: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=400",
-  },
-  {
-    id: "4",
-    title: "Tree Planting Initiative",
-    description: "Participate in our urban tree planting program to help increase green cover in the city.",
-    category: "Conservation",
-    difficulty: 2,
-    points: 100,
-    locationRequired: true,
-    estimatedTime: "3-4 hours",
-    imageUrl: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400",
-  },
-  {
-    id: "5",
-    title: "Water Conservation Audit",
-    description: "Learn to conduct a home water audit and identify ways to reduce water consumption.",
-    category: "Water",
-    difficulty: 1,
-    points: 40,
-    locationRequired: false,
-    estimatedTime: "1 hour",
-    imageUrl: "https://images.unsplash.com/photo-1538300342682-cf57afb97285?w=400",
-  },
-  {
-    id: "6",
-    title: "E-Waste Collection Drive",
-    description: "Collect old electronics from neighbors and bring them to the designated e-waste recycling point.",
-    category: "Recycling",
-    difficulty: 3,
-    points: 150,
-    locationRequired: true,
-    estimatedTime: "Half day",
-    imageUrl: "https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=400",
-  },
-];
+const difficultyMap: Record<string, 1 | 2 | 3> = {
+  easy: 1,
+  medium: 2,
+  hard: 3,
+};
 
 export default function Tasks() {
+  const { user, role, signOut } = useAuth();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedDifficulty, setSelectedDifficulty] = useState<number | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredTasks = mockTasks.filter((task) => {
+  useEffect(() => {
+    async function fetchTasks() {
+      const { data, error } = await supabase
+        .from("tasks")
+        .select("*")
+        .eq("is_active", true);
+
+      if (data) {
+        const mappedTasks: Task[] = data.map((t) => ({
+          id: t.id,
+          title: t.title,
+          description: t.description || "",
+          category: t.category.charAt(0).toUpperCase() + t.category.slice(1),
+          difficulty: difficultyMap[t.difficulty] || 1,
+          points: t.points,
+          locationRequired: t.location_required,
+          estimatedTime: t.estimated_time || undefined,
+          imageUrl: t.image_url || undefined,
+        }));
+        setTasks(mappedTasks);
+      }
+      setLoading(false);
+    }
+
+    fetchTasks();
+  }, []);
+
+  const filteredTasks = tasks.filter((task) => {
     const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           task.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "all" || 
@@ -100,9 +71,14 @@ export default function Tasks() {
     return matchesSearch && matchesCategory && matchesDifficulty;
   });
 
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/login");
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      <Navbar isAuthenticated={true} userRole="student" />
+      <Navbar isAuthenticated={!!user} userRole={role || "student"} onLogout={handleLogout} />
       
       <main className="container py-8">
         {/* Header */}
@@ -181,8 +157,12 @@ export default function Tasks() {
           Showing {filteredTasks.length} tasks
         </p>
 
-        {/* Tasks Grid */}
-        {filteredTasks.length > 0 ? (
+        {/* Loading State */}
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : filteredTasks.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-slide-up delay-200">
             {filteredTasks.map((task) => (
               <TaskCard key={task.id} task={task} />

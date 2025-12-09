@@ -142,6 +142,128 @@ export type Database = {
         }
         Relationships: []
       }
+      task_submissions: {
+        Row: {
+          created_at: string
+          id: string
+          location_accuracy: number | null
+          location_lat: number | null
+          location_lng: number | null
+          metadata: Json | null
+          photos: Json | null
+          points_awarded: number | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewer_id: string | null
+          status: Database["public"]["Enums"]["submission_status"]
+          task_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location_accuracy?: number | null
+          location_lat?: number | null
+          location_lng?: number | null
+          metadata?: Json | null
+          photos?: Json | null
+          points_awarded?: number | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          task_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location_accuracy?: number | null
+          location_lat?: number | null
+          location_lng?: number | null
+          metadata?: Json | null
+          photos?: Json | null
+          points_awarded?: number | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          task_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_submissions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          category: Database["public"]["Enums"]["task_category"]
+          created_at: string
+          created_by: string | null
+          description: string | null
+          difficulty: Database["public"]["Enums"]["task_difficulty"]
+          estimated_time: string | null
+          id: string
+          image_url: string | null
+          instructions: Json | null
+          is_active: boolean
+          location_lat: number | null
+          location_lng: number | null
+          location_radius_m: number | null
+          location_required: boolean
+          points: number
+          requirements: Json | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["task_category"]
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          difficulty?: Database["public"]["Enums"]["task_difficulty"]
+          estimated_time?: string | null
+          id?: string
+          image_url?: string | null
+          instructions?: Json | null
+          is_active?: boolean
+          location_lat?: number | null
+          location_lng?: number | null
+          location_radius_m?: number | null
+          location_required?: boolean
+          points?: number
+          requirements?: Json | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["task_category"]
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          difficulty?: Database["public"]["Enums"]["task_difficulty"]
+          estimated_time?: string | null
+          id?: string
+          image_url?: string | null
+          instructions?: Json | null
+          is_active?: boolean
+          location_lat?: number | null
+          location_lng?: number | null
+          location_radius_m?: number | null
+          location_required?: boolean
+          points?: number
+          requirements?: Json | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -177,6 +299,9 @@ export type Database = {
       app_role: "admin" | "student"
       quiz_category: "innovation" | "environment"
       quiz_difficulty: "easy" | "medium" | "hard"
+      submission_status: "pending" | "approved" | "rejected"
+      task_category: "recycling" | "conservation" | "water" | "community"
+      task_difficulty: "easy" | "medium" | "hard"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -307,6 +432,9 @@ export const Constants = {
       app_role: ["admin", "student"],
       quiz_category: ["innovation", "environment"],
       quiz_difficulty: ["easy", "medium", "hard"],
+      submission_status: ["pending", "approved", "rejected"],
+      task_category: ["recycling", "conservation", "water", "community"],
+      task_difficulty: ["easy", "medium", "hard"],
     },
   },
 } as const
