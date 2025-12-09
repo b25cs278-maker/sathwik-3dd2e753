@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { RewardCard, Reward } from "@/components/rewards/RewardCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Zap, Gift, ShoppingBag, TreePine, Ticket } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 const categories = [
   { id: "all", name: "All Rewards", icon: Gift },
@@ -72,26 +74,80 @@ const mockRewards: Reward[] = [
 
 export default function Rewards() {
   const { toast } = useToast();
+  const { user, role, signOut } = useAuth();
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const userPoints = 1250; // Mock user points
+  const [userPoints, setUserPoints] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchUserPoints() {
+      if (!user) return;
+      
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("points")
+        .eq("id", user.id)
+        .maybeSingle();
+      
+      if (data) {
+        setUserPoints(data.points || 0);
+      }
+      setLoading(false);
+    }
+
+    fetchUserPoints();
+  }, [user]);
 
   const filteredRewards = mockRewards.filter(
     (reward) => selectedCategory === "all" || reward.category?.toLowerCase() === selectedCategory
   );
 
-  const handleRedeem = (rewardId: string) => {
-    const reward = mockRewards.find((r) => r.id === rewardId);
-    if (reward) {
-      toast({
-        title: "Reward Redeemed!",
-        description: `You've successfully redeemed ${reward.name}. Check your email for details.`,
-      });
+  const handleRedeem = async (rewardId: string) => {
+    if (!user) {
+      toast({ title: "Please log in to redeem rewards", variant: "destructive" });
+      return;
     }
+
+    const reward = mockRewards.find((r) => r.id === rewardId);
+    if (!reward) return;
+
+    if (userPoints < reward.costPoints) {
+      toast({ 
+        title: "Not enough points", 
+        description: `You need ${reward.costPoints - userPoints} more points to redeem this reward.`,
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    // Deduct points from profile
+    const newPoints = userPoints - reward.costPoints;
+    const { error } = await supabase
+      .from("profiles")
+      .update({ points: newPoints })
+      .eq("id", user.id);
+
+    if (error) {
+      toast({ title: "Error redeeming reward", variant: "destructive" });
+      return;
+    }
+
+    setUserPoints(newPoints);
+    toast({
+      title: "Reward Redeemed!",
+      description: `You've successfully redeemed ${reward.name} for ${reward.costPoints} points. Check your email for details.`,
+    });
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/login");
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar isAuthenticated={true} userRole="student" />
+      <Navbar isAuthenticated={!!user} userRole={role || "student"} onLogout={handleLogout} />
       
       <main className="container py-8">
         {/* Header */}
@@ -115,13 +171,13 @@ export default function Rewards() {
                 <div>
                   <p className="text-sm text-muted-foreground">Your Balance</p>
                   <p className="text-4xl font-display font-bold text-foreground">
-                    {userPoints.toLocaleString()}
+                    {loading ? "..." : userPoints.toLocaleString()}
                     <span className="text-lg font-normal text-muted-foreground ml-2">points</span>
                   </p>
                 </div>
               </div>
-              <Button variant="outline">
-                View Points History
+              <Button variant="outline" onClick={() => navigate("/dashboard")}>
+                View Dashboard
               </Button>
             </div>
           </CardContent>
@@ -168,7 +224,7 @@ export default function Rewards() {
                 </div>
                 <h3 className="font-semibold text-foreground mb-2">Earn Points</h3>
                 <p className="text-sm text-muted-foreground">
-                  Complete environmental tasks to earn points
+                  Complete quizzes and environmental tasks to earn points
                 </p>
               </div>
               <div>
