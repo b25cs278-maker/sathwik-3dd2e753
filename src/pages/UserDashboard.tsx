@@ -13,7 +13,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   Zap, Target, CheckCircle2, Clock, ChevronRight, 
-  TrendingUp, Calendar, ArrowRight, Brain
+  TrendingUp, Calendar, ArrowRight, Brain, ClipboardCheck
 } from "lucide-react";
 
 const suggestedTasks: Task[] = [
@@ -53,38 +53,49 @@ interface UserStats {
   points: number;
   quizzesCompleted: number;
   totalQuizPoints: number;
+  tasksCompleted: number;
+  totalTaskPoints: number;
 }
 
 export default function UserDashboard() {
   const { user, role, signOut } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<{ name: string | null; points: number } | null>(null);
-  const [userStats, setUserStats] = useState<UserStats>({ points: 0, quizzesCompleted: 0, totalQuizPoints: 0 });
+  const [userStats, setUserStats] = useState<UserStats>({ 
+    points: 0, 
+    quizzesCompleted: 0, 
+    totalQuizPoints: 0,
+    tasksCompleted: 0,
+    totalTaskPoints: 0
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchUserData() {
       if (!user) return;
       
-      // Fetch profile and quiz attempts in parallel
-      const [profileRes, attemptsRes] = await Promise.all([
+      // Fetch profile, quiz attempts, and task submissions in parallel
+      const [profileRes, attemptsRes, tasksRes] = await Promise.all([
         supabase.from("profiles").select("name, points").eq("id", user.id).maybeSingle(),
-        supabase.from("quiz_attempts").select("points_earned").eq("user_id", user.id)
+        supabase.from("quiz_attempts").select("points_earned").eq("user_id", user.id),
+        supabase.from("task_submissions").select("points_awarded, status").eq("user_id", user.id).eq("status", "approved")
       ]);
 
       if (profileRes.data) {
         setProfile(profileRes.data);
       }
 
-      // Profile.points already contains all points (updated by QuizPlay)
-      // Quiz attempts are only for counting quizzes completed
+      // Calculate stats
       const totalQuizPoints = attemptsRes.data?.reduce((sum, a) => sum + a.points_earned, 0) || 0;
+      const totalTaskPoints = tasksRes.data?.reduce((sum, t) => sum + (t.points_awarded || 0), 0) || 0;
       const profilePoints = profileRes.data?.points || 0;
       
       setUserStats({
-        points: profilePoints, // Use profile points directly (already updated by quiz completion)
+        points: profilePoints,
         quizzesCompleted: attemptsRes.data?.length || 0,
         totalQuizPoints,
+        tasksCompleted: tasksRes.data?.length || 0,
+        totalTaskPoints,
       });
 
       setLoading(false);
@@ -112,7 +123,7 @@ export default function UserDashboard() {
             Welcome back, {profile?.name || user?.email?.split('@')[0] || 'Student'}! 👋
           </h1>
           <p className="text-muted-foreground">
-            You have {userStats.points.toLocaleString()} total points from {userStats.quizzesCompleted} quizzes.
+            You have {userStats.points.toLocaleString()} total points from {userStats.quizzesCompleted} quizzes and {userStats.tasksCompleted} tasks.
           </p>
         </div>
 
@@ -128,17 +139,17 @@ export default function UserDashboard() {
           </Link>
           <Link to="/quizzes">
             <StatsCard
-              title="Quizzes Completed"
+              title="Quizzes Done"
               value={loading ? "..." : userStats.quizzesCompleted}
               icon={Brain}
               color="leaf"
             />
           </Link>
-          <Link to="/quizzes">
+          <Link to="/tasks">
             <StatsCard
-              title="Quiz Points"
-              value={loading ? "..." : userStats.totalQuizPoints.toLocaleString()}
-              icon={TrendingUp}
+              title="Tasks Done"
+              value={loading ? "..." : userStats.tasksCompleted}
+              icon={ClipboardCheck}
               color="primary"
             />
           </Link>
@@ -219,17 +230,17 @@ export default function UserDashboard() {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-foreground text-sm">Total Points</p>
-                    <p className="text-xs text-muted-foreground">From quizzes</p>
+                    <p className="font-medium text-foreground text-sm">Quiz Points</p>
+                    <p className="text-xs text-muted-foreground">From {userStats.quizzesCompleted} quizzes</p>
                   </div>
                   <Badge variant="success">{userStats.totalQuizPoints} pts</Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-foreground text-sm">Quizzes Taken</p>
-                    <p className="text-xs text-muted-foreground">Completed</p>
+                    <p className="font-medium text-foreground text-sm">Task Points</p>
+                    <p className="text-xs text-muted-foreground">From {userStats.tasksCompleted} tasks</p>
                   </div>
-                  <Badge variant="secondary">{userStats.quizzesCompleted}</Badge>
+                  <Badge variant="secondary">{userStats.totalTaskPoints} pts</Badge>
                 </div>
                 <Link to="/quizzes">
                   <Button variant="ghost" className="w-full" size="sm">
