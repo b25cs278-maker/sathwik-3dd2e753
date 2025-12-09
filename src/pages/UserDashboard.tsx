@@ -76,14 +76,16 @@ export default function UserDashboard() {
         setProfile(profileRes.data);
       }
 
-      if (attemptsRes.data) {
-        const totalQuizPoints = attemptsRes.data.reduce((sum, a) => sum + a.points_earned, 0);
-        setUserStats({
-          points: (profileRes.data?.points || 0) + totalQuizPoints,
-          quizzesCompleted: attemptsRes.data.length,
-          totalQuizPoints,
-        });
-      }
+      // Profile.points already contains all points (updated by QuizPlay)
+      // Quiz attempts are only for counting quizzes completed
+      const totalQuizPoints = attemptsRes.data?.reduce((sum, a) => sum + a.points_earned, 0) || 0;
+      const profilePoints = profileRes.data?.points || 0;
+      
+      setUserStats({
+        points: profilePoints, // Use profile points directly (already updated by quiz completion)
+        quizzesCompleted: attemptsRes.data?.length || 0,
+        totalQuizPoints,
+      });
 
       setLoading(false);
     }
