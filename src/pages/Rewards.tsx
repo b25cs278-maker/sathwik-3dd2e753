@@ -40,7 +40,7 @@ const mockRewards: Reward[] = [
     id: "3",
     name: "Plant a Tree",
     description: "We'll plant a tree in your name through our partner organization. Certificate included.",
-    costPoints: 100,
+    costPoints: 15,
     imageUrl: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400",
     category: "Donations",
   },
