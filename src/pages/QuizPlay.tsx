@@ -14,7 +14,7 @@ interface Question {
   id?: string;
   question: string;
   options: string[];
-  correctAnswer: number;
+  correct_answer: number;
 }
 
 interface Quiz {
@@ -127,7 +127,7 @@ export default function QuizPlay() {
     // Calculate results
     const finalAnswers = [...answers, selectedAnswer ?? -1];
     const correctCount = quiz.questions.reduce((acc, q, idx) => {
-      return acc + (q.correctAnswer === finalAnswers[idx] ? 1 : 0);
+      return acc + (q.correct_answer === finalAnswers[idx] ? 1 : 0);
     }, 0);
     
     const points = calculatePoints(
