@@ -13,61 +13,19 @@ import {
   Plus, Eye, Brain
 } from "lucide-react";
 
-// Mock admin data
+// Empty admin data - no mock data
 const adminStats = {
-  totalUsers: 1542,
-  pendingSubmissions: 23,
-  activeTasks: 45,
-  totalPointsAwarded: 87500,
+  totalUsers: 0,
+  pendingSubmissions: 0,
+  activeTasks: 0,
+  totalPointsAwarded: 0,
 };
 
-const pendingSubmissions = [
-  { 
-    id: "1", 
-    userName: "Sarah Johnson", 
-    taskTitle: "Park Cleanup", 
-    submittedAt: "10 minutes ago",
-    photos: 2,
-    hasGPS: true
-  },
-  { 
-    id: "2", 
-    userName: "Mike Chen", 
-    taskTitle: "Recycling Drop-off", 
-    submittedAt: "25 minutes ago",
-    photos: 3,
-    hasGPS: true
-  },
-  { 
-    id: "3", 
-    userName: "Emma Wilson", 
-    taskTitle: "Tree Planting", 
-    submittedAt: "1 hour ago",
-    photos: 4,
-    hasGPS: false
-  },
-  { 
-    id: "4", 
-    userName: "David Lee", 
-    taskTitle: "Beach Cleanup", 
-    submittedAt: "2 hours ago",
-    photos: 2,
-    hasGPS: true
-  },
-];
+const pendingSubmissions: any[] = [];
 
-const recentActivity = [
-  { id: "1", action: "Approved submission", user: "John D.", task: "Garden Volunteer", time: "5 min ago", type: "approval" },
-  { id: "2", action: "Created new task", task: "Solar Panel Workshop", time: "1 hour ago", type: "create" },
-  { id: "3", action: "Rejected submission", user: "Anonymous", task: "Recycling", time: "2 hours ago", type: "rejection" },
-  { id: "4", action: "Updated reward", task: "Eco Water Bottle", time: "3 hours ago", type: "update" },
-];
+const recentActivity: any[] = [];
 
-const topPerformers = [
-  { id: "1", name: "Sarah Johnson", points: 2450, tasks: 34, avatar: null },
-  { id: "2", name: "Mike Chen", points: 2180, tasks: 29, avatar: null },
-  { id: "3", name: "Emma Wilson", points: 1920, tasks: 26, avatar: null },
-];
+const topPerformers: any[] = [];
 
 export default function AdminDashboard() {
   const { user, role, signOut } = useAuth();
