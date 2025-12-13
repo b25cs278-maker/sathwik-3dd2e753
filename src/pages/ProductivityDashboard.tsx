@@ -142,14 +142,13 @@ export default function ProductivityDashboard() {
         {/* Header */}
         <div className="mb-8 animate-slide-up">
           <div className="flex items-center gap-3 mb-2">
-            <Crown className="h-8 w-8 text-eco-sun" />
+            <Rocket className="h-8 w-8 text-primary" />
             <h1 className="text-3xl font-display font-bold text-foreground">
-              Billionaire Mode
+              Productivity Dashboard
             </h1>
-            <Rocket className="h-6 w-6 text-primary" />
           </div>
           <p className="text-muted-foreground">
-            Track tasks, build habits, set goals, manage discipline, and behave like your future billionaire self. Everything runs offline.
+            Track tasks, build habits, set goals, and manage your discipline. Everything runs offline.
           </p>
         </div>
 
