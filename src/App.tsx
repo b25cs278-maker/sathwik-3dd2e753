@@ -19,6 +19,7 @@ import AdminSubmissions from "./pages/AdminSubmissions";
 import Quizzes from "./pages/Quizzes";
 import QuizPlay from "./pages/QuizPlay";
 import AdminQuizzes from "./pages/AdminQuizzes";
+import ProductivityDashboard from "./pages/ProductivityDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,11 @@ const App = () => (
             <Route path="/dashboard" element={
               <ProtectedRoute requiredRole="student">
                 <UserDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/productivity" element={
+              <ProtectedRoute>
+                <ProductivityDashboard />
               </ProtectedRoute>
             } />
             <Route path="/admin" element={

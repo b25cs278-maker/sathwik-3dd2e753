@@ -22,6 +22,7 @@ export function Navbar({ isAuthenticated = false, userRole = "student", onLogout
         ]
       : [
           { href: "/dashboard", label: "Dashboard" },
+          { href: "/productivity", label: "Productivity" },
           { href: "/tasks", label: "Tasks" },
           { href: "/quizzes", label: "Quizzes" },
           { href: "/rewards", label: "Rewards" },
