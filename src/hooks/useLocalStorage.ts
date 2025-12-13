@@ -33,6 +33,8 @@ export interface ProductivityTask {
   priority: 'low' | 'medium' | 'high';
   category: 'deep-work' | 'routine' | 'quick-win' | 'learning';
   estimatedMinutes?: number;
+  dueDate?: string;
+  scheduledTime?: string;
   createdAt: string;
   completedAt?: string;
 }
@@ -53,8 +55,10 @@ export interface Goal {
   title: string;
   description?: string;
   targetDate?: string;
+  deadline?: string;
   progress: number;
   milestones: { id: string; title: string; completed: boolean }[];
+  steps?: string[];
   category: 'career' | 'health' | 'wealth' | 'relationships' | 'personal';
   createdAt: string;
 }
@@ -64,11 +68,46 @@ export interface LifeMetrics {
   energy: number;
   focus: number;
   discipline: number;
+  body: number;
+  mind: number;
+  spirit: number;
+  deepWorkMinutes: number;
+  workoutMinutes: number;
+  readingMinutes: number;
   lastUpdated: string;
   history: { date: string; lifeScore: number; energy: number; focus: number; discipline: number }[];
 }
 
+export interface DayPlan {
+  id: string;
+  time: string;
+  activity: string;
+  type: 'brain-dump' | 'deep-work' | 'routine' | 'break' | 'review';
+  completed: boolean;
+}
+
+export interface ExecutionRule {
+  id: string;
+  rule: string;
+  active: boolean;
+}
+
+export interface BehaviorRating {
+  rating: 'lazy-lion' | 'average' | 'focused' | 'billionaire';
+  score: number;
+  lastUpdated: string;
+}
+
+export interface MoneyFlow {
+  saved: number;
+  invested: number;
+  spent: number;
+  lastUpdated: string;
+}
+
 export interface AIPlanning {
   suggestions: string[];
+  dayPlan: DayPlan[];
+  executionRules: ExecutionRule[];
   lastGenerated: string;
 }

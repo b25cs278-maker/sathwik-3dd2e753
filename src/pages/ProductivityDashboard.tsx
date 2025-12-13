@@ -5,18 +5,34 @@ import { TaskManager } from '@/components/productivity/TaskManager';
 import { HabitTracker } from '@/components/productivity/HabitTracker';
 import { GoalTracker } from '@/components/productivity/GoalTracker';
 import { LifeScorePanel } from '@/components/productivity/LifeScorePanel';
-import { AIPlanner } from '@/components/productivity/AIPlanner';
+import { AIDayPlanner } from '@/components/productivity/AIDayPlanner';
+import { AdvancedAIPlanner } from '@/components/productivity/AdvancedAIPlanner';
+import { BehaviorTracker } from '@/components/productivity/BehaviorTracker';
+import { ExecutionRulesPanel } from '@/components/productivity/ExecutionRulesPanel';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLocalStorage, ProductivityTask, Habit, Goal, LifeMetrics } from '@/hooks/useLocalStorage';
+import { useLocalStorage, ProductivityTask, Habit, Goal, LifeMetrics, DayPlan, ExecutionRule, MoneyFlow } from '@/hooks/useLocalStorage';
 import { Rocket, Crown } from 'lucide-react';
 
 const defaultMetrics: LifeMetrics = {
-  lifeScore: 70,
-  energy: 70,
-  focus: 70,
-  discipline: 70,
+  lifeScore: 4,
+  energy: 50,
+  focus: 50,
+  discipline: 50,
+  body: 50,
+  mind: 50,
+  spirit: 50,
+  deepWorkMinutes: 0,
+  workoutMinutes: 0,
+  readingMinutes: 0,
   lastUpdated: new Date().toISOString(),
   history: [],
+};
+
+const defaultMoneyFlow: MoneyFlow = {
+  saved: 0,
+  invested: 0,
+  spent: 0,
+  lastUpdated: new Date().toISOString(),
 };
 
 export default function ProductivityDashboard() {
@@ -28,6 +44,9 @@ export default function ProductivityDashboard() {
   const [habits, setHabits] = useLocalStorage<Habit[]>('productivity-habits', []);
   const [goals, setGoals] = useLocalStorage<Goal[]>('productivity-goals', []);
   const [metrics, setMetrics] = useLocalStorage<LifeMetrics>('life-metrics', defaultMetrics);
+  const [dayPlan, setDayPlan] = useLocalStorage<DayPlan[]>('day-plan', []);
+  const [executionRules, setExecutionRules] = useLocalStorage<ExecutionRule[]>('execution-rules', []);
+  const [moneyFlow, setMoneyFlow] = useLocalStorage<MoneyFlow>('money-flow', defaultMoneyFlow);
 
   const handleLogout = async () => {
     await signOut();
@@ -102,7 +121,17 @@ export default function ProductivityDashboard() {
 
   // Metrics handler
   const handleUpdateMetrics = (newMetrics: Partial<LifeMetrics>) => {
-    setMetrics(prev => ({ ...prev, ...newMetrics }));
+    setMetrics(prev => {
+      const updated = { ...prev, ...newMetrics };
+      // Recalculate life score
+      updated.lifeScore = Math.round((updated.energy + updated.focus + updated.discipline) / 3);
+      return updated;
+    });
+  };
+
+  // Money flow handler
+  const handleUpdateMoneyFlow = (newFlow: Partial<MoneyFlow>) => {
+    setMoneyFlow(prev => ({ ...prev, ...newFlow, lastUpdated: new Date().toISOString() }));
   };
 
   return (
@@ -120,13 +149,13 @@ export default function ProductivityDashboard() {
             <Rocket className="h-6 w-6 text-primary" />
           </div>
           <p className="text-muted-foreground">
-            Build habits, track goals, and become your future self. Everything runs offline.
+            Track tasks, build habits, set goals, manage discipline, and behave like your future billionaire self. Everything runs offline.
           </p>
         </div>
 
         {/* Main Grid */}
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Left Column - Tasks & Habits */}
+          {/* Left Column - Tasks & Day Planner */}
           <div className="lg:col-span-2 space-y-6">
             <div className="animate-slide-up">
               <TaskManager
@@ -136,9 +165,19 @@ export default function ProductivityDashboard() {
                 onDeleteTask={handleDeleteTask}
               />
             </div>
+
+            <div className="animate-slide-up delay-100">
+              <AIDayPlanner
+                tasks={tasks}
+                habits={habits}
+                goals={goals}
+                dayPlan={dayPlan}
+                onUpdateDayPlan={setDayPlan}
+              />
+            </div>
             
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="animate-slide-up delay-100">
+              <div className="animate-slide-up delay-200">
                 <HabitTracker
                   habits={habits}
                   onAddHabit={handleAddHabit}
@@ -146,7 +185,7 @@ export default function ProductivityDashboard() {
                   onDeleteHabit={handleDeleteHabit}
                 />
               </div>
-              <div className="animate-slide-up delay-200">
+              <div className="animate-slide-up delay-300">
                 <GoalTracker
                   goals={goals}
                   onAddGoal={handleAddGoal}
@@ -156,22 +195,42 @@ export default function ProductivityDashboard() {
               </div>
             </div>
 
-            <div className="animate-slide-up delay-300">
-              <AIPlanner 
+            <div className="animate-slide-up delay-400">
+              <AdvancedAIPlanner 
                 tasks={tasks} 
                 habits={habits} 
                 goals={goals} 
-                metrics={metrics} 
+                metrics={metrics}
+                executionRules={executionRules}
+                onAddTask={handleAddTask}
+                onAddHabit={handleAddHabit}
+                onUpdateRules={setExecutionRules}
               />
             </div>
           </div>
 
-          {/* Right Column - Life Score */}
+          {/* Right Column - Life Score & Behavior */}
           <div className="space-y-6">
             <div className="animate-slide-up delay-100">
               <LifeScorePanel 
                 metrics={metrics} 
                 onUpdateMetrics={handleUpdateMetrics} 
+              />
+            </div>
+
+            <div className="animate-slide-up delay-200">
+              <ExecutionRulesPanel
+                rules={executionRules}
+                onUpdateRules={setExecutionRules}
+              />
+            </div>
+
+            <div className="animate-slide-up delay-300">
+              <BehaviorTracker
+                metrics={metrics}
+                moneyFlow={moneyFlow}
+                onUpdateMetrics={handleUpdateMetrics}
+                onUpdateMoneyFlow={handleUpdateMoneyFlow}
               />
             </div>
           </div>

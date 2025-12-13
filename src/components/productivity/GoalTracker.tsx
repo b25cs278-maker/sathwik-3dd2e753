@@ -35,6 +35,7 @@ export function GoalTracker({ goals, onAddGoal, onUpdateProgress, onDeleteGoal }
   const [showForm, setShowForm] = useState(false);
   const [newGoal, setNewGoal] = useState('');
   const [category, setCategory] = useState<Goal['category']>('personal');
+  const [deadline, setDeadline] = useState('2025-12-31');
 
   const handleAddGoal = () => {
     if (!newGoal.trim()) return;
@@ -45,12 +46,26 @@ export function GoalTracker({ goals, onAddGoal, onUpdateProgress, onDeleteGoal }
       progress: 0,
       milestones: [],
       category,
+      deadline,
+      steps: generateSteps(newGoal),
       createdAt: new Date().toISOString(),
     };
     
     onAddGoal(goal);
     setNewGoal('');
     setShowForm(false);
+  };
+
+  // Generate suggested steps based on goal title
+  const generateSteps = (goalTitle: string): string[] => {
+    const title = goalTitle.toLowerCase();
+    if (title.includes('million') || title.includes('follower')) {
+      return ['Define target audience', 'Create content strategy', 'Post consistently', 'Engage with community', 'Analyze and optimize'];
+    }
+    if (title.includes('learn') || title.includes('skill')) {
+      return ['Research resources', 'Set learning schedule', 'Practice daily', 'Build projects', 'Get feedback'];
+    }
+    return ['Break into milestones', 'Set weekly targets', 'Track progress', 'Review and adjust'];
   };
 
   const adjustProgress = (id: string, currentProgress: number, delta: number) => {
@@ -73,14 +88,15 @@ export function GoalTracker({ goals, onAddGoal, onUpdateProgress, onDeleteGoal }
       </CardHeader>
       <CardContent className="space-y-4">
         {showForm && (
-          <div className="flex gap-2">
+          <div className="space-y-2">
             <Input
-              placeholder="What's your big goal?"
+              placeholder="e.g., Reach 1 million followers"
               value={newGoal}
               onChange={(e) => setNewGoal(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAddGoal()}
-              className="flex-1"
+              className="w-full"
             />
+            <div className="flex gap-2">
             <Select value={category} onValueChange={(v) => setCategory(v as Goal['category'])}>
               <SelectTrigger className="w-36">
                 <SelectValue />
@@ -93,7 +109,14 @@ export function GoalTracker({ goals, onAddGoal, onUpdateProgress, onDeleteGoal }
                 <SelectItem value="personal">🌟 Personal</SelectItem>
               </SelectContent>
             </Select>
+            <Input
+              type="date"
+              value={deadline}
+              onChange={(e) => setDeadline(e.target.value)}
+              className="w-32 text-xs"
+            />
             <Button onClick={handleAddGoal} size="sm">Add</Button>
+          </div>
           </div>
         )}
 
