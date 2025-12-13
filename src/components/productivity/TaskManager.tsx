@@ -32,6 +32,8 @@ export function TaskManager({ tasks, onAddTask, onToggleTask, onDeleteTask }: Ta
   const [newTask, setNewTask] = useState('');
   const [category, setCategory] = useState<ProductivityTask['category']>('deep-work');
   const [priority, setPriority] = useState<ProductivityTask['priority']>('medium');
+  const [duration, setDuration] = useState('60');
+  const [dueDate, setDueDate] = useState(new Date().toISOString().split('T')[0]);
 
   const handleAddTask = () => {
     if (!newTask.trim()) return;
@@ -42,6 +44,8 @@ export function TaskManager({ tasks, onAddTask, onToggleTask, onDeleteTask }: Ta
       completed: false,
       priority,
       category,
+      estimatedMinutes: parseInt(duration) || 60,
+      dueDate,
       createdAt: new Date().toISOString(),
     };
     
@@ -49,7 +53,7 @@ export function TaskManager({ tasks, onAddTask, onToggleTask, onDeleteTask }: Ta
     setNewTask('');
   };
 
-  const completedToday = tasks.filter(t => 
+  const completedToday = tasks.filter(t =>
     t.completed && t.completedAt?.startsWith(new Date().toISOString().split('T')[0])
   ).length;
 
@@ -71,38 +75,63 @@ export function TaskManager({ tasks, onAddTask, onToggleTask, onDeleteTask }: Ta
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Add Task Form */}
-        <div className="flex gap-2">
-          <Input
-            placeholder="Add a task..."
-            value={newTask}
-            onChange={(e) => setNewTask(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleAddTask()}
-            className="flex-1"
-          />
-          <Select value={category} onValueChange={(v) => setCategory(v as ProductivityTask['category'])}>
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="deep-work">Deep Work</SelectItem>
-              <SelectItem value="routine">Routine</SelectItem>
-              <SelectItem value="quick-win">Quick Win</SelectItem>
-              <SelectItem value="learning">Learning</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={priority} onValueChange={(v) => setPriority(v as ProductivityTask['priority'])}>
-            <SelectTrigger className="w-24">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="low">Low</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="high">High</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button onClick={handleAddTask} size="icon">
-            <Plus className="h-4 w-4" />
-          </Button>
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <Input
+              placeholder="e.g., Finish physics chapter, Edit YouTube video..."
+              value={newTask}
+              onChange={(e) => setNewTask(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleAddTask()}
+              className="flex-1"
+            />
+            <Button onClick={handleAddTask} size="icon">
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            <div className="flex items-center gap-1">
+              <Clock className="h-3 w-3 text-muted-foreground" />
+              <Select value={duration} onValueChange={setDuration}>
+                <SelectTrigger className="w-24 h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="15">15 min</SelectItem>
+                  <SelectItem value="30">30 min</SelectItem>
+                  <SelectItem value="60">60 min</SelectItem>
+                  <SelectItem value="90">90 min</SelectItem>
+                  <SelectItem value="120">2 hours</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Select value={category} onValueChange={(v) => setCategory(v as ProductivityTask['category'])}>
+              <SelectTrigger className="w-28 h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="deep-work">Deep Work</SelectItem>
+                <SelectItem value="routine">Routine</SelectItem>
+                <SelectItem value="quick-win">Quick Win</SelectItem>
+                <SelectItem value="learning">Learning</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={priority} onValueChange={(v) => setPriority(v as ProductivityTask['priority'])}>
+              <SelectTrigger className="w-24 h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="low">Low</SelectItem>
+                <SelectItem value="medium">Medium</SelectItem>
+                <SelectItem value="high">High</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              className="w-32 h-8 text-xs"
+            />
+          </div>
         </div>
 
         {/* Pending Tasks */}
@@ -123,6 +152,9 @@ export function TaskManager({ tasks, onAddTask, onToggleTask, onDeleteTask }: Ta
                 />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{task.title}</p>
+                  {task.estimatedMinutes && (
+                    <p className="text-xs text-muted-foreground">{task.estimatedMinutes} min</p>
+                  )}
                 </div>
                 <Badge className={`text-xs ${categoryColors[task.category]}`}>
                   {task.category}
