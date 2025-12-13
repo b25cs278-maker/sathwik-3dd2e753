@@ -9,9 +9,10 @@ import { AIDayPlanner } from '@/components/productivity/AIDayPlanner';
 import { AdvancedAIPlanner } from '@/components/productivity/AdvancedAIPlanner';
 import { BehaviorTracker } from '@/components/productivity/BehaviorTracker';
 import { ExecutionRulesPanel } from '@/components/productivity/ExecutionRulesPanel';
+import { WeeklyAnalytics } from '@/components/productivity/WeeklyAnalytics';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocalStorage, ProductivityTask, Habit, Goal, LifeMetrics, DayPlan, ExecutionRule, MoneyFlow } from '@/hooks/useLocalStorage';
-import { Rocket, Crown } from 'lucide-react';
+import { Rocket } from 'lucide-react';
 
 const defaultMetrics: LifeMetrics = {
   lifeScore: 4,
@@ -204,6 +205,15 @@ export default function ProductivityDashboard() {
                 onAddTask={handleAddTask}
                 onAddHabit={handleAddHabit}
                 onUpdateRules={setExecutionRules}
+              />
+            </div>
+
+            <div className="animate-slide-up delay-500">
+              <WeeklyAnalytics
+                tasks={tasks}
+                habits={habits}
+                goals={goals}
+                metrics={metrics}
               />
             </div>
           </div>
