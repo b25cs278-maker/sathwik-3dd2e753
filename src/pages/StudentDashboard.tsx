@@ -211,15 +211,11 @@ export default function Dashboard() {
             </TabsTrigger>
             <TabsTrigger value="calendar" className="flex items-center gap-2">
               <CalendarDays className="h-4 w-4" />
-              <span className="hidden sm:inline">Calendar</span>
+              <span className="hidden sm:inline">Calendar & Alerts</span>
             </TabsTrigger>
             <TabsTrigger value="community" className="flex items-center gap-2">
               <Lightbulb className="h-4 w-4" />
               <span className="hidden sm:inline">Community</span>
-            </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center gap-2">
-              <Bell className="h-4 w-4" />
-              <span className="hidden sm:inline">Notifications</span>
             </TabsTrigger>
             <TabsTrigger value="support" className="flex items-center gap-2">
               <HelpCircle className="h-4 w-4" />
@@ -458,55 +454,56 @@ export default function Dashboard() {
           </TabsContent>
 
           <TabsContent value="calendar">
-            <EcoCalendar />
+            <div className="space-y-8">
+              <EcoCalendar />
+              
+              {/* Notifications Section */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <NotificationsPanel />
+                <Card variant="eco">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Bell className="h-5 w-5 text-primary" />
+                      Alert Settings
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium">Task Reminders</p>
+                        <p className="text-xs text-muted-foreground">Get reminded about pending tasks</p>
+                      </div>
+                      <Badge variant="outline" className="text-primary border-primary">On</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium">Approval Notifications</p>
+                        <p className="text-xs text-muted-foreground">Know when your tasks are reviewed</p>
+                      </div>
+                      <Badge variant="outline" className="text-primary border-primary">On</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium">Eco Day Alerts</p>
+                        <p className="text-xs text-muted-foreground">Get reminders for environmental days</p>
+                      </div>
+                      <Badge variant="outline" className="text-primary border-primary">On</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium">Reward Updates</p>
+                        <p className="text-xs text-muted-foreground">Be notified about new rewards</p>
+                      </div>
+                      <Badge variant="outline" className="text-primary border-primary">On</Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="community">
             <InnovationHub />
-          </TabsContent>
-
-          <TabsContent value="notifications">
-            <div className="grid md:grid-cols-2 gap-6">
-              <NotificationsPanel />
-              <Card variant="eco">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Bell className="h-5 w-5 text-primary" />
-                    Alert Settings
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium">Task Reminders</p>
-                      <p className="text-xs text-muted-foreground">Get reminded about pending tasks</p>
-                    </div>
-                    <Badge variant="outline" className="text-primary border-primary">On</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium">Approval Notifications</p>
-                      <p className="text-xs text-muted-foreground">Know when your tasks are reviewed</p>
-                    </div>
-                    <Badge variant="outline" className="text-primary border-primary">On</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium">New Challenges</p>
-                      <p className="text-xs text-muted-foreground">Get alerts for new community challenges</p>
-                    </div>
-                    <Badge variant="outline" className="text-primary border-primary">On</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium">Reward Updates</p>
-                      <p className="text-xs text-muted-foreground">Be notified about new rewards</p>
-                    </div>
-                    <Badge variant="outline" className="text-primary border-primary">On</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
           </TabsContent>
 
           <TabsContent value="support">
