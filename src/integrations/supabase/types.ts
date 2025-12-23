@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          payload: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          payload?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          payload?: Json | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      badges: {
+        Row: {
+          created_at: string
+          criteria: Json
+          description: string | null
+          icon_url: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          criteria?: Json
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          criteria?: Json
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -142,6 +193,77 @@ export type Database = {
         }
         Relationships: []
       }
+      redemptions: {
+        Row: {
+          created_at: string
+          fulfilled_at: string | null
+          id: string
+          reward_id: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          fulfilled_at?: string | null
+          id?: string
+          reward_id?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          fulfilled_at?: string | null
+          id?: string
+          reward_id?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "redemptions_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "rewards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rewards: {
+        Row: {
+          cost_points: number
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          name: string
+          redeemable_external: boolean | null
+          stock: number | null
+        }
+        Insert: {
+          cost_points: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name: string
+          redeemable_external?: boolean | null
+          stock?: number | null
+        }
+        Update: {
+          cost_points?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string
+          redeemable_external?: boolean | null
+          stock?: number | null
+        }
+        Relationships: []
+      }
       task_evaluations: {
         Row: {
           created_at: string
@@ -201,6 +323,9 @@ export type Database = {
       }
       task_submissions: {
         Row: {
+          ai_flagged: boolean | null
+          ai_verification_notes: string | null
+          ai_verification_score: number | null
           created_at: string
           id: string
           location_accuracy: number | null
@@ -217,6 +342,9 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          ai_flagged?: boolean | null
+          ai_verification_notes?: string | null
+          ai_verification_score?: number | null
           created_at?: string
           id?: string
           location_accuracy?: number | null
@@ -233,6 +361,9 @@ export type Database = {
           user_id: string
         }
         Update: {
+          ai_flagged?: boolean | null
+          ai_verification_notes?: string | null
+          ai_verification_score?: number | null
           created_at?: string
           id?: string
           location_accuracy?: number | null
@@ -324,6 +455,35 @@ export type Database = {
         }
         Relationships: []
       }
+      user_badges: {
+        Row: {
+          badge_id: string | null
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_id?: string | null
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string | null
+          earned_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -347,6 +507,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_submission_points: {
+        Args: {
+          p_points: number
+          p_reviewer_id: string
+          p_submission_id: string
+        }
+        Returns: undefined
+      }
       can_access_tier: {
         Args: {
           p_tier: Database["public"]["Enums"]["task_tier"]
@@ -361,6 +529,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      redeem_reward: {
+        Args: { p_reward_id: string; p_user_id: string }
+        Returns: Json
       }
     }
     Enums: {
