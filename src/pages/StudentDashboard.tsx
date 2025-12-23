@@ -10,9 +10,11 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InnovationHub } from "@/components/community/InnovationHub";
+import { NotificationsPanel } from "@/components/user/NotificationsPanel";
+import { FeedbackSupport } from "@/components/user/FeedbackSupport";
 import { 
   Award, Gift, Target, TrendingUp, Clock, CheckCircle2, 
-  ArrowRight, Leaf, Trophy, Star, Camera, Lightbulb
+  ArrowRight, Leaf, Trophy, Star, Camera, Lightbulb, Bell, HelpCircle
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -175,14 +177,22 @@ export default function Dashboard() {
         </div>
 
         <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList>
+          <TabsList className="flex flex-wrap h-auto gap-1">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <Target className="h-4 w-4" />
-              Dashboard
+              <span className="hidden sm:inline">Dashboard</span>
             </TabsTrigger>
             <TabsTrigger value="community" className="flex items-center gap-2">
               <Lightbulb className="h-4 w-4" />
-              Community Hub
+              <span className="hidden sm:inline">Community</span>
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="flex items-center gap-2">
+              <Bell className="h-4 w-4" />
+              <span className="hidden sm:inline">Notifications</span>
+            </TabsTrigger>
+            <TabsTrigger value="support" className="flex items-center gap-2">
+              <HelpCircle className="h-4 w-4" />
+              <span className="hidden sm:inline">Help</span>
             </TabsTrigger>
           </TabsList>
 
@@ -398,6 +408,89 @@ export default function Dashboard() {
 
           <TabsContent value="community">
             <InnovationHub />
+          </TabsContent>
+
+          <TabsContent value="notifications">
+            <div className="grid md:grid-cols-2 gap-6">
+              <NotificationsPanel />
+              <Card variant="eco">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bell className="h-5 w-5 text-primary" />
+                    Alert Settings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">Task Reminders</p>
+                      <p className="text-xs text-muted-foreground">Get reminded about pending tasks</p>
+                    </div>
+                    <Badge variant="outline" className="text-primary border-primary">On</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">Approval Notifications</p>
+                      <p className="text-xs text-muted-foreground">Know when your tasks are reviewed</p>
+                    </div>
+                    <Badge variant="outline" className="text-primary border-primary">On</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">New Challenges</p>
+                      <p className="text-xs text-muted-foreground">Get alerts for new community challenges</p>
+                    </div>
+                    <Badge variant="outline" className="text-primary border-primary">On</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">Reward Updates</p>
+                      <p className="text-xs text-muted-foreground">Be notified about new rewards</p>
+                    </div>
+                    <Badge variant="outline" className="text-primary border-primary">On</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="support">
+            <div className="grid md:grid-cols-2 gap-6">
+              <FeedbackSupport />
+              <Card variant="eco">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <HelpCircle className="h-5 w-5 text-primary" />
+                    Quick Help
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                    <h4 className="font-medium text-sm mb-2">How to Complete Tasks</h4>
+                    <p className="text-xs text-muted-foreground">
+                      1. Browse available tasks in the Tasks section<br/>
+                      2. Take a photo as proof of completion<br/>
+                      3. Submit with your location for verification<br/>
+                      4. Wait for admin approval to earn points
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-eco-sky/5 border border-eco-sky/20">
+                    <h4 className="font-medium text-sm mb-2">Report Fake Activities</h4>
+                    <p className="text-xs text-muted-foreground">
+                      If you spot someone submitting fake proofs or cheating, 
+                      use the "Report Fake Activity" option in the feedback form.
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-eco-sun/5 border border-eco-sun/20">
+                    <h4 className="font-medium text-sm mb-2">Earn More Points</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Complete harder tasks, participate in community challenges, 
+                      and maintain a high verification score to unlock advanced tasks.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
