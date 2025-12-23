@@ -26,19 +26,26 @@ export function Navbar() {
   };
 
   const publicLinks = [
-    { href: "/tasks", label: "Tasks", icon: Target },
     { href: "/rewards", label: "Rewards", icon: Gift },
     { href: "/tracks", label: "Learn", icon: null },
   ];
 
-  const authLinks = [
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/tasks", label: "Tasks", icon: Target },
+  // Different nav links based on role
+  const studentLinks = [
+    { href: "/student/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/rewards", label: "Rewards", icon: Gift },
     { href: "/tracks", label: "Learn", icon: null },
   ];
 
-  const navLinks = user ? authLinks : publicLinks;
+  const adminLinks = [
+    { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/review", label: "Review", icon: Shield },
+    { href: "/rewards", label: "Rewards", icon: Gift },
+  ];
+
+  const navLinks = user 
+    ? (role === 'admin' ? adminLinks : studentLinks) 
+    : publicLinks;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
@@ -80,17 +87,19 @@ export function Navbar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
-                  <Link to="/dashboard" className="flex items-center gap-2">
+                  <Link to={role === 'admin' ? '/admin/dashboard' : '/student/dashboard'} className="flex items-center gap-2">
                     <LayoutDashboard className="h-4 w-4" />
                     Dashboard
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/portfolio" className="flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    Portfolio
-                  </Link>
-                </DropdownMenuItem>
+                {role !== 'admin' && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/portfolio" className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      Portfolio
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 {role === 'admin' && (
                   <>
                     <DropdownMenuSeparator />
@@ -154,21 +163,11 @@ export function Navbar() {
               </Link>
             ))}
             
-            {user && role === 'admin' && (
-              <Link
-                to="/admin/review"
-                className="text-sm font-medium py-2 px-3 rounded-lg flex items-center gap-2 text-muted-foreground hover:bg-muted"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Shield className="h-4 w-4" />
-                Admin Review
-              </Link>
-            )}
 
             <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-border">
               {user ? (
                 <>
-                  <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                  <Link to={role === 'admin' ? '/admin/dashboard' : '/student/dashboard'} onClick={() => setMobileMenuOpen(false)}>
                     <Button variant="outline" className="w-full justify-start">
                       <LayoutDashboard className="h-4 w-4 mr-2" />
                       Dashboard

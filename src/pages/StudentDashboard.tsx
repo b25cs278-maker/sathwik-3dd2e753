@@ -1,0 +1,387 @@
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { 
+  Award, Gift, Target, TrendingUp, Clock, CheckCircle2, 
+  ArrowRight, Leaf, Trophy, Star, Camera
+} from "lucide-react";
+import { toast } from "sonner";
+
+interface UserStats {
+  points: number;
+  tasksCompleted: number;
+  pendingSubmissions: number;
+  badges: Array<{ id: string; name: string; icon_url: string; earned_at: string }>;
+}
+
+interface RecentActivity {
+  id: string;
+  event_type: string;
+  payload: any;
+  created_at: string;
+}
+
+export default function Dashboard() {
+  const { user } = useAuth();
+  const [stats, setStats] = useState<UserStats>({
+    points: 0,
+    tasksCompleted: 0,
+    pendingSubmissions: 0,
+    badges: []
+  });
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      fetchDashboardData();
+    }
+  }, [user]);
+
+  const fetchDashboardData = async () => {
+    if (!user) return;
+    
+    try {
+      // Fetch user profile for points
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('points')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      // Fetch completed submissions count
+      const { count: completedCount } = await supabase
+        .from('task_submissions')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('status', 'approved');
+
+      // Fetch pending submissions count
+      const { count: pendingCount } = await supabase
+        .from('task_submissions')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('status', 'pending');
+
+      // Fetch user badges
+      const { data: userBadges } = await supabase
+        .from('user_badges')
+        .select(`
+          earned_at,
+          badges (id, name, icon_url)
+        `)
+        .eq('user_id', user.id)
+        .order('earned_at', { ascending: false })
+        .limit(5);
+
+      // Fetch recent activity
+      const { data: activity } = await supabase
+        .from('activity_logs')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      setStats({
+        points: profile?.points || 0,
+        tasksCompleted: completedCount || 0,
+        pendingSubmissions: pendingCount || 0,
+        badges: userBadges?.map((ub: any) => ({
+          id: ub.badges?.id,
+          name: ub.badges?.name,
+          icon_url: ub.badges?.icon_url,
+          earned_at: ub.earned_at
+        })) || []
+      });
+
+      setRecentActivity(activity || []);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+      toast.error('Failed to load dashboard data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getActivityIcon = (eventType: string) => {
+    switch (eventType) {
+      case 'points_awarded':
+        return <Star className="h-4 w-4 text-eco-sun" />;
+      case 'reward_redeemed':
+        return <Gift className="h-4 w-4 text-eco-reward" />;
+      case 'badge_earned':
+        return <Award className="h-4 w-4 text-primary" />;
+      default:
+        return <CheckCircle2 className="h-4 w-4 text-muted-foreground" />;
+    }
+  };
+
+  const getActivityText = (activity: RecentActivity) => {
+    switch (activity.event_type) {
+      case 'points_awarded':
+        return `Earned ${activity.payload?.points || 0} points`;
+      case 'reward_redeemed':
+        return 'Redeemed a reward';
+      case 'badge_earned':
+        return `Earned badge: ${activity.payload?.badge_name || 'Unknown'}`;
+      default:
+        return activity.event_type.replace(/_/g, ' ');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container py-12">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      
+      <div className="container py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-display font-bold text-foreground">
+              Welcome back!
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Track your environmental impact and earn rewards
+            </p>
+          </div>
+          <Link to="/tasks">
+            <Button variant="hero">
+              <Camera className="h-4 w-4 mr-2" />
+              Browse Tasks
+            </Button>
+          </Link>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <Card variant="eco">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Points</p>
+                  <p className="text-3xl font-display font-bold text-foreground">
+                    {stats.points.toLocaleString()}
+                  </p>
+                </div>
+                <div className="p-3 rounded-xl bg-eco-sun/10">
+                  <Star className="h-6 w-6 text-eco-sun" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card variant="eco">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Tasks Completed</p>
+                  <p className="text-3xl font-display font-bold text-foreground">
+                    {stats.tasksCompleted}
+                  </p>
+                </div>
+                <div className="p-3 rounded-xl bg-primary/10">
+                  <CheckCircle2 className="h-6 w-6 text-primary" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card variant="eco">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Pending Review</p>
+                  <p className="text-3xl font-display font-bold text-foreground">
+                    {stats.pendingSubmissions}
+                  </p>
+                </div>
+                <div className="p-3 rounded-xl bg-eco-sky/10">
+                  <Clock className="h-6 w-6 text-eco-sky" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card variant="eco">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Badges Earned</p>
+                  <p className="text-3xl font-display font-bold text-foreground">
+                    {stats.badges.length}
+                  </p>
+                </div>
+                <div className="p-3 rounded-xl bg-eco-reward/10">
+                  <Award className="h-6 w-6 text-eco-reward" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Quick Actions */}
+            <Card variant="eco">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5 text-primary" />
+                  Quick Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <Link to="/tasks">
+                    <div className="p-4 rounded-xl border border-border hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer group">
+                      <Leaf className="h-8 w-8 text-primary mb-3" />
+                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                        Find Tasks
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Browse and complete environmental tasks
+                      </p>
+                    </div>
+                  </Link>
+                  <Link to="/rewards">
+                    <div className="p-4 rounded-xl border border-border hover:border-eco-reward/50 hover:bg-eco-reward/5 transition-all cursor-pointer group">
+                      <Gift className="h-8 w-8 text-eco-reward mb-3" />
+                      <h3 className="font-semibold text-foreground group-hover:text-eco-reward transition-colors">
+                        Redeem Rewards
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Exchange points for eco-friendly rewards
+                      </p>
+                    </div>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Progress to Next Badge */}
+            <Card variant="eco">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-eco-sun" />
+                  Progress to Next Badge
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">Green Novice</span>
+                      <span className="text-sm text-muted-foreground">
+                        {Math.min(stats.tasksCompleted, 5)} / 5 tasks
+                      </span>
+                    </div>
+                    <Progress value={Math.min((stats.tasksCompleted / 5) * 100, 100)} />
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">Eco Contributor</span>
+                      <span className="text-sm text-muted-foreground">
+                        {Math.min(stats.tasksCompleted, 25)} / 25 tasks
+                      </span>
+                    </div>
+                    <Progress value={Math.min((stats.tasksCompleted / 25) * 100, 100)} />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Badges */}
+            <Card variant="eco">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <Award className="h-5 w-5 text-primary" />
+                    Your Badges
+                  </span>
+                  <Link to="/badges">
+                    <Button variant="ghost" size="sm">
+                      View All
+                    </Button>
+                  </Link>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {stats.badges.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {stats.badges.map((badge) => (
+                      <Badge key={badge.id} variant="secondary" className="px-3 py-1">
+                        {badge.name}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    Complete tasks to earn your first badge!
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Recent Activity */}
+            <Card variant="eco">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-primary" />
+                  Recent Activity
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {recentActivity.length > 0 ? (
+                  <div className="space-y-3">
+                    {recentActivity.map((activity) => (
+                      <div key={activity.id} className="flex items-center gap-3">
+                        {getActivityIcon(activity.event_type)}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">
+                            {getActivityText(activity)}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(activity.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    No recent activity yet
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      <Footer />
+    </div>
+  );
+}
