@@ -32,11 +32,15 @@ function getLifeFocusLevel(value: number): { label: string; color: string } {
   return { label: 'Low', color: 'bg-destructive' };
 }
 
-export function BehaviorTracker({ tasks, habits, goals }: BehaviorTrackerProps) {
+export function BehaviorTracker({ tasks = [], habits = [], goals = [] }: BehaviorTrackerProps) {
   const today = new Date().toISOString().split('T')[0];
 
   const metrics = useMemo(() => {
-    const completedTasks = tasks.filter(t => t.completed);
+    const safeTasks = tasks || [];
+    const safeHabits = habits || [];
+    const safeGoals = goals || [];
+    
+    const completedTasks = safeTasks.filter(t => t.completed);
     const todayTasks = completedTasks.filter(t => t.completedAt?.split('T')[0] === today);
     
     // Calculate deep work minutes from completed deep-work tasks
@@ -77,12 +81,12 @@ export function BehaviorTracker({ tasks, habits, goals }: BehaviorTrackerProps) 
       : 30);
 
     // Spirit score based on habits and goal progress
-    const habitsToday = habits.filter(h => h.completedDates.includes(today)).length;
-    const avgGoalProgress = goals.length > 0 
-      ? goals.reduce((sum, g) => sum + g.progress, 0) / goals.length 
+    const habitsToday = safeHabits.filter(h => h.completedDates.includes(today)).length;
+    const avgGoalProgress = safeGoals.length > 0 
+      ? safeGoals.reduce((sum, g) => sum + g.progress, 0) / safeGoals.length 
       : 50;
     const spiritScore = Math.min(100, 
-      (habitsToday / Math.max(habits.length, 1)) * 50 + 
+      (habitsToday / Math.max(safeHabits.length, 1)) * 50 + 
       avgGoalProgress * 0.5
     );
 

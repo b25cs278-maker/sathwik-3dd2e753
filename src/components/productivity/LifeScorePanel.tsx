@@ -11,24 +11,27 @@ interface LifeScorePanelProps {
   goals: Goal[];
 }
 
-export function LifeScorePanel({ tasks, habits, goals }: LifeScorePanelProps) {
+export function LifeScorePanel({ tasks = [], habits = [], goals = [] }: LifeScorePanelProps) {
   const today = new Date().toISOString().split('T')[0];
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   const metrics = useMemo(() => {
+    const safeTasks = tasks || [];
+    const safeHabits = habits || [];
+    const safeGoals = goals || [];
     // Tasks completed today
-    const todayTasks = tasks.filter(t => t.completed && t.completedAt?.split('T')[0] === today);
-    const totalTodayTasks = tasks.filter(t => t.dueDate === today || t.createdAt.split('T')[0] === today);
+    const todayTasks = safeTasks.filter(t => t.completed && t.completedAt?.split('T')[0] === today);
+    const totalTodayTasks = safeTasks.filter(t => t.dueDate === today || t.createdAt.split('T')[0] === today);
     
     // Tasks completed this week
-    const weekTasks = tasks.filter(t => {
+    const weekTasks = safeTasks.filter(t => {
       if (!t.completed || !t.completedAt) return false;
       return new Date(t.completedAt) >= weekAgo;
     });
 
     // Habits completed today
-    const habitsCompletedToday = habits.filter(h => h.completedDates.includes(today)).length;
-    const totalHabits = habits.length;
+    const habitsCompletedToday = safeHabits.filter(h => h.completedDates.includes(today)).length;
+    const totalHabits = safeHabits.length;
 
     // Calculate scores based on performance
     const taskCompletionRate = totalTodayTasks.length > 0 
@@ -40,8 +43,8 @@ export function LifeScorePanel({ tasks, habits, goals }: LifeScorePanelProps) {
       : 50;
 
     // Goal progress average
-    const avgGoalProgress = goals.length > 0 
-      ? goals.reduce((sum, g) => sum + g.progress, 0) / goals.length 
+    const avgGoalProgress = safeGoals.length > 0 
+      ? safeGoals.reduce((sum, g) => sum + g.progress, 0) / safeGoals.length 
       : 50;
 
     // Calculate individual metrics
@@ -52,14 +55,14 @@ export function LifeScorePanel({ tasks, habits, goals }: LifeScorePanelProps) {
     );
 
     const focus = Math.round(
-      (tasks.filter(t => t.completed && t.category === 'deep-work').length * 10) +
+      (safeTasks.filter(t => t.completed && t.category === 'deep-work').length * 10) +
       (todayTasks.filter(t => t.priority === 'high').length * 15) +
       (taskCompletionRate * 0.3)
     );
 
     const discipline = Math.round(
       (habitCompletionRate * 0.5) +
-      (habits.reduce((sum, h) => sum + Math.min(h.streak * 3, 30), 0) / Math.max(habits.length, 1)) +
+      (safeHabits.reduce((sum, h) => sum + Math.min(h.streak * 3, 30), 0) / Math.max(safeHabits.length, 1)) +
       (avgGoalProgress * 0.2)
     );
 
