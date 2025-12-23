@@ -1,28 +1,44 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Leaf, Menu, X, User, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { 
+  Leaf, Menu, X, User, LogOut, LayoutDashboard, 
+  Target, Gift, Shield 
+} from "lucide-react";
 import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-interface NavbarProps {
-  isAuthenticated?: boolean;
-  userRole?: "student" | "admin" | "educator";
-  onLogout?: () => void;
-}
-
-export function Navbar({ isAuthenticated = false, userRole = "student", onLogout }: NavbarProps) {
+export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, role, signOut } = useAuth();
 
-  const navLinks = isAuthenticated
-    ? [
-        { href: "/tracks", label: "Tracks" },
-        { href: "/portfolio", label: "Portfolio" },
-      ]
-    : [
-        { href: "/tracks", label: "Tracks" },
-        { href: "#features", label: "Features" },
-        { href: "#how-it-works", label: "How It Works" },
-      ];
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
+  };
+
+  const publicLinks = [
+    { href: "/tasks", label: "Tasks", icon: Target },
+    { href: "/rewards", label: "Rewards", icon: Gift },
+    { href: "/tracks", label: "Learn", icon: null },
+  ];
+
+  const authLinks = [
+    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/tasks", label: "Tasks", icon: Target },
+    { href: "/rewards", label: "Rewards", icon: Gift },
+    { href: "/tracks", label: "Learn", icon: null },
+  ];
+
+  const navLinks = user ? authLinks : publicLinks;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
@@ -37,35 +53,62 @@ export function Navbar({ isAuthenticated = false, userRole = "student", onLogout
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               to={link.href}
-              className={`text-sm font-medium transition-colors hover:text-primary ${
+              className={`text-sm font-medium transition-colors hover:text-primary flex items-center gap-1.5 ${
                 location.pathname === link.href
                   ? "text-primary"
                   : "text-muted-foreground"
               }`}
             >
+              {link.icon && <link.icon className="h-4 w-4" />}
               {link.label}
             </Link>
           ))}
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          {isAuthenticated ? (
-            <>
-              <Link to="/profile">
-                <Button variant="ghost" size="icon">
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full">
                   <User className="h-5 w-5" />
                 </Button>
-              </Link>
-              <Button variant="outline" size="sm" onClick={onLogout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
-              </Button>
-            </>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard" className="flex items-center gap-2">
+                    <LayoutDashboard className="h-4 w-4" />
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/portfolio" className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    Portfolio
+                  </Link>
+                </DropdownMenuItem>
+                {role === 'admin' && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin/review" className="flex items-center gap-2">
+                        <Shield className="h-4 w-4" />
+                        Admin Review
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <>
               <Link to="/login">
@@ -94,29 +137,54 @@ export function Navbar({ isAuthenticated = false, userRole = "student", onLogout
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-border bg-background animate-slide-up">
-          <div className="container py-4 flex flex-col gap-4">
+          <div className="container py-4 flex flex-col gap-2">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-primary py-2"
+                className={`text-sm font-medium py-2 px-3 rounded-lg flex items-center gap-2 ${
+                  location.pathname === link.href
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-muted"
+                }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
+                {link.icon && <link.icon className="h-4 w-4" />}
                 {link.label}
               </Link>
             ))}
-            <div className="flex flex-col gap-2 pt-4 border-t border-border">
-              {isAuthenticated ? (
-                <Button variant="outline" onClick={onLogout}>
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Logout
-                </Button>
+            
+            {user && role === 'admin' && (
+              <Link
+                to="/admin/review"
+                className="text-sm font-medium py-2 px-3 rounded-lg flex items-center gap-2 text-muted-foreground hover:bg-muted"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Shield className="h-4 w-4" />
+                Admin Review
+              </Link>
+            )}
+
+            <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-border">
+              {user ? (
+                <>
+                  <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full justify-start">
+                      <LayoutDashboard className="h-4 w-4 mr-2" />
+                      Dashboard
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="w-full justify-start text-destructive">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </Button>
+                </>
               ) : (
                 <>
-                  <Link to="/login">
+                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
                     <Button variant="ghost" className="w-full">Log in</Button>
                   </Link>
-                  <Link to="/signup">
+                  <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>
                     <Button variant="hero" className="w-full">Get Started</Button>
                   </Link>
                 </>

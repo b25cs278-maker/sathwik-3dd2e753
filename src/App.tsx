@@ -15,6 +15,11 @@ import TrackDetail from "./pages/TrackDetail";
 import Lesson from "./pages/Lesson";
 import Project from "./pages/Project";
 import Portfolio from "./pages/Portfolio";
+import Dashboard from "./pages/Dashboard";
+import Tasks from "./pages/Tasks";
+import TaskDetail from "./pages/TaskDetail";
+import Rewards from "./pages/Rewards";
+import AdminReview from "./pages/AdminReview";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +56,23 @@ const App = () => (
             <Route path="/portfolio" element={
               <ProtectedRoute>
                 <Portfolio />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/tasks" element={<Tasks />} />
+            <Route path="/task/:id" element={
+              <ProtectedRoute>
+                <TaskDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/rewards" element={<Rewards />} />
+            <Route path="/admin/review" element={
+              <ProtectedRoute>
+                <AdminReview />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
