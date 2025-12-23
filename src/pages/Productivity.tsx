@@ -5,7 +5,6 @@ import { TaskManager } from '@/components/productivity/TaskManager';
 import { HabitTracker } from '@/components/productivity/HabitTracker';
 import { GoalTracker } from '@/components/productivity/GoalTracker';
 import { DeepWorkAIPlanner } from '@/components/productivity/DeepWorkAIPlanner';
-import { LifeScorePanel } from '@/components/productivity/LifeScorePanel';
 import { BehaviorTracker } from '@/components/productivity/BehaviorTracker';
 import { ExecutionRulesPanel } from '@/components/productivity/ExecutionRulesPanel';
 import { 
@@ -125,8 +124,7 @@ export default function Productivity() {
         </div>
 
         {/* Quick Stats Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <LifeScorePanel tasks={tasks} habits={habits} goals={goals} />
+        <div className="mb-8">
           <BehaviorTracker tasks={tasks} habits={habits} goals={goals} />
         </div>
 
