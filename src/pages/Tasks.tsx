@@ -7,9 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Filter, MapPin, Recycle, TreePine, Droplets, Users, Zap, Loader2 } from "lucide-react";
+import { Search, Filter, MapPin, Recycle, TreePine, Droplets, Users, Zap, Loader2, Lock, Crown, Building2, TrendingUp } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { Progress } from "@/components/ui/progress";
 
 const categories = [
   { id: "all", name: "All Tasks", icon: Zap },
@@ -25,6 +26,12 @@ const difficultyMap: Record<string, 1 | 2 | 3> = {
   hard: 3,
 };
 
+const tierConfig = {
+  basic: { label: "Basic", icon: Zap, color: "bg-muted text-muted-foreground", threshold: 0 },
+  advanced: { label: "Advanced", icon: Crown, color: "bg-amber-500/20 text-amber-600", threshold: 70 },
+  company: { label: "Company", icon: Building2, color: "bg-purple-500/20 text-purple-600", threshold: 85 },
+};
+
 export default function Tasks() {
   const { user, role, signOut } = useAuth();
   const navigate = useNavigate();
@@ -33,9 +40,18 @@ export default function Tasks() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<number | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userScore, setUserScore] = useState<number>(0);
 
   useEffect(() => {
-    async function fetchTasks() {
+    async function fetchData() {
+      // Fetch user's execution score
+      if (user) {
+        const { data: scoreData } = await supabase
+          .rpc('get_user_execution_score', { p_user_id: user.id });
+        setUserScore(scoreData || 0);
+      }
+
+      // Fetch tasks (RLS will filter based on user's tier access)
       const { data, error } = await supabase
         .from("tasks")
         .select("*")
@@ -52,14 +68,15 @@ export default function Tasks() {
           locationRequired: t.location_required,
           estimatedTime: t.estimated_time || undefined,
           imageUrl: t.image_url || undefined,
+          tier: (t.tier as 'basic' | 'advanced' | 'company') || 'basic',
         }));
         setTasks(mappedTasks);
       }
       setLoading(false);
     }
 
-    fetchTasks();
-  }, []);
+    fetchData();
+  }, [user]);
 
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -76,6 +93,9 @@ export default function Tasks() {
     navigate("/login");
   };
 
+  const advancedUnlocked = userScore >= 70;
+  const companyUnlocked = userScore >= 85;
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar isAuthenticated={!!user} userRole={role || "student"} onLogout={handleLogout} />
@@ -90,6 +110,54 @@ export default function Tasks() {
             Complete tasks, earn points, and make a real impact
           </p>
         </div>
+
+        {/* Execution Score & Tier Progress */}
+        {user && (
+          <Card className="mb-8 animate-slide-up delay-50 border-primary/20 bg-gradient-to-r from-primary/5 to-transparent">
+            <CardContent className="py-4">
+              <div className="flex flex-col md:flex-row md:items-center gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-full bg-primary/10">
+                    <TrendingUp className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Your Execution Score</p>
+                    <p className="text-2xl font-bold text-foreground">{userScore}/100</p>
+                  </div>
+                </div>
+                
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Tier Progress</span>
+                    <span className="text-muted-foreground">
+                      {companyUnlocked ? "All tiers unlocked!" : 
+                       advancedUnlocked ? `${85 - userScore} points to Company` : 
+                       `${70 - userScore} points to Advanced`}
+                    </span>
+                  </div>
+                  <Progress value={userScore} className="h-2" />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Basic</span>
+                    <span className={advancedUnlocked ? "text-amber-600 font-medium" : ""}>Advanced (70+)</span>
+                    <span className={companyUnlocked ? "text-purple-600 font-medium" : ""}>Company (85+)</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Badge className={`${tierConfig.basic.color} gap-1`}>
+                    <Zap className="h-3 w-3" /> Basic
+                  </Badge>
+                  <Badge className={`${advancedUnlocked ? tierConfig.advanced.color : "bg-muted text-muted-foreground"} gap-1`}>
+                    {advancedUnlocked ? <Crown className="h-3 w-3" /> : <Lock className="h-3 w-3" />} Advanced
+                  </Badge>
+                  <Badge className={`${companyUnlocked ? tierConfig.company.color : "bg-muted text-muted-foreground"} gap-1`}>
+                    {companyUnlocked ? <Building2 className="h-3 w-3" /> : <Lock className="h-3 w-3" />} Company
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Search and Filters */}
         <div className="mb-8 space-y-4 animate-slide-up delay-100">
