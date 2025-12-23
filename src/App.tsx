@@ -16,6 +16,8 @@ import Lesson from "./pages/Lesson";
 import Project from "./pages/Project";
 import Portfolio from "./pages/Portfolio";
 import Dashboard from "./pages/Dashboard";
+import StudentDashboard from "./pages/StudentDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import Tasks from "./pages/Tasks";
 import TaskDetail from "./pages/TaskDetail";
 import Rewards from "./pages/Rewards";
@@ -58,9 +60,22 @@ const App = () => (
                 <Portfolio />
               </ProtectedRoute>
             } />
+            {/* Dashboard redirect based on role */}
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } />
+            {/* Student Dashboard */}
+            <Route path="/student/dashboard" element={
+              <ProtectedRoute>
+                <StudentDashboard />
+              </ProtectedRoute>
+            } />
+            {/* Admin Dashboard */}
+            <Route path="/admin/dashboard" element={
+              <ProtectedRoute>
+                <AdminDashboard />
               </ProtectedRoute>
             } />
             <Route path="/tasks" element={<Tasks />} />
