@@ -13,9 +13,10 @@ import { InnovationHub } from "@/components/community/InnovationHub";
 import { NotificationsPanel } from "@/components/user/NotificationsPanel";
 import { FeedbackSupport } from "@/components/user/FeedbackSupport";
 import { EcoQuizBattles } from "@/components/quiz/EcoQuizBattles";
+import { LearningTracks } from "@/components/tracks/LearningTracks";
 import { 
   Award, Gift, Target, TrendingUp, Clock, CheckCircle2, 
-  ArrowRight, Leaf, Trophy, Star, Camera, Lightbulb, Bell, HelpCircle, Swords
+  ArrowRight, Leaf, Trophy, Star, Camera, Lightbulb, Bell, HelpCircle, Swords, GraduationCap
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -186,6 +187,10 @@ export default function Dashboard() {
             <TabsTrigger value="quizzes" className="flex items-center gap-2">
               <Swords className="h-4 w-4" />
               <span className="hidden sm:inline">Quiz Battles</span>
+            </TabsTrigger>
+            <TabsTrigger value="tracks" className="flex items-center gap-2">
+              <GraduationCap className="h-4 w-4" />
+              <span className="hidden sm:inline">Tracks</span>
             </TabsTrigger>
             <TabsTrigger value="community" className="flex items-center gap-2">
               <Lightbulb className="h-4 w-4" />
@@ -413,6 +418,10 @@ export default function Dashboard() {
 
           <TabsContent value="quizzes">
             <EcoQuizBattles />
+          </TabsContent>
+
+          <TabsContent value="tracks">
+            <LearningTracks />
           </TabsContent>
 
           <TabsContent value="community">
