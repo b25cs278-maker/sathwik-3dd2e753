@@ -4,8 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TaskManager } from '@/components/productivity/TaskManager';
 import { HabitTracker } from '@/components/productivity/HabitTracker';
 import { GoalTracker } from '@/components/productivity/GoalTracker';
-import { AIPlanner } from '@/components/productivity/AIPlanner';
-import { AIDayPlanner } from '@/components/productivity/AIDayPlanner';
+import { DeepWorkAIPlanner } from '@/components/productivity/DeepWorkAIPlanner';
 import { LifeScorePanel } from '@/components/productivity/LifeScorePanel';
 import { BehaviorTracker } from '@/components/productivity/BehaviorTracker';
 import { ExecutionRulesPanel } from '@/components/productivity/ExecutionRulesPanel';
@@ -22,7 +21,7 @@ import {
   Target, 
   Repeat, 
   Brain, 
-  Calendar
+  Sparkles
 } from 'lucide-react';
 
 export default function Productivity() {
@@ -126,15 +125,18 @@ export default function Productivity() {
         </div>
 
         {/* Quick Stats Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <LifeScorePanel tasks={tasks} habits={habits} goals={goals} />
           <BehaviorTracker tasks={tasks} habits={habits} goals={goals} />
-          <AIPlanner tasks={tasks} habits={habits} goals={goals} metrics={lifeMetrics} />
         </div>
 
         {/* Main Tabs */}
-        <Tabs defaultValue="tasks" className="space-y-6">
+        <Tabs defaultValue="ai-planner" className="space-y-6">
           <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-flex">
+            <TabsTrigger value="ai-planner" className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              <span className="hidden sm:inline">AI Planner</span>
+            </TabsTrigger>
             <TabsTrigger value="tasks" className="flex items-center gap-2">
               <ListTodo className="h-4 w-4" />
               <span className="hidden sm:inline">Tasks</span>
@@ -147,15 +149,24 @@ export default function Productivity() {
               <Target className="h-4 w-4" />
               <span className="hidden sm:inline">Goals</span>
             </TabsTrigger>
-            <TabsTrigger value="planner" className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              <span className="hidden sm:inline">Day Plan</span>
-            </TabsTrigger>
             <TabsTrigger value="discipline" className="flex items-center gap-2">
               <Brain className="h-4 w-4" />
               <span className="hidden sm:inline">Discipline</span>
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="ai-planner" className="space-y-6">
+            <DeepWorkAIPlanner
+              tasks={tasks}
+              habits={habits}
+              goals={goals}
+              metrics={lifeMetrics}
+              executionRules={executionRules}
+              onAddTask={handleAddTask}
+              onAddHabit={(habit) => setHabits(prev => [...prev, habit])}
+              onUpdateRules={setExecutionRules}
+            />
+          </TabsContent>
 
           <TabsContent value="tasks" className="space-y-6">
             <TaskManager
@@ -181,16 +192,6 @@ export default function Productivity() {
               onAddGoal={handleAddGoal}
               onUpdateProgress={handleUpdateGoalProgress}
               onDeleteGoal={handleDeleteGoal}
-            />
-          </TabsContent>
-
-          <TabsContent value="planner" className="space-y-6">
-            <AIDayPlanner
-              tasks={tasks}
-              habits={habits}
-              goals={goals}
-              dayPlan={dayPlan}
-              onUpdateDayPlan={setDayPlan}
             />
           </TabsContent>
 
