@@ -14,9 +14,14 @@ import { NotificationsPanel } from "@/components/user/NotificationsPanel";
 import { FeedbackSupport } from "@/components/user/FeedbackSupport";
 import { EcoQuizBattles } from "@/components/quiz/EcoQuizBattles";
 import { LearningTracks } from "@/components/tracks/LearningTracks";
+import { EcoStories } from "@/components/stories/EcoStories";
+import { AIEcoCoach } from "@/components/coach/AIEcoCoach";
+import { SmartRewardBoost } from "@/components/rewards/SmartRewardBoost";
+import { EcoCalendar } from "@/components/calendar/EcoCalendar";
 import { 
   Award, Gift, Target, TrendingUp, Clock, CheckCircle2, 
-  ArrowRight, Leaf, Trophy, Star, Camera, Lightbulb, Bell, HelpCircle, Swords, GraduationCap
+  ArrowRight, Leaf, Trophy, Star, Camera, Lightbulb, Bell, HelpCircle, Swords, GraduationCap,
+  Heart, Bot, Zap, CalendarDays
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -191,6 +196,22 @@ export default function Dashboard() {
             <TabsTrigger value="tracks" className="flex items-center gap-2">
               <GraduationCap className="h-4 w-4" />
               <span className="hidden sm:inline">Tracks</span>
+            </TabsTrigger>
+            <TabsTrigger value="stories" className="flex items-center gap-2">
+              <Heart className="h-4 w-4" />
+              <span className="hidden sm:inline">Stories</span>
+            </TabsTrigger>
+            <TabsTrigger value="coach" className="flex items-center gap-2">
+              <Bot className="h-4 w-4" />
+              <span className="hidden sm:inline">AI Coach</span>
+            </TabsTrigger>
+            <TabsTrigger value="rewards" className="flex items-center gap-2">
+              <Zap className="h-4 w-4" />
+              <span className="hidden sm:inline">Rewards</span>
+            </TabsTrigger>
+            <TabsTrigger value="calendar" className="flex items-center gap-2">
+              <CalendarDays className="h-4 w-4" />
+              <span className="hidden sm:inline">Calendar</span>
             </TabsTrigger>
             <TabsTrigger value="community" className="flex items-center gap-2">
               <Lightbulb className="h-4 w-4" />
@@ -422,6 +443,22 @@ export default function Dashboard() {
 
           <TabsContent value="tracks">
             <LearningTracks />
+          </TabsContent>
+
+          <TabsContent value="stories">
+            <EcoStories />
+          </TabsContent>
+
+          <TabsContent value="coach">
+            <AIEcoCoach />
+          </TabsContent>
+
+          <TabsContent value="rewards">
+            <SmartRewardBoost />
+          </TabsContent>
+
+          <TabsContent value="calendar">
+            <EcoCalendar />
           </TabsContent>
 
           <TabsContent value="community">
