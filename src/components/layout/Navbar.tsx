@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   Leaf, Menu, X, User, LogOut, LayoutDashboard, 
-  Target, Gift, Shield, Zap 
+  Shield, Zap 
 } from "lucide-react";
 import { useState } from "react";
 import {
@@ -26,7 +26,6 @@ export function Navbar() {
   };
 
   const publicLinks = [
-    { href: "/rewards", label: "Rewards", icon: Gift },
     { href: "/tracks", label: "Learn", icon: null },
   ];
 
@@ -34,14 +33,12 @@ export function Navbar() {
   const studentLinks = [
     { href: "/student/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/productivity", label: "Productivity", icon: Zap },
-    { href: "/rewards", label: "Rewards", icon: Gift },
     { href: "/tracks", label: "Learn", icon: null },
   ];
 
   const adminLinks = [
     { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/admin/review", label: "Review", icon: Shield },
-    { href: "/rewards", label: "Rewards", icon: Gift },
   ];
 
   const navLinks = user 

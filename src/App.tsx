@@ -20,7 +20,7 @@ import StudentDashboard from "./pages/StudentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Tasks from "./pages/Tasks";
 import TaskDetail from "./pages/TaskDetail";
-import Rewards from "./pages/Rewards";
+
 import AdminReview from "./pages/AdminReview";
 import Productivity from "./pages/Productivity";
 import NotFound from "./pages/NotFound";
@@ -85,7 +85,7 @@ const App = () => (
                 <TaskDetail />
               </ProtectedRoute>
             } />
-            <Route path="/rewards" element={<Rewards />} />
+            
             <Route path="/productivity" element={
               <ProtectedRoute>
                 <Productivity />
