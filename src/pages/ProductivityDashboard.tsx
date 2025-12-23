@@ -12,30 +12,8 @@ import { ExecutionRulesPanel } from '@/components/productivity/ExecutionRulesPan
 import { WeeklyAnalytics } from '@/components/productivity/WeeklyAnalytics';
 import { SkillTracker } from '@/components/productivity/SkillTracker';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLocalStorage, ProductivityTask, Habit, Goal, LifeMetrics, DayPlan, ExecutionRule, MoneyFlow } from '@/hooks/useLocalStorage';
+import { useLocalStorage, ProductivityTask, Habit, Goal, DayPlan, ExecutionRule, LifeMetrics } from '@/hooks/useLocalStorage';
 import { Rocket } from 'lucide-react';
-
-const defaultMetrics: LifeMetrics = {
-  lifeScore: 4,
-  energy: 50,
-  focus: 50,
-  discipline: 50,
-  body: 50,
-  mind: 50,
-  spirit: 50,
-  deepWorkMinutes: 0,
-  workoutMinutes: 0,
-  readingMinutes: 0,
-  lastUpdated: new Date().toISOString(),
-  history: [],
-};
-
-const defaultMoneyFlow: MoneyFlow = {
-  saved: 0,
-  invested: 0,
-  spent: 0,
-  lastUpdated: new Date().toISOString(),
-};
 
 export default function ProductivityDashboard() {
   const { user, role, signOut } = useAuth();
@@ -45,10 +23,16 @@ export default function ProductivityDashboard() {
   const [tasks, setTasks] = useLocalStorage<ProductivityTask[]>('productivity-tasks', []);
   const [habits, setHabits] = useLocalStorage<Habit[]>('productivity-habits', []);
   const [goals, setGoals] = useLocalStorage<Goal[]>('productivity-goals', []);
-  const [metrics, setMetrics] = useLocalStorage<LifeMetrics>('life-metrics', defaultMetrics);
   const [dayPlan, setDayPlan] = useLocalStorage<DayPlan[]>('day-plan', []);
   const [executionRules, setExecutionRules] = useLocalStorage<ExecutionRule[]>('execution-rules', []);
-  const [moneyFlow, setMoneyFlow] = useLocalStorage<MoneyFlow>('money-flow', defaultMoneyFlow);
+
+  // Keep metrics for WeeklyAnalytics compatibility (read-only, auto-calculated)
+  const dummyMetrics: LifeMetrics = {
+    lifeScore: 0, energy: 0, focus: 0, discipline: 0,
+    body: 0, mind: 0, spirit: 0,
+    deepWorkMinutes: 0, workoutMinutes: 0, readingMinutes: 0,
+    lastUpdated: '', history: []
+  };
 
   const handleLogout = async () => {
     await signOut();
@@ -61,8 +45,8 @@ export default function ProductivityDashboard() {
   };
 
   const handleToggleTask = (id: string) => {
-    setTasks(prev => prev.map(t => 
-      t.id === id 
+    setTasks(prev => prev.map(t =>
+      t.id === id
         ? { ...t, completed: !t.completed, completedAt: !t.completed ? new Date().toISOString() : undefined }
         : t
     ));
@@ -121,21 +105,6 @@ export default function ProductivityDashboard() {
     setGoals(prev => prev.filter(g => g.id !== id));
   };
 
-  // Metrics handler
-  const handleUpdateMetrics = (newMetrics: Partial<LifeMetrics>) => {
-    setMetrics(prev => {
-      const updated = { ...prev, ...newMetrics };
-      // Recalculate life score
-      updated.lifeScore = Math.round((updated.energy + updated.focus + updated.discipline) / 3);
-      return updated;
-    });
-  };
-
-  // Money flow handler
-  const handleUpdateMoneyFlow = (newFlow: Partial<MoneyFlow>) => {
-    setMoneyFlow(prev => ({ ...prev, ...newFlow, lastUpdated: new Date().toISOString() }));
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <Navbar isAuthenticated={!!user} userRole={role || 'student'} onLogout={handleLogout} />
@@ -150,7 +119,7 @@ export default function ProductivityDashboard() {
             </h1>
           </div>
           <p className="text-muted-foreground">
-            Track tasks, build habits, set goals, and manage your discipline. Everything runs offline.
+            Track tasks, build habits, set goals. Everything auto-calculates from your performance.
           </p>
         </div>
 
@@ -201,7 +170,7 @@ export default function ProductivityDashboard() {
                 tasks={tasks} 
                 habits={habits} 
                 goals={goals} 
-                metrics={metrics}
+                metrics={dummyMetrics}
                 executionRules={executionRules}
                 onAddTask={handleAddTask}
                 onAddHabit={handleAddHabit}
@@ -214,17 +183,18 @@ export default function ProductivityDashboard() {
                 tasks={tasks}
                 habits={habits}
                 goals={goals}
-                metrics={metrics}
+                metrics={dummyMetrics}
               />
             </div>
           </div>
 
-          {/* Right Column - Life Score & Behavior */}
+          {/* Right Column - Auto-calculated panels */}
           <div className="space-y-6">
             <div className="animate-slide-up delay-100">
               <LifeScorePanel 
-                metrics={metrics} 
-                onUpdateMetrics={handleUpdateMetrics} 
+                tasks={tasks}
+                habits={habits}
+                goals={goals}
               />
             </div>
 
@@ -237,10 +207,9 @@ export default function ProductivityDashboard() {
 
             <div className="animate-slide-up delay-300">
               <BehaviorTracker
-                metrics={metrics}
-                moneyFlow={moneyFlow}
-                onUpdateMetrics={handleUpdateMetrics}
-                onUpdateMoneyFlow={handleUpdateMoneyFlow}
+                tasks={tasks}
+                habits={habits}
+                goals={goals}
               />
             </div>
 
