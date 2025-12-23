@@ -197,14 +197,6 @@ export default function Dashboard() {
               <GraduationCap className="h-4 w-4" />
               <span className="hidden sm:inline">Tracks</span>
             </TabsTrigger>
-            <TabsTrigger value="stories" className="flex items-center gap-2">
-              <Heart className="h-4 w-4" />
-              <span className="hidden sm:inline">Stories</span>
-            </TabsTrigger>
-            <TabsTrigger value="coach" className="flex items-center gap-2">
-              <Bot className="h-4 w-4" />
-              <span className="hidden sm:inline">AI Coach</span>
-            </TabsTrigger>
             <TabsTrigger value="rewards" className="flex items-center gap-2">
               <Zap className="h-4 w-4" />
               <span className="hidden sm:inline">Rewards</span>
@@ -218,8 +210,8 @@ export default function Dashboard() {
               <span className="hidden sm:inline">Community</span>
             </TabsTrigger>
             <TabsTrigger value="support" className="flex items-center gap-2">
-              <HelpCircle className="h-4 w-4" />
-              <span className="hidden sm:inline">Help</span>
+              <Bot className="h-4 w-4" />
+              <span className="hidden sm:inline">AI Coach & Help</span>
             </TabsTrigger>
           </TabsList>
 
@@ -431,6 +423,8 @@ export default function Dashboard() {
             </Card>
           </div>
         </div>
+          {/* Stories Section in Dashboard */}
+          <EcoStories />
           </TabsContent>
 
           <TabsContent value="quizzes">
@@ -439,14 +433,6 @@ export default function Dashboard() {
 
           <TabsContent value="tracks">
             <LearningTracks />
-          </TabsContent>
-
-          <TabsContent value="stories">
-            <EcoStories />
-          </TabsContent>
-
-          <TabsContent value="coach">
-            <AIEcoCoach />
           </TabsContent>
 
           <TabsContent value="rewards">
@@ -507,41 +493,47 @@ export default function Dashboard() {
           </TabsContent>
 
           <TabsContent value="support">
-            <div className="grid md:grid-cols-2 gap-6">
-              <FeedbackSupport />
-              <Card variant="eco">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <HelpCircle className="h-5 w-5 text-primary" />
-                    Quick Help
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
-                    <h4 className="font-medium text-sm mb-2">How to Complete Tasks</h4>
-                    <p className="text-xs text-muted-foreground">
-                      1. Browse available tasks in the Tasks section<br/>
-                      2. Take a photo as proof of completion<br/>
-                      3. Submit with your location for verification<br/>
-                      4. Wait for admin approval to earn points
-                    </p>
-                  </div>
-                  <div className="p-4 rounded-lg bg-eco-sky/5 border border-eco-sky/20">
-                    <h4 className="font-medium text-sm mb-2">Report Fake Activities</h4>
-                    <p className="text-xs text-muted-foreground">
-                      If you spot someone submitting fake proofs or cheating, 
-                      use the "Report Fake Activity" option in the feedback form.
-                    </p>
-                  </div>
-                  <div className="p-4 rounded-lg bg-eco-sun/5 border border-eco-sun/20">
-                    <h4 className="font-medium text-sm mb-2">Earn More Points</h4>
-                    <p className="text-xs text-muted-foreground">
-                      Complete harder tasks, participate in community challenges, 
-                      and maintain a high verification score to unlock advanced tasks.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+            <div className="space-y-8">
+              {/* AI Eco Coach */}
+              <AIEcoCoach />
+              
+              {/* Help & Support Section */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <FeedbackSupport />
+                <Card variant="eco">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <HelpCircle className="h-5 w-5 text-primary" />
+                      Quick Help
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                      <h4 className="font-medium text-sm mb-2">How to Complete Tasks</h4>
+                      <p className="text-xs text-muted-foreground">
+                        1. Browse available tasks in the Tasks section<br/>
+                        2. Take a photo as proof of completion<br/>
+                        3. Submit with your location for verification<br/>
+                        4. Wait for admin approval to earn points
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-lg bg-eco-sky/5 border border-eco-sky/20">
+                      <h4 className="font-medium text-sm mb-2">Report Fake Activities</h4>
+                      <p className="text-xs text-muted-foreground">
+                        If you spot someone submitting fake proofs or cheating, 
+                        use the "Report Fake Activity" option in the feedback form.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-lg bg-eco-sun/5 border border-eco-sun/20">
+                      <h4 className="font-medium text-sm mb-2">Earn More Points</h4>
+                      <p className="text-xs text-muted-foreground">
+                        Complete harder tasks, participate in community challenges, 
+                        and maintain a high verification score to unlock advanced tasks.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
