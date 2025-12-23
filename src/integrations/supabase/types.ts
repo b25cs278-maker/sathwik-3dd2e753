@@ -276,6 +276,7 @@ export type Database = {
           location_required: boolean
           points: number
           requirements: Json | null
+          tier: Database["public"]["Enums"]["task_tier"]
           title: string
           updated_at: string
         }
@@ -296,6 +297,7 @@ export type Database = {
           location_required?: boolean
           points?: number
           requirements?: Json | null
+          tier?: Database["public"]["Enums"]["task_tier"]
           title: string
           updated_at?: string
         }
@@ -316,6 +318,7 @@ export type Database = {
           location_required?: boolean
           points?: number
           requirements?: Json | null
+          tier?: Database["public"]["Enums"]["task_tier"]
           title?: string
           updated_at?: string
         }
@@ -344,6 +347,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_access_tier: {
+        Args: {
+          p_tier: Database["public"]["Enums"]["task_tier"]
+          p_user_id: string
+        }
+        Returns: boolean
+      }
+      get_user_execution_score: { Args: { p_user_id: string }; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -359,6 +370,7 @@ export type Database = {
       submission_status: "pending" | "approved" | "rejected"
       task_category: "recycling" | "conservation" | "water" | "community"
       task_difficulty: "easy" | "medium" | "hard"
+      task_tier: "basic" | "advanced" | "company"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -492,6 +504,7 @@ export const Constants = {
       submission_status: ["pending", "approved", "rejected"],
       task_category: ["recycling", "conservation", "water", "community"],
       task_difficulty: ["easy", "medium", "hard"],
+      task_tier: ["basic", "advanced", "company"],
     },
   },
 } as const
