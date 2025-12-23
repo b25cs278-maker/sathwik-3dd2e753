@@ -44,11 +44,11 @@ interface Submission {
     points: number;
     location_lat: number | null;
     location_lng: number | null;
-  };
-  profiles?: {
-    name: string;
-    email: string;
-  };
+  } | null;
+  user_profile?: {
+    name: string | null;
+    email: string | null;
+  } | null;
 }
 
 export default function AdminReview() {
@@ -79,13 +79,27 @@ export default function AdminReview() {
         .from('task_submissions')
         .select(`
           *,
-          tasks (title, description, category, points, location_lat, location_lng),
-          profiles!task_submissions_user_id_fkey (name, email)
+          tasks (title, description, category, points, location_lat, location_lng)
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setSubmissions(data || []);
+      
+      // Fetch user profiles separately
+      const userIds = [...new Set((data || []).map(s => s.user_id))];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, name, email')
+        .in('id', userIds);
+      
+      const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+      
+      const submissionsWithProfiles = (data || []).map(s => ({
+        ...s,
+        user_profile: profileMap.get(s.user_id) || null
+      }));
+      
+      setSubmissions(submissionsWithProfiles as Submission[]);
     } catch (error) {
       console.error('Error fetching submissions:', error);
       toast.error('Failed to load submissions');
@@ -315,7 +329,7 @@ export default function AdminReview() {
                           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                             <div className="flex items-center gap-1">
                               <User className="h-4 w-4" />
-                              <span>{submission.profiles?.name || submission.profiles?.email}</span>
+                              <span>{submission.user_profile?.name || submission.user_profile?.email || 'Unknown User'}</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <Clock className="h-4 w-4" />
