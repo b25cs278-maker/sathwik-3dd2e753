@@ -14,7 +14,7 @@ import UserDashboard from "./pages/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Tasks from "./pages/Tasks";
 import TaskDetail from "./pages/TaskDetail";
-import Rewards from "./pages/Rewards";
+
 import AdminSubmissions from "./pages/AdminSubmissions";
 import Quizzes from "./pages/Quizzes";
 import QuizPlay from "./pages/QuizPlay";
@@ -60,11 +60,6 @@ const App = () => (
             <Route path="/tasks/:id" element={
               <ProtectedRoute>
                 <TaskDetail />
-              </ProtectedRoute>
-            } />
-            <Route path="/rewards" element={
-              <ProtectedRoute>
-                <Rewards />
               </ProtectedRoute>
             } />
             <Route path="/quizzes" element={
