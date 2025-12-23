@@ -75,7 +75,8 @@ export default function Login() {
         .maybeSingle();
       
       const userRole = roleData?.role;
-      
+
+      // Enforce that the selected tab matches the account role
       if (loginType === 'admin' && userRole !== 'admin') {
         await supabase.auth.signOut();
         setLoading(false);
@@ -83,6 +84,17 @@ export default function Login() {
           variant: "destructive",
           title: "Access Denied",
           description: "You don't have admin privileges. Please login as a student.",
+        });
+        return;
+      }
+
+      if (loginType === 'student' && userRole === 'admin') {
+        await supabase.auth.signOut();
+        setLoading(false);
+        toast({
+          variant: "destructive",
+          title: "Wrong Login Type",
+          description: "This is an admin account. Please switch to the Admin tab to sign in.",
         });
         return;
       }
