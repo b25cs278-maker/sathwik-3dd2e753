@@ -65,6 +65,36 @@ export type Database = {
         }
         Relationships: []
       }
+      faqs: {
+        Row: {
+          answer: string
+          category: string
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          question: string
+        }
+        Insert: {
+          answer: string
+          category?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          question: string
+        }
+        Update: {
+          answer?: string
+          category?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          question?: string
+        }
+        Relationships: []
+      }
       innovation_posts: {
         Row: {
           comments_count: number
@@ -103,6 +133,39 @@ export type Database = {
           tags?: string[] | null
           title?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          link: string | null
+          message: string
+          notification_type: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string | null
+          message: string
+          notification_type?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string | null
+          message?: string
+          notification_type?: string
+          title?: string
           user_id?: string
         }
         Relationships: []
@@ -364,6 +427,42 @@ export type Database = {
           name?: string
           redeemable_external?: boolean | null
           stock?: number | null
+        }
+        Relationships: []
+      }
+      support_tickets: {
+        Row: {
+          admin_response: string | null
+          created_at: string
+          id: string
+          message: string
+          status: string
+          subject: string
+          ticket_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_response?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          status?: string
+          subject: string
+          ticket_type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_response?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          status?: string
+          subject?: string
+          ticket_type?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
