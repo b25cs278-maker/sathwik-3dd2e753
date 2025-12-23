@@ -14,22 +14,14 @@ export function Navbar({ isAuthenticated = false, userRole = "student", onLogout
   const location = useLocation();
 
   const navLinks = isAuthenticated
-    ? userRole === "admin"
-      ? [
-          { href: "/admin", label: "Dashboard" },
-          { href: "/admin/submissions", label: "Review" },
-          { href: "/admin/quizzes", label: "Quizzes" },
-        ]
-      : [
-          { href: "/dashboard", label: "Dashboard" },
-          { href: "/productivity", label: "Productivity" },
-          { href: "/tasks", label: "Tasks" },
-          { href: "/quizzes", label: "Quizzes" },
-        ]
+    ? [
+        { href: "/tracks", label: "Tracks" },
+        { href: "/portfolio", label: "Portfolio" },
+      ]
     : [
+        { href: "/tracks", label: "Tracks" },
         { href: "#features", label: "Features" },
         { href: "#how-it-works", label: "How It Works" },
-        { href: "#impact", label: "Impact" },
       ];
 
   return (

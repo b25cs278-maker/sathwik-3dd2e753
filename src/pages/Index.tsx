@@ -76,15 +76,15 @@ export default function Index() {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/signup">
+              <Link to="/tracks">
                 <Button variant="hero" size="xl">
                   Start Your Journey
                   <ArrowRight className="h-5 w-5 ml-2" />
                 </Button>
               </Link>
-              <Link to="/tasks">
+              <Link to="/tracks">
                 <Button variant="outline" size="lg">
-                  Browse Tasks
+                  Browse Tracks
                 </Button>
               </Link>
             </div>

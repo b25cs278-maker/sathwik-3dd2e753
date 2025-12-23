@@ -10,16 +10,11 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-import UserDashboard from "./pages/UserDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-import Tasks from "./pages/Tasks";
-import TaskDetail from "./pages/TaskDetail";
-
-import AdminSubmissions from "./pages/AdminSubmissions";
-import Quizzes from "./pages/Quizzes";
-import QuizPlay from "./pages/QuizPlay";
-import AdminQuizzes from "./pages/AdminQuizzes";
-import ProductivityDashboard from "./pages/ProductivityDashboard";
+import Tracks from "./pages/Tracks";
+import TrackDetail from "./pages/TrackDetail";
+import Lesson from "./pages/Lesson";
+import Project from "./pages/Project";
+import Portfolio from "./pages/Portfolio";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,49 +32,25 @@ const App = () => (
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/dashboard" element={
-              <ProtectedRoute requiredRole="student">
-                <UserDashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/productivity" element={
+            <Route path="/tracks" element={<Tracks />} />
+            <Route path="/track/:trackId" element={
               <ProtectedRoute>
-                <ProductivityDashboard />
+                <TrackDetail />
               </ProtectedRoute>
             } />
-            <Route path="/admin" element={
-              <ProtectedRoute requiredRole="admin">
-                <AdminDashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/tasks" element={
+            <Route path="/lesson/:trackId/:lessonId" element={
               <ProtectedRoute>
-                <Tasks />
+                <Lesson />
               </ProtectedRoute>
             } />
-            <Route path="/tasks/:id" element={
+            <Route path="/project/:trackId/:projectId" element={
               <ProtectedRoute>
-                <TaskDetail />
+                <Project />
               </ProtectedRoute>
             } />
-            <Route path="/quizzes" element={
+            <Route path="/portfolio" element={
               <ProtectedRoute>
-                <Quizzes />
-              </ProtectedRoute>
-            } />
-            <Route path="/quiz/:id" element={
-              <ProtectedRoute>
-                <QuizPlay />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/submissions" element={
-              <ProtectedRoute requiredRole="admin">
-                <AdminSubmissions />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/quizzes" element={
-              <ProtectedRoute requiredRole="admin">
-                <AdminQuizzes />
+                <Portfolio />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
