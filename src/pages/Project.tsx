@@ -63,7 +63,7 @@ const projectData: Record<string, ProjectData> = {
     steps: [
       {
         title: "Choose Your Data Topic",
-        description: "Pick a topic you're interested in - it could be sports stats, weather data, or school subjects.",
+        description: "Pick a topic you are interested in - it could be sports stats, weather data, or school subjects.",
         hint: "Start with something you already know about!",
       },
       {
@@ -79,6 +79,118 @@ const projectData: Record<string, ProjectData> = {
     ],
     extensionChallenge: "Add a comparison feature that lets users compare two different categories!",
     scoringCriteria: ["Data organization", "Visual clarity", "Pattern recognition", "Creativity"],
+  },
+  "proj-ai-3": {
+    id: "proj-ai-3",
+    title: "Pattern Finder Game",
+    description: "Interactive pattern matching game",
+    objective: "Create a game that challenges players to find and complete patterns",
+    steps: [
+      {
+        title: "Design Pattern Types",
+        description: "Create 5 different pattern types for your game: number sequences, shape patterns, color patterns, etc.",
+        hint: "Start with simple patterns like 2, 4, 6, ___ (answer: 8)",
+        template: "Pattern 1: ___, ___, ___, ___\nAnswer: ___\nPattern Type: ___",
+      },
+      {
+        title: "Create Difficulty Levels",
+        description: "Design 3 difficulty levels: Easy (simple patterns), Medium (2-step patterns), Hard (complex patterns).",
+        template: "Easy Example: ___\nMedium Example: ___\nHard Example: ___",
+      },
+      {
+        title: "Design Scoring System",
+        description: "How will players earn points? Consider time bonuses, streak bonuses, and hints that reduce points.",
+        template: "Correct answer: +___ points\nTime bonus: ___\nUsing hint: -___ points",
+      },
+    ],
+    extensionChallenge: "Add a 'Pattern Creator' mode where players can make their own patterns for friends!",
+    scoringCriteria: ["Pattern variety", "Difficulty progression", "Game balance", "Creativity"],
+  },
+  "proj-ai-4": {
+    id: "proj-ai-4",
+    title: "Simple Chatbot",
+    description: "Build a basic question-answer bot",
+    objective: "Create a chatbot that can answer questions on a topic you choose",
+    steps: [
+      {
+        title: "Choose Your Topic",
+        description: "Pick a topic your chatbot will be an expert on: a school subject, a hobby, your favorite game, etc.",
+        hint: "Choose something you know a lot about!",
+      },
+      {
+        title: "Create Question-Answer Pairs",
+        description: "Write 10 questions users might ask and the answers your chatbot should give.",
+        template: "User: ___?\nBot: ___\n\nUser: ___?\nBot: ___",
+      },
+      {
+        title: "Handle Unknown Questions",
+        description: "Design responses for when the chatbot does not understand. Add helpful suggestions.",
+        template: "Unknown input response: ___\nSuggested questions: ___",
+      },
+      {
+        title: "Add Personality",
+        description: "Give your chatbot a name and personality. How does it greet users? How does it say goodbye?",
+        template: "Bot Name: ___\nGreeting: ___\nGoodbye: ___\nPersonality traits: ___",
+      },
+    ],
+    extensionChallenge: "Add follow-up questions so the chatbot can have multi-turn conversations!",
+    scoringCriteria: ["Topic coverage", "Response quality", "Personality", "User experience"],
+  },
+  "proj-ai-5": {
+    id: "proj-ai-5",
+    title: "Mood Detector",
+    description: "Analyze text sentiment",
+    objective: "Build a tool that can detect whether text is positive, negative, or neutral",
+    steps: [
+      {
+        title: "Create Word Lists",
+        description: "Make lists of positive words (happy, great, love) and negative words (sad, bad, hate).",
+        hint: "Think of words you use when you are happy vs. upset",
+        template: "Positive words: ___\nNegative words: ___\nNeutral indicators: ___",
+      },
+      {
+        title: "Design Detection Rules",
+        description: "Create rules for how to score text: How many positive/negative words? What about intensity?",
+        template: "If positive words > negative: sentiment = ___\nIf equal: sentiment = ___\nIntensity words (very, extremely): ___",
+      },
+      {
+        title: "Test with Examples",
+        description: "Write 10 sample sentences and predict what sentiment your detector would assign.",
+        template: "Sentence: ___\nPositive words found: ___\nNegative words found: ___\nResult: ___",
+      },
+    ],
+    extensionChallenge: "Add emoji detection to improve sentiment accuracy!",
+    scoringCriteria: ["Word list completeness", "Rule logic", "Accuracy", "Creativity"],
+  },
+  "proj-ai-6": {
+    id: "proj-ai-6",
+    title: "Prediction Dashboard",
+    description: "Create a predictive analytics app",
+    objective: "Build a dashboard that makes predictions based on data patterns",
+    steps: [
+      {
+        title: "Choose Your Prediction Topic",
+        description: "Select something to predict: test scores, weather, game outcomes, plant growth, etc.",
+        hint: "Pick something you can get real data about",
+      },
+      {
+        title: "Identify Key Factors",
+        description: "What factors affect your prediction? List 3-5 variables and how they might influence outcomes.",
+        template: "Factor 1: ___ | Impact: ___\nFactor 2: ___ | Impact: ___\nFactor 3: ___ | Impact: ___",
+      },
+      {
+        title: "Create Prediction Rules",
+        description: "Design rules for making predictions based on your factors.",
+        template: "If factor1 = high AND factor2 = low, then predict ___\nIf factor1 = low AND factor2 = high, then predict ___",
+      },
+      {
+        title: "Design the Dashboard Display",
+        description: "Sketch how your dashboard will show: current data, prediction, and confidence level.",
+        template: "Main prediction display: ___\nConfidence indicator: ___\nKey metrics shown: ___",
+      },
+    ],
+    extensionChallenge: "Add a feature to track prediction accuracy over time!",
+    scoringCriteria: ["Factor analysis", "Prediction logic", "Dashboard design", "Practicality"],
   },
   "proj-env-1": {
     id: "proj-env-1",
@@ -129,6 +241,129 @@ const projectData: Record<string, ProjectData> = {
     ],
     extensionChallenge: "Add tricky items that could go in multiple categories depending on local rules!",
     scoringCriteria: ["Category accuracy", "Game mechanics", "Educational value", "Creativity"],
+  },
+  "proj-env-3": {
+    id: "proj-env-3",
+    title: "CO2 Calculator",
+    description: "Calculate your carbon footprint",
+    objective: "Build a calculator that estimates carbon emissions from daily activities",
+    steps: [
+      {
+        title: "List Activities",
+        description: "Identify 8-10 daily activities that produce carbon emissions (transportation, food, energy).",
+        hint: "Think about your typical day",
+        template: "Activity: ___ | Category: ___\nActivity: ___ | Category: ___",
+      },
+      {
+        title: "Research Carbon Values",
+        description: "Find the approximate CO2 emissions for each activity (in kg CO2).",
+        template: "Driving 1 mile: ___ kg CO2\nEating beef meal: ___ kg CO2\nUsing AC for 1 hour: ___ kg CO2",
+      },
+      {
+        title: "Design the Calculator",
+        description: "Create input fields for users to enter their daily activities and a formula to calculate total emissions.",
+        template: "User inputs: ___\nCalculation formula: ___\nOutput display: ___",
+      },
+      {
+        title: "Add Reduction Tips",
+        description: "For each activity, suggest ways to reduce carbon emissions.",
+        template: "Activity: ___\nReduction tip: ___\nPotential savings: ___ kg CO2",
+      },
+    ],
+    extensionChallenge: "Add a goal-setting feature where users can set and track emission reduction targets!",
+    scoringCriteria: ["Activity coverage", "Data accuracy", "Calculator design", "Tip quality"],
+  },
+  "proj-env-4": {
+    id: "proj-env-4",
+    title: "Eco Data Charts",
+    description: "Visualize environmental statistics",
+    objective: "Create compelling charts that tell a story about environmental data",
+    steps: [
+      {
+        title: "Choose Your Data Story",
+        description: "Select an environmental topic to visualize: climate change, deforestation, ocean pollution, etc.",
+        hint: "Pick something you care about!",
+      },
+      {
+        title: "Gather Data Points",
+        description: "Collect at least 10 data points over time or across categories for your topic.",
+        template: "Year/Category: ___ | Value: ___\nYear/Category: ___ | Value: ___",
+      },
+      {
+        title: "Choose Chart Types",
+        description: "Select the best chart types for your data. Explain why each chart type works for that data.",
+        template: "Data set 1: ___ | Chart type: ___ | Why: ___\nData set 2: ___ | Chart type: ___ | Why: ___",
+      },
+      {
+        title: "Write Data Insights",
+        description: "What story does your data tell? Write 3-5 key insights viewers should take away.",
+        template: "Insight 1: ___\nInsight 2: ___\nWhat should people do: ___",
+      },
+    ],
+    extensionChallenge: "Create an interactive chart where users can filter by year or region!",
+    scoringCriteria: ["Data quality", "Chart selection", "Visual design", "Storytelling"],
+  },
+  "proj-env-5": {
+    id: "proj-env-5",
+    title: "Recycling Challenge",
+    description: "Build an educational game",
+    objective: "Create an engaging game that teaches recycling concepts through challenges",
+    steps: [
+      {
+        title: "Design Game Concept",
+        description: "Create a game theme and storyline. Are you saving a planet? Running a recycling center? Cleaning an ocean?",
+        hint: "A good story makes the game more engaging!",
+        template: "Game title: ___\nStoryline: ___\nPlayer goal: ___",
+      },
+      {
+        title: "Create Challenge Levels",
+        description: "Design 5 progressive challenge levels, each teaching different recycling concepts.",
+        template: "Level 1: ___ | Concept taught: ___\nLevel 2: ___ | Concept taught: ___\nLevel 3: ___ | Concept taught: ___",
+      },
+      {
+        title: "Design Rewards System",
+        description: "Create rewards that motivate players: points, badges, unlockables, etc.",
+        template: "Points system: ___\nBadge 1: ___ | How to earn: ___\nUnlockable: ___ | Requirement: ___",
+      },
+      {
+        title: "Add Educational Moments",
+        description: "Include facts and tips that appear during gameplay to teach while entertaining.",
+        template: "After correct answer: Show fact about ___\nBetween levels: Tip about ___",
+      },
+    ],
+    extensionChallenge: "Add a multiplayer mode where players compete to recycle correctly!",
+    scoringCriteria: ["Game design", "Educational content", "Engagement", "Creativity"],
+  },
+  "proj-env-6": {
+    id: "proj-env-6",
+    title: "Sustainability Dashboard",
+    description: "Full environmental analytics app",
+    objective: "Build a comprehensive dashboard that tracks and visualizes environmental impact",
+    steps: [
+      {
+        title: "Define Key Metrics",
+        description: "Choose 5-7 key environmental metrics to track: carbon footprint, waste, energy, water, etc.",
+        hint: "Think about what you can actually measure and improve",
+        template: "Metric 1: ___ | Unit: ___ | Goal: ___\nMetric 2: ___ | Unit: ___ | Goal: ___",
+      },
+      {
+        title: "Design Dashboard Layout",
+        description: "Sketch the dashboard layout. Where will each metric appear? What visualizations will you use?",
+        template: "Top section: ___\nMain area: ___\nSidebar: ___\nCharts used: ___",
+      },
+      {
+        title: "Create Progress Indicators",
+        description: "Design how users will see their progress: progress bars, trend arrows, color coding, etc.",
+        template: "On track: show ___\nNeeds improvement: show ___\nGoal achieved: show ___",
+      },
+      {
+        title: "Add Action Recommendations",
+        description: "Based on the data, what actions should users take? Create personalized recommendations.",
+        template: "If carbon high: suggest ___\nIf waste high: suggest ___\nIf on track: celebrate with ___",
+      },
+    ],
+    extensionChallenge: "Add a community feature where users can compare their impact with friends or global averages!",
+    scoringCriteria: ["Metric selection", "Dashboard design", "Actionability", "User experience"],
   },
 };
 
