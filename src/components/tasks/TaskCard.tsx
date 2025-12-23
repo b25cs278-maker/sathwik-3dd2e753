@@ -1,7 +1,7 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Zap, ChevronRight, Crown, Building2 } from "lucide-react";
+import { MapPin, Clock, Zap, ChevronRight, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export interface Task {
@@ -14,7 +14,7 @@ export interface Task {
   locationRequired: boolean;
   estimatedTime?: string;
   imageUrl?: string;
-  tier?: 'basic' | 'advanced' | 'company';
+  tier?: 'basic' | 'advanced';
 }
 
 interface TaskCardProps {
@@ -39,23 +39,19 @@ const categoryIcons: Record<string, string> = {
 const tierConfig = {
   basic: { label: "Basic", icon: Zap, className: "" },
   advanced: { label: "Advanced", icon: Crown, className: "ring-2 ring-amber-500/30" },
-  company: { label: "Company", icon: Building2, className: "ring-2 ring-purple-500/30" },
 };
 
 export function TaskCard({ task }: TaskCardProps) {
   const difficulty = difficultyMap[task.difficulty];
   const tier = task.tier || 'basic';
-  const tierInfo = tierConfig[tier];
+  const tierInfo = tierConfig[tier] || tierConfig.basic;
   const TierIcon = tierInfo.icon;
 
   return (
     <Card variant="interactive" className={`overflow-hidden group ${tierInfo.className}`}>
-      {/* Tier Badge for Advanced/Company */}
-      {tier !== 'basic' && (
-        <div className={`absolute top-2 right-2 z-10 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${
-          tier === 'advanced' ? 'bg-amber-500/20 text-amber-600 border border-amber-500/30' : 
-          'bg-purple-500/20 text-purple-600 border border-purple-500/30'
-        }`}>
+      {/* Tier Badge for Advanced */}
+      {tier === 'advanced' && (
+        <div className="absolute top-2 right-2 z-10 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 bg-amber-500/20 text-amber-600 border border-amber-500/30">
           <TierIcon className="h-3 w-3" />
           {tierInfo.label}
         </div>
