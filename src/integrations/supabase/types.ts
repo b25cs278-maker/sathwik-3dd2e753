@@ -142,6 +142,63 @@ export type Database = {
         }
         Relationships: []
       }
+      task_evaluations: {
+        Row: {
+          created_at: string
+          evaluated_at: string
+          id: string
+          improvement_points: Json
+          model_used: string | null
+          overall_score: number
+          rubric_scores: Json
+          submission_id: string | null
+          summary: string | null
+          task_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          evaluated_at?: string
+          id?: string
+          improvement_points?: Json
+          model_used?: string | null
+          overall_score: number
+          rubric_scores?: Json
+          submission_id?: string | null
+          summary?: string | null
+          task_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          evaluated_at?: string
+          id?: string
+          improvement_points?: Json
+          model_used?: string | null
+          overall_score?: number
+          rubric_scores?: Json
+          submission_id?: string | null
+          summary?: string | null
+          task_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_evaluations_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "task_submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_evaluations_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       task_submissions: {
         Row: {
           created_at: string
