@@ -10,6 +10,7 @@ import { AdvancedAIPlanner } from '@/components/productivity/AdvancedAIPlanner';
 import { BehaviorTracker } from '@/components/productivity/BehaviorTracker';
 import { ExecutionRulesPanel } from '@/components/productivity/ExecutionRulesPanel';
 import { WeeklyAnalytics } from '@/components/productivity/WeeklyAnalytics';
+import { SkillTracker } from '@/components/productivity/SkillTracker';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocalStorage, ProductivityTask, Habit, Goal, LifeMetrics, DayPlan, ExecutionRule, MoneyFlow } from '@/hooks/useLocalStorage';
 import { Rocket } from 'lucide-react';
@@ -241,6 +242,10 @@ export default function ProductivityDashboard() {
                 onUpdateMetrics={handleUpdateMetrics}
                 onUpdateMoneyFlow={handleUpdateMoneyFlow}
               />
+            </div>
+
+            <div className="animate-slide-up delay-400">
+              <SkillTracker tasks={tasks} />
             </div>
           </div>
         </div>
