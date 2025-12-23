@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { loginSchema } from "@/lib/validations/auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -62,6 +63,29 @@ export default function Login() {
           : error.message,
       });
       return;
+    }
+
+    // Check if user has the correct role for the selected login type
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (authUser) {
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', authUser.id)
+        .maybeSingle();
+      
+      const userRole = roleData?.role;
+      
+      if (loginType === 'admin' && userRole !== 'admin') {
+        await supabase.auth.signOut();
+        setLoading(false);
+        toast({
+          variant: "destructive",
+          title: "Access Denied",
+          description: "You don't have admin privileges. Please login as a student.",
+        });
+        return;
+      }
     }
 
     toast({
