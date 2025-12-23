@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Filter, MapPin, Recycle, TreePine, Droplets, Users, Zap, Loader2, Lock, Crown, Building2, TrendingUp } from "lucide-react";
+import { Search, Filter, MapPin, Recycle, TreePine, Droplets, Users, Zap, Loader2, Lock, Crown, TrendingUp } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Progress } from "@/components/ui/progress";
@@ -29,7 +29,6 @@ const difficultyMap: Record<string, 1 | 2 | 3> = {
 const tierConfig = {
   basic: { label: "Basic", icon: Zap, color: "bg-muted text-muted-foreground", threshold: 0 },
   advanced: { label: "Advanced", icon: Crown, color: "bg-amber-500/20 text-amber-600", threshold: 70 },
-  company: { label: "Company", icon: Building2, color: "bg-purple-500/20 text-purple-600", threshold: 85 },
 };
 
 export default function Tasks() {
@@ -68,7 +67,7 @@ export default function Tasks() {
           locationRequired: t.location_required,
           estimatedTime: t.estimated_time || undefined,
           imageUrl: t.image_url || undefined,
-          tier: (t.tier as 'basic' | 'advanced' | 'company') || 'basic',
+          tier: (t.tier === 'advanced' ? 'advanced' : 'basic') as 'basic' | 'advanced',
         }));
         setTasks(mappedTasks);
       }
@@ -94,7 +93,6 @@ export default function Tasks() {
   };
 
   const advancedUnlocked = userScore >= 70;
-  const companyUnlocked = userScore >= 85;
 
   return (
     <div className="min-h-screen bg-background">
@@ -130,16 +128,13 @@ export default function Tasks() {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Tier Progress</span>
                     <span className="text-muted-foreground">
-                      {companyUnlocked ? "All tiers unlocked!" : 
-                       advancedUnlocked ? `${85 - userScore} points to Company` : 
-                       `${70 - userScore} points to Advanced`}
+                      {advancedUnlocked ? "Advanced unlocked!" : `${70 - userScore} points to Advanced`}
                     </span>
                   </div>
-                  <Progress value={userScore} className="h-2" />
+                  <Progress value={(userScore / 70) * 100} className="h-2" />
                   <div className="flex justify-between text-xs text-muted-foreground">
                     <span>Basic</span>
                     <span className={advancedUnlocked ? "text-amber-600 font-medium" : ""}>Advanced (70+)</span>
-                    <span className={companyUnlocked ? "text-purple-600 font-medium" : ""}>Company (85+)</span>
                   </div>
                 </div>
 
@@ -149,9 +144,6 @@ export default function Tasks() {
                   </Badge>
                   <Badge className={`${advancedUnlocked ? tierConfig.advanced.color : "bg-muted text-muted-foreground"} gap-1`}>
                     {advancedUnlocked ? <Crown className="h-3 w-3" /> : <Lock className="h-3 w-3" />} Advanced
-                  </Badge>
-                  <Badge className={`${companyUnlocked ? tierConfig.company.color : "bg-muted text-muted-foreground"} gap-1`}>
-                    {companyUnlocked ? <Building2 className="h-3 w-3" /> : <Lock className="h-3 w-3" />} Company
                   </Badge>
                 </div>
               </div>
