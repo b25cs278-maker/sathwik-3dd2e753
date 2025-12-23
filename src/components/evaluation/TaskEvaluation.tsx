@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Loader2, Sparkles, Target, TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
+import { Loader2, Sparkles, Target, TrendingUp, CheckCircle, AlertCircle, XCircle, Zap, Shield } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -13,6 +13,7 @@ interface TaskEvaluationProps {
   taskTitle: string;
   taskDescription?: string;
   submissionDetails?: string;
+  autoRun?: boolean;
   onEvaluationComplete?: (evaluation: EvaluationResult) => void;
 }
 
@@ -30,6 +31,9 @@ interface EvaluationResult {
   improvement_points: string[];
   summary: string;
   evaluated_at: string;
+  status?: 'approved' | 'rejected';
+  points_awarded?: number;
+  passing_threshold?: number;
 }
 
 const RUBRIC_INFO = {
@@ -52,6 +56,7 @@ export function TaskEvaluation({
   taskTitle,
   taskDescription,
   submissionDetails,
+  autoRun = true,
   onEvaluationComplete,
 }: TaskEvaluationProps) {
   const [isLoading, setIsLoading] = useState(false);
@@ -95,7 +100,12 @@ export function TaskEvaluation({
 
       setEvaluation(data.evaluation);
       onEvaluationComplete?.(data.evaluation);
-      toast.success('Task evaluated successfully!');
+      
+      if (data.evaluation.status === 'approved') {
+        toast.success(`Task verified! You earned ${data.evaluation.points_awarded} points!`);
+      } else {
+        toast.error('Task not verified. Score below passing threshold.');
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Evaluation failed';
       setError(message);
@@ -105,23 +115,65 @@ export function TaskEvaluation({
     }
   };
 
+  // Auto-run evaluation on mount
+  useEffect(() => {
+    if (autoRun && !evaluation && !isLoading) {
+      runEvaluation();
+    }
+  }, [autoRun]);
+
   if (evaluation) {
     const scoreLevel = getScoreLevel(evaluation.overall_score);
+    const isPassing = evaluation.status === 'approved';
 
     return (
-      <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+      <Card className={`border-2 ${isPassing ? 'border-primary/50 bg-primary/5' : 'border-destructive/50 bg-destructive/5'}`}>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center justify-between text-lg">
             <span className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              AI Evaluation
+              <Shield className="h-5 w-5 text-primary" />
+              AI Verification Result
             </span>
-            <Badge className={scoreLevel.color}>
-              {evaluation.overall_score}/100 - {scoreLevel.label}
-            </Badge>
+            <div className="flex items-center gap-2">
+              {isPassing ? (
+                <Badge className="bg-primary text-primary-foreground gap-1">
+                  <CheckCircle className="h-3 w-3" /> Verified
+                </Badge>
+              ) : (
+                <Badge className="bg-destructive text-destructive-foreground gap-1">
+                  <XCircle className="h-3 w-3" /> Not Verified
+                </Badge>
+              )}
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-5">
+          {/* Pass/Fail Status Banner */}
+          <div className={`flex items-center justify-between p-4 rounded-lg ${isPassing ? 'bg-primary/10' : 'bg-destructive/10'}`}>
+            <div className="flex items-center gap-3">
+              {isPassing ? (
+                <CheckCircle className="h-8 w-8 text-primary" />
+              ) : (
+                <XCircle className="h-8 w-8 text-destructive" />
+              )}
+              <div>
+                <p className={`font-semibold ${isPassing ? 'text-primary' : 'text-destructive'}`}>
+                  {isPassing ? 'Task Verified Successfully!' : 'Verification Failed'}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Score: {evaluation.overall_score}/100 (Minimum: {evaluation.passing_threshold || 50})
+                </p>
+              </div>
+            </div>
+            {isPassing && evaluation.points_awarded !== undefined && (
+              <div className="flex items-center gap-2 bg-background rounded-lg px-4 py-2">
+                <Zap className="h-5 w-5 text-eco-sun" />
+                <span className="text-xl font-bold">+{evaluation.points_awarded}</span>
+                <span className="text-sm text-muted-foreground">pts</span>
+              </div>
+            )}
+          </div>
+
           {/* Summary */}
           <p className="text-sm text-muted-foreground bg-muted/30 p-3 rounded-lg">
             {evaluation.summary}
@@ -191,47 +243,53 @@ export function TaskEvaluation({
     );
   }
 
+  // Loading/Initial state
   return (
     <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
-          <Sparkles className="h-5 w-5 text-primary" />
-          AI Task Evaluation
+          <Shield className="h-5 w-5 text-primary" />
+          AI Verification
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-sm text-muted-foreground">
-          Get AI-powered feedback on your task completion with rubric-based scoring and actionable improvement suggestions.
-        </p>
-
-        {error && (
-          <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
-            <AlertCircle className="h-4 w-4" />
-            {error}
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-8 space-y-4">
+            <Loader2 className="h-10 w-10 text-primary animate-spin" />
+            <div className="text-center">
+              <p className="font-medium">AI is verifying your submission...</p>
+              <p className="text-sm text-muted-foreground">
+                Analyzing evidence and scoring with rubric
+              </p>
+            </div>
           </div>
+        ) : (
+          <>
+            <p className="text-sm text-muted-foreground">
+              AI will automatically verify your task completion. Points are only awarded if verification passes (score ≥ 50).
+            </p>
+
+            {error && (
+              <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
+                <AlertCircle className="h-4 w-4" />
+                {error}
+              </div>
+            )}
+
+            <Button 
+              onClick={runEvaluation} 
+              disabled={isLoading}
+              className="w-full"
+            >
+              <Shield className="h-4 w-4 mr-2" />
+              Verify My Task
+            </Button>
+
+            <p className="text-xs text-center text-muted-foreground">
+              No bypass • AI-only verification • Score-based points
+            </p>
+          </>
         )}
-
-        <Button 
-          onClick={runEvaluation} 
-          disabled={isLoading}
-          className="w-full"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Evaluating with AI...
-            </>
-          ) : (
-            <>
-              <Sparkles className="h-4 w-4 mr-2" />
-              Evaluate My Task
-            </>
-          )}
-        </Button>
-
-        <p className="text-xs text-center text-muted-foreground">
-          Powered by AI • Rubric-based scoring • 3 improvement points
-        </p>
       </CardContent>
     </Card>
   );

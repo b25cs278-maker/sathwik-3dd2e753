@@ -201,6 +201,59 @@ Provide your rubric-based evaluation as JSON.`;
        rubricScores.impact * EVALUATION_RUBRIC.impact.weight) / 100
     );
 
+    // Determine if task passes (score >= 50 is passing)
+    const isPassing = overallScore >= 50;
+    const newStatus = isPassing ? 'approved' : 'rejected';
+
+    // Update submission status based on AI evaluation
+    const { error: updateError } = await supabase
+      .from('task_submissions')
+      .update({ 
+        status: newStatus,
+        review_notes: `AI Evaluation: ${evaluation.summary}`,
+        reviewed_at: new Date().toISOString(),
+      })
+      .eq('id', submissionId);
+
+    if (updateError) {
+      console.error('Failed to update submission status:', updateError);
+    }
+
+    // Get task points for awarding
+    const { data: taskData } = await supabase
+      .from('tasks')
+      .select('points')
+      .eq('id', taskId)
+      .single();
+
+    // Award points only if passing
+    let pointsAwarded = 0;
+    if (isPassing && taskData) {
+      // Calculate points based on score (higher score = more points)
+      const scoreMultiplier = overallScore / 100;
+      pointsAwarded = Math.round(taskData.points * scoreMultiplier);
+      
+      // Update submission with awarded points
+      await supabase
+        .from('task_submissions')
+        .update({ points_awarded: pointsAwarded })
+        .eq('id', submissionId);
+
+      // Get user profile and update points
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('points')
+        .eq('id', user.id)
+        .single();
+
+      if (profile) {
+        await supabase
+          .from('profiles')
+          .update({ points: (profile.points || 0) + pointsAwarded })
+          .eq('id', user.id);
+      }
+    }
+
     // Store evaluation in database
     const { data: evalData, error: evalError } = await supabase
       .from('task_evaluations')
@@ -222,7 +275,7 @@ Provide your rubric-based evaluation as JSON.`;
       throw new Error('Failed to store evaluation');
     }
 
-    console.log('Evaluation stored successfully:', evalData.id);
+    console.log('Evaluation stored successfully:', evalData.id, 'Status:', newStatus, 'Points:', pointsAwarded);
 
     return new Response(JSON.stringify({
       evaluation: {
@@ -232,6 +285,9 @@ Provide your rubric-based evaluation as JSON.`;
         improvement_points: evaluation.improvement_points,
         summary: evaluation.summary,
         evaluated_at: evalData.evaluated_at,
+        status: newStatus,
+        points_awarded: pointsAwarded,
+        passing_threshold: 50,
       }
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

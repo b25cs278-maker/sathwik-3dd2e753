@@ -113,18 +113,18 @@ export default function TaskDetail() {
 
     setSubmitting(true);
     
-    // Create submission with pending status
+    // Create submission with PENDING status - AI will verify
     const { data: submission, error: submitError } = await supabase
       .from("task_submissions")
       .insert({
         task_id: task.id,
         user_id: user.id,
-        status: "approved", // Auto-approve for now (can be changed to pending for admin review)
+        status: "pending", // Pending until AI verifies
         photos: photos,
         location_lat: location?.lat,
         location_lng: location?.lng,
         location_accuracy: location?.accuracy,
-        points_awarded: task.points,
+        points_awarded: 0, // Points awarded after AI verification
         metadata: { submitted_at: new Date().toISOString() },
       })
       .select()
@@ -139,30 +139,12 @@ export default function TaskDetail() {
 
     // Store submission ID for evaluation
     setSubmissionId(submission.id);
-
-    // Update user points in profiles table
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("points")
-      .eq("id", user.id)
-      .maybeSingle();
-    
-    if (profile) {
-      const { error: pointsError } = await supabase
-        .from("profiles")
-        .update({ points: (profile.points || 0) + task.points })
-        .eq("id", user.id);
-
-      if (pointsError) {
-        console.error("Points update error:", pointsError);
-      }
-    }
-
     setSubmitting(false);
     setIsSubmitted(true);
+    
     toast({
-      title: "Task Completed! 🎉",
-      description: `You earned ${task.points} points! AI evaluation is available below.`,
+      title: "Evidence Submitted",
+      description: "AI is now verifying your task completion...",
     });
   };
 
