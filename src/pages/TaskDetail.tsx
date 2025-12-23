@@ -4,6 +4,8 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { PhotoCapture } from "@/components/submission/PhotoCapture";
 import { GPSCapture } from "@/components/submission/GPSCapture";
+import { TaskEvaluation } from "@/components/evaluation/TaskEvaluation";
+import { EvaluationHistory } from "@/components/evaluation/EvaluationHistory";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -47,6 +49,8 @@ export default function TaskDetail() {
   const [location, setLocation] = useState<{ lat: number; lng: number; accuracy: number } | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [showSubmission, setShowSubmission] = useState(false);
+  const [submissionId, setSubmissionId] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     async function fetchTask() {
@@ -126,12 +130,15 @@ export default function TaskDetail() {
       .select()
       .single();
 
-    if (submitError) {
+    if (submitError || !submission) {
       console.error("Submission error:", submitError);
       toast({ title: "Error submitting task", variant: "destructive" });
       setSubmitting(false);
       return;
     }
+
+    // Store submission ID for evaluation
+    setSubmissionId(submission.id);
 
     // Update user points in profiles table
     const { data: profile } = await supabase
@@ -152,13 +159,11 @@ export default function TaskDetail() {
     }
 
     setSubmitting(false);
+    setIsSubmitted(true);
     toast({
       title: "Task Completed! 🎉",
-      description: `You earned ${task.points} points! Keep up the great work.`,
+      description: `You earned ${task.points} points! AI evaluation is available below.`,
     });
-    
-    // Navigate to dashboard after short delay
-    setTimeout(() => navigate("/dashboard"), 1500);
   };
 
   const handleLogout = async () => {
@@ -310,6 +315,19 @@ export default function TaskDetail() {
                     </>
                   )}
                 </Button>
+
+                {/* AI Evaluation after submission */}
+                {isSubmitted && submissionId && (
+                  <div className="animate-slide-up">
+                    <TaskEvaluation
+                      taskId={task.id}
+                      submissionId={submissionId}
+                      taskTitle={task.title}
+                      taskDescription={task.description || undefined}
+                      submissionDetails={`User submitted ${photos.length} photos as evidence. ${location ? 'Location verified.' : ''}`}
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -372,6 +390,11 @@ export default function TaskDetail() {
                 <p className="text-sm text-muted-foreground mt-2">points upon completion</p>
               </CardContent>
             </Card>
+
+            {/* Evaluation History */}
+            <div className="animate-slide-up delay-200">
+              <EvaluationHistory />
+            </div>
           </div>
         </div>
       </main>
