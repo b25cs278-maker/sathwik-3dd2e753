@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminOverview } from "@/components/admin/AdminOverview";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { TaskManagement } from "@/components/admin/TaskManagement";
-import { RewardsManagement } from "@/components/admin/RewardsManagement";
 import { LearningManagement } from "@/components/admin/LearningManagement";
 import { CommunityModeration } from "@/components/admin/CommunityModeration";
 import { AnalyticsPanel } from "@/components/admin/AnalyticsPanel";
@@ -14,8 +13,10 @@ import { NotificationsPanel } from "@/components/admin/NotificationsPanel";
 import { FeedbackManagement } from "@/components/admin/FeedbackManagement";
 import { SecurityPanel } from "@/components/admin/SecurityPanel";
 import { SettingsPanel } from "@/components/admin/SettingsPanel";
+import { useRealtimeSubmissions } from "@/hooks/useRealtimeSubmissions";
+import { Badge } from "@/components/ui/badge";
 import { 
-  LayoutDashboard, Users, ListTodo, Gift, BookOpen,
+  LayoutDashboard, Users, ListTodo, BookOpen,
   BarChart3, Shield, Bell, Settings, Eye, Lightbulb,
   Building2, MessageSquare
 } from "lucide-react";
@@ -25,6 +26,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export default function AdminDashboard() {
   const { role } = useAuth();
+  const { unreadCount, clearNotifications } = useRealtimeSubmissions();
 
   if (role !== 'admin') {
     return (
@@ -77,10 +79,6 @@ export default function AdminDashboard() {
                 <ListTodo className="h-4 w-4" />
                 <span className="hidden sm:inline">Tasks</span>
               </TabsTrigger>
-              <TabsTrigger value="rewards" className="flex items-center gap-2 px-3 py-2">
-                <Gift className="h-4 w-4" />
-                <span className="hidden sm:inline">Rewards</span>
-              </TabsTrigger>
               <TabsTrigger value="learning" className="flex items-center gap-2 px-3 py-2">
                 <BookOpen className="h-4 w-4" />
                 <span className="hidden sm:inline">Learning</span>
@@ -97,9 +95,14 @@ export default function AdminDashboard() {
                 <Building2 className="h-4 w-4" />
                 <span className="hidden sm:inline">Partners</span>
               </TabsTrigger>
-              <TabsTrigger value="notifications" className="flex items-center gap-2 px-3 py-2">
+              <TabsTrigger value="notifications" className="flex items-center gap-2 px-3 py-2 relative">
                 <Bell className="h-4 w-4" />
                 <span className="hidden sm:inline">Notifications</span>
+                {unreadCount > 0 && (
+                  <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
+                    {unreadCount}
+                  </Badge>
+                )}
               </TabsTrigger>
               <TabsTrigger value="feedback" className="flex items-center gap-2 px-3 py-2">
                 <MessageSquare className="h-4 w-4" />
@@ -120,7 +123,6 @@ export default function AdminDashboard() {
           <TabsContent value="overview"><AdminOverview /></TabsContent>
           <TabsContent value="users"><UserManagement /></TabsContent>
           <TabsContent value="tasks"><TaskManagement /></TabsContent>
-          <TabsContent value="rewards"><RewardsManagement /></TabsContent>
           <TabsContent value="learning"><LearningManagement /></TabsContent>
           <TabsContent value="community"><CommunityModeration /></TabsContent>
           <TabsContent value="analytics"><AnalyticsPanel /></TabsContent>

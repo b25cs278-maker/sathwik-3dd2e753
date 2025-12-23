@@ -8,9 +8,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { InnovationHub } from "@/components/community/InnovationHub";
 import { 
   Award, Gift, Target, TrendingUp, Clock, CheckCircle2, 
-  ArrowRight, Leaf, Trophy, Star, Camera
+  ArrowRight, Leaf, Trophy, Star, Camera, Lightbulb
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -172,8 +174,21 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <Tabs defaultValue="dashboard" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="dashboard" className="flex items-center gap-2">
+              <Target className="h-4 w-4" />
+              Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="community" className="flex items-center gap-2">
+              <Lightbulb className="h-4 w-4" />
+              Community Hub
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="dashboard" className="space-y-6">
+            {/* Stats Cards */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card variant="eco">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -237,9 +252,9 @@ export default function Dashboard() {
               </div>
             </CardContent>
           </Card>
-        </div>
+            </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+            <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Quick Actions */}
@@ -379,6 +394,12 @@ export default function Dashboard() {
             </Card>
           </div>
         </div>
+          </TabsContent>
+
+          <TabsContent value="community">
+            <InnovationHub />
+          </TabsContent>
+        </Tabs>
       </div>
 
       <Footer />
