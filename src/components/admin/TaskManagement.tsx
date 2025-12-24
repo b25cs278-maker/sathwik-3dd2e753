@@ -22,10 +22,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Plus, Edit, Trash2, ListTodo, Search, Star, Clock
+  Plus, Edit, Trash2, Search, Star, Clock, Sparkles
 } from "lucide-react";
 import { toast } from "sonner";
+import { AITaskGenerator } from "./AITaskGenerator";
 
 interface Task {
   id: string;
@@ -51,12 +53,22 @@ export function TaskManagement() {
   const [processing, setProcessing] = useState(false);
 
   // Form state
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    title: string;
+    description: string;
+    category: "recycling" | "conservation" | "water" | "community";
+    difficulty: "easy" | "medium" | "hard";
+    tier: "basic" | "advanced" | "company";
+    points: number;
+    estimated_time: string;
+    is_active: boolean;
+    location_required: boolean;
+  }>({
     title: "",
     description: "",
-    category: "recycling" as const,
-    difficulty: "easy" as const,
-    tier: "basic" as const,
+    category: "recycling",
+    difficulty: "easy",
+    tier: "basic",
     points: 10,
     estimated_time: "15 min",
     is_active: true,
@@ -303,15 +315,48 @@ export function TaskManagement() {
 
       {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingTask ? 'Edit Task' : 'Create New Task'}</DialogTitle>
             <DialogDescription>
-              {editingTask ? 'Update task details' : 'Add a new environmental task'}
+              {editingTask ? 'Update task details' : 'Create a new environmental task manually or with AI assistance'}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
+          <Tabs defaultValue={editingTask ? "manual" : "ai"} className="w-full">
+            {!editingTask && (
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="ai" className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  AI Generate
+                </TabsTrigger>
+                <TabsTrigger value="manual">Manual Entry</TabsTrigger>
+              </TabsList>
+            )}
+
+            <TabsContent value="ai" className="mt-4">
+              <AITaskGenerator
+                onTaskGenerated={(task) => {
+                  setFormData({
+                    title: task.title,
+                    description: task.description,
+                    category: task.category as "recycling" | "conservation" | "water" | "community",
+                    difficulty: task.difficulty as "easy" | "medium" | "hard",
+                    tier: task.tier as "basic" | "advanced" | "company",
+                    points: task.points,
+                    estimated_time: task.estimated_time,
+                    is_active: true,
+                    location_required: task.location_required
+                  });
+                  // Switch to manual tab to show the form with filled data
+                  const manualTab = document.querySelector('[data-value="manual"]') as HTMLElement;
+                  manualTab?.click();
+                }}
+              />
+            </TabsContent>
+
+            <TabsContent value="manual" className="mt-4">
+              <div className="space-y-4 py-4">
             <div>
               <label className="text-sm font-medium mb-2 block">Title *</label>
               <Input
@@ -421,16 +466,18 @@ export function TaskManagement() {
                 onCheckedChange={(v) => setFormData({ ...formData, is_active: v })}
               />
             </div>
-          </div>
+              </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleCreateTask} disabled={processing}>
-              {processing ? 'Saving...' : (editingTask ? 'Update Task' : 'Create Task')}
-            </Button>
-          </DialogFooter>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleCreateTask} disabled={processing}>
+                  {processing ? 'Saving...' : (editingTask ? 'Update Task' : 'Create Task')}
+                </Button>
+              </DialogFooter>
+            </TabsContent>
+          </Tabs>
         </DialogContent>
       </Dialog>
     </div>
