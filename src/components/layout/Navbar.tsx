@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LanguageSelector } from "@/components/language/LanguageSelector";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -76,6 +77,7 @@ export function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
+          <LanguageSelector />
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -161,6 +163,9 @@ export function Navbar() {
               </Link>
             ))}
             
+            <div className="py-2 px-3">
+              <LanguageSelector />
+            </div>
 
             <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-border">
               {user ? (
