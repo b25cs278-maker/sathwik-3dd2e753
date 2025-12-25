@@ -2,7 +2,8 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, PanelLeft } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface SidebarItem {
   id: string;
@@ -30,7 +31,31 @@ export function DashboardSidebar({
   headerIcon,
   headerAction,
 }: DashboardSidebarProps) {
+  const [hidden, setHidden] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+
+  // When hidden, show only a floating toggle button
+  if (hidden) {
+    return (
+      <div className="sticky top-0 h-[calc(100vh-4rem)] flex items-start pt-4 pl-2">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setHidden(false)}
+              className="bg-card shadow-md border-border"
+            >
+              <PanelLeft className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">
+            <p>Show sidebar</p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
+    );
+  }
 
   return (
     <aside
@@ -59,43 +84,73 @@ export function DashboardSidebar({
       <ScrollArea className="flex-1 py-2">
         <nav className="space-y-1 px-2">
           {items.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => onItemClick(item.id)}
-              className={cn(
-                "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
-                "hover:bg-accent hover:text-accent-foreground",
-                activeItem === item.id
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground"
+            <Tooltip key={item.id}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => onItemClick(item.id)}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                    "hover:bg-accent hover:text-accent-foreground",
+                    activeItem === item.id
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  <span className="flex-shrink-0">{item.icon}</span>
+                  {!collapsed && (
+                    <>
+                      <span className="truncate flex-1 text-left">{item.label}</span>
+                      {item.badge}
+                    </>
+                  )}
+                </button>
+              </TooltipTrigger>
+              {collapsed && (
+                <TooltipContent side="right">
+                  <p>{item.label}</p>
+                </TooltipContent>
               )}
-            >
-              <span className="flex-shrink-0">{item.icon}</span>
-              {!collapsed && (
-                <>
-                  <span className="truncate flex-1 text-left">{item.label}</span>
-                  {item.badge}
-                </>
-              )}
-            </button>
+            </Tooltip>
           ))}
         </nav>
       </ScrollArea>
 
-      {/* Collapse Toggle */}
-      <div className="p-2 border-t border-border">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setCollapsed(!collapsed)}
-          className="w-full justify-center"
-        >
-          {collapsed ? (
-            <ChevronRight className="h-4 w-4" />
-          ) : (
-            <ChevronLeft className="h-4 w-4" />
-          )}
-        </Button>
+      {/* Collapse & Hide Controls */}
+      <div className="p-2 border-t border-border flex gap-1">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setCollapsed(!collapsed)}
+              className="flex-1 justify-center"
+            >
+              {collapsed ? (
+                <ChevronRight className="h-4 w-4" />
+              ) : (
+                <ChevronLeft className="h-4 w-4" />
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{collapsed ? "Expand sidebar" : "Collapse sidebar"}</p>
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setHidden(true)}
+              className="justify-center"
+            >
+              <PanelLeft className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Hide sidebar</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
     </aside>
   );
