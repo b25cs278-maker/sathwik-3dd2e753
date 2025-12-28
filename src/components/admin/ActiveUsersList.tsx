@@ -21,13 +21,13 @@ export function ActiveUsersList() {
 
   const fetchActiveUsers = async () => {
     try {
-      const weekAgo = new Date();
-      weekAgo.setDate(weekAgo.getDate() - 7);
+      const oneDayAgo = new Date();
+      oneDayAgo.setDate(oneDayAgo.getDate() - 1);
 
       const { data, error } = await supabase
         .from("profiles")
         .select("id, name, email, avatar_url, last_active")
-        .gte("last_active", weekAgo.toISOString())
+        .gte("last_active", oneDayAgo.toISOString())
         .order("last_active", { ascending: false });
 
       if (error) {
@@ -136,10 +136,10 @@ export function ActiveUsersList() {
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            Active Users
+            Daily Active Users
           </span>
           <Badge variant="secondary" className="text-xs">
-            {activeUsers.length} active
+            {activeUsers.length} today
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -147,7 +147,7 @@ export function ActiveUsersList() {
         {activeUsers.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Clock className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p>No active users in the last 7 days</p>
+            <p>No active users today</p>
           </div>
         ) : (
           <ScrollArea className="h-[300px] pr-4">
