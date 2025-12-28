@@ -36,6 +36,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return data?.role as UserRole | null;
   };
 
+  const updateLastActive = async (userId: string) => {
+    try {
+      await supabase
+        .from("profiles")
+        .update({ last_active: new Date().toISOString() })
+        .eq("id", userId);
+    } catch (error) {
+      console.error("Error updating last_active:", error);
+    }
+  };
+
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -43,10 +54,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Defer role fetching to avoid deadlock
+        // Defer role fetching and last_active update to avoid deadlock
         if (session?.user) {
           setTimeout(() => {
             fetchUserRole(session.user.id).then(setRole);
+            // Update last_active on sign in or token refresh
+            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+              updateLastActive(session.user.id);
+            }
           }, 0);
         } else {
           setRole(null);
@@ -61,6 +76,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchUserRole(session.user.id).then(setRole);
+        // Update last_active when session is restored
+        updateLastActive(session.user.id);
       }
       setLoading(false);
     });
