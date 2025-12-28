@@ -5,7 +5,7 @@ import {
   Users, CheckCircle2, Clock, AlertTriangle, Star, 
   Leaf, Droplets, TreePine, Activity
 } from "lucide-react";
-
+import { ActiveUsersList } from "./ActiveUsersList";
 interface OverviewStats {
   totalUsers: number;
   activeUsers: number;
@@ -230,6 +230,9 @@ export function AdminOverview() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Active Users List */}
+      <ActiveUsersList />
     </div>
   );
 }
