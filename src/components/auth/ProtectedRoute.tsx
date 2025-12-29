@@ -1,14 +1,17 @@
 import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useGuest } from "@/contexts/GuestContext";
 
 interface ProtectedRouteProps {
   children: ReactNode;
   requiredRole?: "admin" | "student";
+  allowGuest?: boolean;
 }
 
-export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
+export function ProtectedRoute({ children, requiredRole, allowGuest = false }: ProtectedRouteProps) {
   const { user, role, loading } = useAuth();
+  const { isGuest } = useGuest();
 
   if (loading) {
     return (
@@ -16,6 +19,11 @@ export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) 
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
+  }
+
+  // Allow guest access for routes that permit it
+  if (!user && allowGuest && isGuest) {
+    return <>{children}</>;
   }
 
   if (!user) {
