@@ -5,12 +5,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { 
-  Leaf, Camera, MapPin, Award, Gift, Users, 
+  Camera, MapPin, Award, Gift, Users, 
   TreePine, Droplets, Recycle, ChevronRight, 
-  CheckCircle2, ArrowRight, Sparkles, Play
+  ArrowRight, Sparkles, Play, Eye
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useGuest } from "@/contexts/GuestContext";
+
 const features = [
   {
     icon: Camera,
@@ -51,6 +53,7 @@ const stats = [
 export default function Index() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { enableGuestMode } = useGuest();
   const [demoLoading, setDemoLoading] = useState(false);
 
   const handleDemoLogin = async () => {
@@ -83,6 +86,15 @@ export default function Index() {
     } finally {
       setDemoLoading(false);
     }
+  };
+
+  const handleGuestBrowse = () => {
+    enableGuestMode();
+    toast({
+      title: "Welcome, Guest!",
+      description: "You can browse tracks and tasks. Sign up to track progress!",
+    });
+    navigate("/tracks");
   };
 
   return (
@@ -123,9 +135,18 @@ export default function Index() {
                 {demoLoading ? "Entering..." : "Try Demo"}
                 <Play className="h-5 w-5 ml-2" />
               </Button>
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={handleGuestBrowse}
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                Browse as Guest
+              </Button>
               <Link to="/signup">
-                <Button variant="outline" size="lg">
+                <Button variant="ghost" size="lg">
                   Create Account
+                  <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               </Link>
             </div>
