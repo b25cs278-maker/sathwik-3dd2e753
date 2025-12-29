@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Navbar } from "@/components/layout/Navbar";
@@ -7,10 +6,9 @@ import { Footer } from "@/components/layout/Footer";
 import { 
   Camera, MapPin, Award, Gift, Users, 
   TreePine, Droplets, Recycle, ChevronRight, 
-  ArrowRight, Sparkles, Play, Eye
+  ArrowRight, Sparkles, Eye
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { useGuest } from "@/contexts/GuestContext";
 
 const features = [
@@ -54,40 +52,6 @@ export default function Index() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { enableGuestMode } = useGuest();
-  const [demoLoading, setDemoLoading] = useState(false);
-
-  const handleDemoLogin = async () => {
-    setDemoLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: "demo@ecolearn.com",
-        password: "demo123456",
-      });
-
-      if (error) {
-        toast({
-          title: "Demo login failed",
-          description: "Please try signing up or contact support.",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Welcome to EcoLearn!",
-          description: "Exploring as demo user",
-        });
-        navigate("/student-dashboard");
-      }
-    } catch (err) {
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setDemoLoading(false);
-    }
-  };
-
   const handleGuestBrowse = () => {
     enableGuestMode();
     toast({
@@ -128,23 +92,14 @@ export default function Index() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button 
                 variant="hero" 
-                size="xl" 
-                onClick={handleDemoLogin}
-                disabled={demoLoading}
-              >
-                {demoLoading ? "Entering..." : "Try Demo"}
-                <Play className="h-5 w-5 ml-2" />
-              </Button>
-              <Button 
-                variant="outline" 
-                size="lg"
+                size="xl"
                 onClick={handleGuestBrowse}
               >
-                <Eye className="h-4 w-4 mr-2" />
+                <Eye className="h-5 w-5 mr-2" />
                 Browse as Guest
               </Button>
               <Link to="/signup">
-                <Button variant="ghost" size="lg">
+                <Button variant="outline" size="lg">
                   Create Account
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
