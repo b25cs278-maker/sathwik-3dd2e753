@@ -55,10 +55,10 @@ export default function Index() {
   const handleGuestBrowse = () => {
     enableGuestMode();
     toast({
-      title: "Welcome, Guest!",
-      description: "You can browse tracks and tasks. Sign up to track progress!",
+      title: "Welcome to EcoLearn Demo!",
+      description: "Exploring in demo mode - no account required.",
     });
-    navigate("/tracks");
+    navigate("/student-dashboard");
   };
 
   return (
