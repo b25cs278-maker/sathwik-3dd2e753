@@ -1,15 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Leaf, Mail, Lock, Loader2, Shield, Eye, EyeOff } from "lucide-react";
+import { Leaf, Mail, Lock, Loader2, Shield, Eye, EyeOff, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { loginSchema } from "@/lib/validations/auth";
-import { supabase } from "@/integrations/supabase/client";
+import { useGuest } from "@/contexts/GuestContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -17,96 +15,40 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [loginType, setLoginType] = useState<"student" | "admin">("student");
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { signIn, user, role } = useAuth();
+  const { enableGuestMode } = useGuest();
 
-  // Redirect if already logged in
-  useEffect(() => {
-    if (user && role) {
-      if (role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/dashboard");
-      }
-    }
-  }, [user, role, navigate]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Demo mode: bypass all authentication
+  const handleDemoLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setErrors({});
-    
-    // Validate with zod schema
-    const result = loginSchema.safeParse({ email, password });
-    if (!result.success) {
-      const fieldErrors: { email?: string; password?: string } = {};
-      result.error.errors.forEach((err) => {
-        if (err.path[0] === "email") fieldErrors.email = err.message;
-        if (err.path[0] === "password") fieldErrors.password = err.message;
-      });
-      setErrors(fieldErrors);
-      return;
-    }
-
     setLoading(true);
     
-    const { error } = await signIn(result.data.email, result.data.password);
-    
-    if (error) {
-      setLoading(false);
+    // Simulate brief loading for UX
+    setTimeout(() => {
+      enableGuestMode();
       toast({
-        variant: "destructive",
-        title: "Login failed",
-        description: error.message === "Invalid login credentials" 
-          ? "Invalid email or password. Please try again."
-          : error.message,
+        title: "Welcome to EcoLearn Demo!",
+        description: "Exploring in demo mode - no data is stored.",
       });
-      return;
-    }
-
-    // Check if user has the correct role for the selected login type
-    const { data: { user: authUser } } = await supabase.auth.getUser();
-    if (authUser) {
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', authUser.id)
-        .maybeSingle();
       
-      const userRole = roleData?.role;
-
-      // Enforce that the selected tab matches the account role
-      if (loginType === 'admin' && userRole !== 'admin') {
-        await supabase.auth.signOut();
-        setLoading(false);
-        toast({
-          variant: "destructive",
-          title: "Access Denied",
-          description: "You don't have admin privileges. Please login as a student.",
-        });
-        return;
+      // Navigate based on selected login type
+      if (loginType === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/student-dashboard");
       }
+      setLoading(false);
+    }, 500);
+  };
 
-      if (loginType === 'student' && userRole === 'admin') {
-        await supabase.auth.signOut();
-        setLoading(false);
-        toast({
-          variant: "destructive",
-          title: "Wrong Login Type",
-          description: "This is an admin account. Please switch to the Admin tab to sign in.",
-        });
-        return;
-      }
-    }
-
+  const handleGuestExplore = () => {
+    enableGuestMode();
     toast({
-      title: "Welcome back!",
-      description: "You've successfully logged in.",
+      title: "Guest Mode Activated",
+      description: "Explore the app freely - no account required.",
     });
-    
-    // Navigation will happen automatically via useEffect when role is fetched
-    setLoading(false);
+    navigate("/student-dashboard");
   };
 
   return (
@@ -131,6 +73,13 @@ export default function Login() {
         </CardHeader>
         
         <CardContent>
+          {/* Demo Mode Notice */}
+          <div className="mb-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
+            <p className="text-xs text-center text-amber-600 dark:text-amber-400 font-medium">
+              🎯 Demo version – No account creation or data storage.
+            </p>
+          </div>
+
           <Tabs value={loginType} onValueChange={(v) => setLoginType(v as "student" | "admin")} className="mb-4">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="student" className="flex items-center gap-2">
@@ -144,7 +93,7 @@ export default function Login() {
             </TabsList>
           </Tabs>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleDemoLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -155,21 +104,17 @@ export default function Login() {
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`pl-10 ${errors.email ? "border-destructive" : ""}`}
-                  aria-invalid={!!errors.email}
+                  className="pl-10"
                 />
               </div>
-              {errors.email && (
-                <p className="text-xs text-destructive">{errors.email}</p>
-              )}
             </div>
             
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                <span className="text-sm text-muted-foreground/50 cursor-not-allowed">
                   Forgot password?
-                </Link>
+                </span>
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -179,8 +124,7 @@ export default function Login() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`pl-10 pr-10 ${errors.password ? "border-destructive" : ""}`}
-                  aria-invalid={!!errors.password}
+                  className="pl-10 pr-10"
                 />
                 <button
                   type="button"
@@ -195,9 +139,6 @@ export default function Login() {
                   )}
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-xs text-destructive">{errors.password}</p>
-              )}
             </div>
             
             <Button type="submit" variant="hero" className="w-full" disabled={loading}>
@@ -210,10 +151,23 @@ export default function Login() {
 
             {loginType === "admin" && (
               <p className="text-xs text-center text-muted-foreground">
-                Admin access requires an account with admin privileges.
+                Demo mode: Access admin dashboard without real credentials.
               </p>
             )}
           </form>
+
+          {/* Guest Explore Button */}
+          <div className="mt-4">
+            <Button 
+              type="button" 
+              variant="outline" 
+              className="w-full" 
+              onClick={handleGuestExplore}
+            >
+              <Users className="h-4 w-4 mr-2" />
+              Explore as Guest (Demo)
+            </Button>
+          </div>
           
           <div className="mt-6 text-center text-sm text-muted-foreground">
             Don't have an account?{" "}
@@ -221,6 +175,11 @@ export default function Login() {
               Sign up
             </Link>
           </div>
+
+          {/* Additional Demo Info */}
+          <p className="mt-4 text-xs text-center text-muted-foreground/70">
+            This is a frontend-only demo. Real authentication is disabled.
+          </p>
         </CardContent>
       </Card>
     </div>
