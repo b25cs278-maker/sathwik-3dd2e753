@@ -36,7 +36,7 @@ export default function Signup() {
         title: "Welcome to EcoLearn Demo!",
         description: "Exploring in demo mode - no account created.",
       });
-      navigate("/student-dashboard");
+      navigate("/student/dashboard");
       setLoading(false);
     }, 500);
   };
