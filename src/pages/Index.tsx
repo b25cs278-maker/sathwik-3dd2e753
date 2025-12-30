@@ -58,7 +58,7 @@ export default function Index() {
       title: "Welcome to EcoLearn Demo!",
       description: "Exploring in demo mode - no account required.",
     });
-    navigate("/student-dashboard");
+    navigate("/student/dashboard");
   };
 
   return (

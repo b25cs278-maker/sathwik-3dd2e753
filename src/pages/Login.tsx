@@ -36,7 +36,7 @@ export default function Login() {
       if (loginType === "admin") {
         navigate("/admin");
       } else {
-        navigate("/student-dashboard");
+        navigate("/student/dashboard");
       }
       setLoading(false);
     }, 500);
@@ -48,7 +48,7 @@ export default function Login() {
       title: "Guest Mode Activated",
       description: "Explore the app freely - no account required.",
     });
-    navigate("/student-dashboard");
+    navigate("/student/dashboard");
   };
 
   return (
