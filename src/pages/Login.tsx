@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Leaf, Mail, Lock, Loader2, Shield, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -16,19 +17,49 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signIn, user, role } = useAuth();
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Redirect authenticated users
+  useEffect(() => {
+    if (user) {
+      if (role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
+    }
+  }, [user, role, navigate]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!email || !password) {
+      toast({
+        title: "Missing fields",
+        description: "Please enter both email and password.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setLoading(true);
     
-    // TODO: Implement real authentication
-    setTimeout(() => {
+    const { error } = await signIn(email, password);
+    
+    if (error) {
       toast({
-        title: "Login functionality coming soon",
-        description: "Please check back later for full authentication.",
+        title: "Login failed",
+        description: error.message || "Invalid email or password. Please try again.",
+        variant: "destructive",
       });
       setLoading(false);
-    }, 500);
+    } else {
+      toast({
+        title: "Welcome back!",
+        description: "You have successfully logged in.",
+      });
+      // Navigation is handled by the useEffect above
+    }
   };
 
   return (
@@ -85,9 +116,9 @@ export default function Login() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <span className="text-sm text-muted-foreground/50 cursor-not-allowed">
+                <Link to="/forgot-password" className="text-sm text-primary hover:underline">
                   Forgot password?
-                </span>
+                </Link>
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
