@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Leaf, Mail, Lock, User, Loader2, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -15,6 +16,14 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signUp, user } = useAuth();
+
+  // Redirect authenticated users to dashboard
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const passwordRequirements = [
     { met: password.length >= 8, text: "At least 8 characters" },
@@ -22,18 +31,51 @@ export default function Signup() {
     { met: /[0-9]/.test(password), text: "One number" },
   ];
 
-  const handleSignup = (e: React.FormEvent) => {
+  const allRequirementsMet = passwordRequirements.every(req => req.met);
+
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!name || !email || !password) {
+      toast({
+        title: "Missing fields",
+        description: "Please fill in all fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!allRequirementsMet) {
+      toast({
+        title: "Password requirements not met",
+        description: "Please ensure your password meets all requirements.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setLoading(true);
     
-    // TODO: Implement real authentication
-    setTimeout(() => {
+    const { error } = await signUp(email, password, name);
+    
+    if (error) {
+      let errorMessage = error.message;
+      if (error.message.includes("already registered")) {
+        errorMessage = "This email is already registered. Please sign in instead.";
+      }
       toast({
-        title: "Signup functionality coming soon",
-        description: "Please check back later for account creation.",
+        title: "Signup failed",
+        description: errorMessage,
+        variant: "destructive",
       });
       setLoading(false);
-    }, 500);
+    } else {
+      toast({
+        title: "Account created!",
+        description: "Welcome to EcoLearn! Redirecting to dashboard...",
+      });
+      // Navigation is handled by the useEffect above
+    }
   };
 
   return (
