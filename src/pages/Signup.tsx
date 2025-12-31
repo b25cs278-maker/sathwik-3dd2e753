@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Leaf, Mail, Lock, User, Loader2, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useGuest } from "@/contexts/GuestContext";
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -16,7 +15,6 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { enableGuestMode } = useGuest();
 
   const passwordRequirements = [
     { met: password.length >= 8, text: "At least 8 characters" },
@@ -24,19 +22,16 @@ export default function Signup() {
     { met: /[0-9]/.test(password), text: "One number" },
   ];
 
-  // Demo mode: bypass all authentication and account creation
-  const handleDemoSubmit = (e: React.FormEvent) => {
+  const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate brief loading for UX
+    // TODO: Implement real authentication
     setTimeout(() => {
-      enableGuestMode();
       toast({
-        title: "Welcome to EcoLearn Demo!",
-        description: "Exploring in demo mode - no account created.",
+        title: "Signup functionality coming soon",
+        description: "Please check back later for account creation.",
       });
-      navigate("/student/dashboard");
       setLoading(false);
     }, 500);
   };
@@ -63,14 +58,7 @@ export default function Signup() {
         </CardHeader>
         
         <CardContent>
-          {/* Demo Mode Notice */}
-          <div className="mb-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-            <p className="text-xs text-center text-amber-600 dark:text-amber-400 font-medium">
-              🎯 Demo version – No account will be created.
-            </p>
-          </div>
-
-          <form onSubmit={handleDemoSubmit} className="space-y-4">
+          <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
               <div className="relative">
@@ -145,7 +133,7 @@ export default function Signup() {
               {loading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                "Explore App (Demo)"
+                "Create Account"
               )}
             </Button>
           </form>
@@ -163,11 +151,6 @@ export default function Signup() {
               Sign in
             </Link>
           </div>
-
-          {/* Additional Demo Info */}
-          <p className="mt-4 text-xs text-center text-muted-foreground/70">
-            This is a frontend-only demo. No data is stored.
-          </p>
         </CardContent>
       </Card>
     </div>
