@@ -4,10 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Leaf, Mail, Lock, Loader2, Shield, Eye, EyeOff, Users } from "lucide-react";
+import { Leaf, Mail, Lock, Loader2, Shield, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useGuest } from "@/contexts/GuestContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -17,38 +16,19 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { enableGuestMode } = useGuest();
 
-  // Demo mode: bypass all authentication
-  const handleDemoLogin = (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate brief loading for UX
+    // TODO: Implement real authentication
     setTimeout(() => {
-      enableGuestMode();
       toast({
-        title: "Welcome to EcoLearn Demo!",
-        description: "Exploring in demo mode - no data is stored.",
+        title: "Login functionality coming soon",
+        description: "Please check back later for full authentication.",
       });
-      
-      // Navigate based on selected login type
-      if (loginType === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/student/dashboard");
-      }
       setLoading(false);
     }, 500);
-  };
-
-  const handleGuestExplore = () => {
-    enableGuestMode();
-    toast({
-      title: "Guest Mode Activated",
-      description: "Explore the app freely - no account required.",
-    });
-    navigate("/student/dashboard");
   };
 
   return (
@@ -73,13 +53,6 @@ export default function Login() {
         </CardHeader>
         
         <CardContent>
-          {/* Demo Mode Notice */}
-          <div className="mb-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-            <p className="text-xs text-center text-amber-600 dark:text-amber-400 font-medium">
-              🎯 Demo version – No account creation or data storage.
-            </p>
-          </div>
-
           <Tabs value={loginType} onValueChange={(v) => setLoginType(v as "student" | "admin")} className="mb-4">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="student" className="flex items-center gap-2">
@@ -93,7 +66,7 @@ export default function Login() {
             </TabsList>
           </Tabs>
 
-          <form onSubmit={handleDemoLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -156,30 +129,12 @@ export default function Login() {
             )}
           </form>
 
-          {/* Guest Explore Button */}
-          <div className="mt-4">
-            <Button 
-              type="button" 
-              variant="outline" 
-              className="w-full" 
-              onClick={handleGuestExplore}
-            >
-              <Users className="h-4 w-4 mr-2" />
-              Explore as Guest (Demo)
-            </Button>
-          </div>
-          
           <div className="mt-6 text-center text-sm text-muted-foreground">
             Don't have an account?{" "}
             <Link to="/signup" className="text-primary font-medium hover:underline">
               Sign up
             </Link>
           </div>
-
-          {/* Additional Demo Info */}
-          <p className="mt-4 text-xs text-center text-muted-foreground/70">
-            This is a frontend-only demo. Real authentication is disabled.
-          </p>
         </CardContent>
       </Card>
     </div>

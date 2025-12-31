@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Navbar } from "@/components/layout/Navbar";
@@ -6,10 +6,8 @@ import { Footer } from "@/components/layout/Footer";
 import { 
   Camera, MapPin, Award, Gift, Users, 
   TreePine, Droplets, Recycle, ChevronRight, 
-  ArrowRight, Sparkles, Eye
+  ArrowRight, Sparkles
 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { useGuest } from "@/contexts/GuestContext";
 
 const features = [
   {
@@ -49,18 +47,6 @@ const stats = [
 ];
 
 export default function Index() {
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const { enableGuestMode } = useGuest();
-  const handleGuestBrowse = () => {
-    enableGuestMode();
-    toast({
-      title: "Welcome to EcoLearn Demo!",
-      description: "Exploring in demo mode - no account required.",
-    });
-    navigate("/student/dashboard");
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -90,18 +76,15 @@ export default function Index() {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button 
-                variant="hero" 
-                size="xl"
-                onClick={handleGuestBrowse}
-              >
-                <Eye className="h-5 w-5 mr-2" />
-                Browse as Guest
-              </Button>
               <Link to="/signup">
+                <Button variant="hero" size="xl">
+                  Get Started
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </Button>
+              </Link>
+              <Link to="/login">
                 <Button variant="outline" size="lg">
-                  Create Account
-                  <ArrowRight className="h-4 w-4 ml-2" />
+                  Sign In
                 </Button>
               </Link>
             </div>
