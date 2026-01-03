@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { 
-  Settings, Globe, Lock, Wifi, RefreshCw, FileText, Save
+  Settings, Lock, RefreshCw, FileText, Save
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -27,26 +29,119 @@ interface AppSettings {
   privacyPolicy: string;
 }
 
+const DEFAULT_SETTINGS: AppSettings = {
+  appName: "EcoLearn",
+  defaultLanguage: "en",
+  requireLocation: true,
+  offlineMode: true,
+  autoApprove: false,
+  minSubmissionScore: 70,
+  termsOfService: "",
+  privacyPolicy: ""
+};
+
 export function SettingsPanel() {
-  const [settings, setSettings] = useState<AppSettings>({
-    appName: "EcoLearn",
-    defaultLanguage: "en",
-    requireLocation: true,
-    offlineMode: true,
-    autoApprove: false,
-    minSubmissionScore: 70,
-    termsOfService: "Users must agree to complete tasks honestly and submit genuine proof.",
-    privacyPolicy: "We collect minimal data required for app functionality."
-  });
+  const { user } = useAuth();
+  const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('app_settings')
+        .select('key, value')
+        .in('key', ['general', 'features', 'policies']);
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        const settingsMap: Record<string, any> = {};
+        data.forEach(item => {
+          settingsMap[item.key] = item.value;
+        });
+
+        setSettings({
+          appName: settingsMap.general?.appName || DEFAULT_SETTINGS.appName,
+          defaultLanguage: settingsMap.general?.defaultLanguage || DEFAULT_SETTINGS.defaultLanguage,
+          requireLocation: settingsMap.features?.requireLocation ?? DEFAULT_SETTINGS.requireLocation,
+          offlineMode: settingsMap.features?.offlineMode ?? DEFAULT_SETTINGS.offlineMode,
+          autoApprove: settingsMap.features?.autoApprove ?? DEFAULT_SETTINGS.autoApprove,
+          minSubmissionScore: settingsMap.features?.minSubmissionScore || DEFAULT_SETTINGS.minSubmissionScore,
+          termsOfService: settingsMap.policies?.termsOfService || DEFAULT_SETTINGS.termsOfService,
+          privacyPolicy: settingsMap.policies?.privacyPolicy || DEFAULT_SETTINGS.privacyPolicy
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
-    // Simulate saving
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    toast.success('Settings saved successfully');
-    setSaving(false);
+    try {
+      const settingsToSave = [
+        {
+          key: 'general',
+          value: {
+            appName: settings.appName,
+            defaultLanguage: settings.defaultLanguage
+          },
+          updated_at: new Date().toISOString(),
+          updated_by: user?.id
+        },
+        {
+          key: 'features',
+          value: {
+            requireLocation: settings.requireLocation,
+            offlineMode: settings.offlineMode,
+            autoApprove: settings.autoApprove,
+            minSubmissionScore: settings.minSubmissionScore
+          },
+          updated_at: new Date().toISOString(),
+          updated_by: user?.id
+        },
+        {
+          key: 'policies',
+          value: {
+            termsOfService: settings.termsOfService,
+            privacyPolicy: settings.privacyPolicy
+          },
+          updated_at: new Date().toISOString(),
+          updated_by: user?.id
+        }
+      ];
+
+      for (const setting of settingsToSave) {
+        const { error } = await supabase
+          .from('app_settings')
+          .upsert(setting, { onConflict: 'key' });
+
+        if (error) throw error;
+      }
+
+      toast.success('Settings saved successfully');
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      toast.error('Failed to save settings');
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -180,6 +275,7 @@ export function SettingsPanel() {
                 value={settings.termsOfService}
                 onChange={(e) => setSettings({ ...settings, termsOfService: e.target.value })}
                 rows={3}
+                placeholder="Enter your terms of service..."
               />
             </div>
 
@@ -189,6 +285,7 @@ export function SettingsPanel() {
                 value={settings.privacyPolicy}
                 onChange={(e) => setSettings({ ...settings, privacyPolicy: e.target.value })}
                 rows={3}
+                placeholder="Enter your privacy policy..."
               />
             </div>
           </CardContent>
