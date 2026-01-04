@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -11,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { 
-  Bell, Send, Users, Megaphone, Calendar, CheckCircle2
+  Bell, Send, Users, Megaphone, Calendar, CheckCircle2, Loader2, Trash2
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -22,6 +24,15 @@ interface NotificationDraft {
   audience: 'all' | 'students' | 'admins';
 }
 
+interface SentNotification {
+  id: string;
+  title: string;
+  message: string;
+  notification_type: string;
+  created_at: string;
+  user_count?: number;
+}
+
 export function NotificationsPanel() {
   const [draft, setDraft] = useState<NotificationDraft>({
     title: "",
@@ -30,7 +41,50 @@ export function NotificationsPanel() {
     audience: "all"
   });
   const [sending, setSending] = useState(false);
-  const [sentNotifications, setSentNotifications] = useState<Array<NotificationDraft & { sentAt: string }>>([]);
+  const [loading, setLoading] = useState(true);
+  const [sentNotifications, setSentNotifications] = useState<SentNotification[]>([]);
+
+  useEffect(() => {
+    fetchSentNotifications();
+  }, []);
+
+  const fetchSentNotifications = async () => {
+    try {
+      // Get recent notifications grouped by title/message (bulk notifications)
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('id, title, message, notification_type, created_at')
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+
+      // Group notifications by title+message+type to show as single entries
+      const groupedMap = new Map<string, SentNotification>();
+      (data || []).forEach(n => {
+        const key = `${n.title}|${n.message}|${n.notification_type}`;
+        const existing = groupedMap.get(key);
+        if (existing) {
+          existing.user_count = (existing.user_count || 1) + 1;
+        } else {
+          groupedMap.set(key, {
+            id: n.id,
+            title: n.title,
+            message: n.message,
+            notification_type: n.notification_type,
+            created_at: n.created_at,
+            user_count: 1
+          });
+        }
+      });
+
+      setSentNotifications(Array.from(groupedMap.values()).slice(0, 10));
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSendNotification = async () => {
     if (!draft.title.trim() || !draft.message.trim()) {
@@ -39,18 +93,79 @@ export function NotificationsPanel() {
     }
 
     setSending(true);
-    
-    // Simulate sending notification
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    setSentNotifications(prev => [
-      { ...draft, sentAt: new Date().toISOString() },
-      ...prev
-    ]);
-    
-    toast.success('Notification sent successfully!');
-    setDraft({ title: "", message: "", type: "announcement", audience: "all" });
-    setSending(false);
+    try {
+      // Get users based on audience
+      let userIds: string[] = [];
+      
+      if (draft.audience === 'all') {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id');
+        userIds = profiles?.map(p => p.id) || [];
+      } else if (draft.audience === 'students') {
+        const { data: roles } = await supabase
+          .from('user_roles')
+          .select('user_id')
+          .eq('role', 'student');
+        userIds = roles?.map(r => r.user_id) || [];
+      } else if (draft.audience === 'admins') {
+        const { data: roles } = await supabase
+          .from('user_roles')
+          .select('user_id')
+          .eq('role', 'admin');
+        userIds = roles?.map(r => r.user_id) || [];
+      }
+
+      if (userIds.length === 0) {
+        toast.error('No users found for the selected audience');
+        setSending(false);
+        return;
+      }
+
+      // Create notifications for all users
+      const notifications = userIds.map(userId => ({
+        user_id: userId,
+        title: draft.title,
+        message: draft.message,
+        notification_type: draft.type,
+        is_read: false
+      }));
+
+      const { error } = await supabase
+        .from('notifications')
+        .insert(notifications);
+
+      if (error) throw error;
+      
+      toast.success(`Notification sent to ${userIds.length} user(s)`);
+      setDraft({ title: "", message: "", type: "announcement", audience: "all" });
+      fetchSentNotifications();
+    } catch (error) {
+      console.error('Error sending notification:', error);
+      toast.error('Failed to send notification');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleDeleteNotification = async (title: string, message: string, type: string) => {
+    if (!confirm('Delete all instances of this notification?')) return;
+
+    try {
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('title', title)
+        .eq('message', message)
+        .eq('notification_type', type);
+
+      if (error) throw error;
+      toast.success('Notifications deleted');
+      fetchSentNotifications();
+    } catch (error) {
+      console.error('Error deleting notifications:', error);
+      toast.error('Failed to delete notifications');
+    }
   };
 
   const getTypeIcon = (type: string) => {
@@ -67,6 +182,14 @@ export function NotificationsPanel() {
         return <Bell className="h-4 w-4" />;
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -141,7 +264,10 @@ export function NotificationsPanel() {
               disabled={sending}
             >
               {sending ? (
-                'Sending...'
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Sending...
+                </>
               ) : (
                 <>
                   <Send className="h-4 w-4 mr-2" />
@@ -163,21 +289,36 @@ export function NotificationsPanel() {
           <CardContent>
             {sentNotifications.length > 0 ? (
               <div className="space-y-3">
-                {sentNotifications.map((notif, idx) => (
-                  <div key={idx} className="p-4 rounded-lg bg-muted/50 space-y-2">
+                {sentNotifications.map((notif) => (
+                  <div key={notif.id} className="p-4 rounded-lg bg-muted/50 space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        {getTypeIcon(notif.type)}
+                        {getTypeIcon(notif.notification_type)}
                         <span className="font-medium">{notif.title}</span>
                       </div>
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(notif.sentAt).toLocaleString()}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(notif.created_at).toLocaleString()}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 text-destructive"
+                          onClick={() => handleDeleteNotification(notif.title, notif.message, notif.notification_type)}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
                     </div>
                     <p className="text-sm text-muted-foreground">{notif.message}</p>
                     <div className="flex items-center gap-2">
                       <Users className="h-3 w-3 text-muted-foreground" />
-                      <span className="text-xs text-muted-foreground capitalize">{notif.audience}</span>
+                      <span className="text-xs text-muted-foreground">
+                        Sent to {notif.user_count} user(s)
+                      </span>
+                      <Badge variant="outline" className="text-xs capitalize">
+                        {notif.notification_type}
+                      </Badge>
                     </div>
                   </div>
                 ))}
@@ -186,6 +327,7 @@ export function NotificationsPanel() {
               <div className="text-center py-8 text-muted-foreground">
                 <Bell className="h-12 w-12 mx-auto mb-3 opacity-20" />
                 <p>No notifications sent yet</p>
+                <p className="text-sm mt-1">Compose a notification to get started</p>
               </div>
             )}
           </CardContent>
