@@ -108,8 +108,8 @@ export function AdminOverview() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold mb-2">Dashboard Overview</h2>
-        <p className="text-muted-foreground">Real-time platform statistics and metrics</p>
+        <h2 className="text-2xl font-bold mb-2">Platform Overview</h2>
+        <p className="text-muted-foreground">Real-time insights and performance metrics</p>
       </div>
 
       {/* Primary Stats Grid */}
@@ -118,7 +118,7 @@ export function AdminOverview() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Users</p>
+                <p className="text-sm text-muted-foreground">Registered Learners</p>
                 <p className="text-3xl font-bold">{stats.totalUsers}</p>
               </div>
               <div className="p-3 rounded-xl bg-primary/10">
@@ -132,7 +132,7 @@ export function AdminOverview() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Active Users</p>
+                <p className="text-sm text-muted-foreground">Active Learners</p>
                 <p className="text-3xl font-bold">{stats.activeUsers}</p>
                 <p className="text-xs text-muted-foreground">Last 7 days</p>
               </div>
@@ -147,7 +147,7 @@ export function AdminOverview() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Tasks Completed</p>
+                <p className="text-sm text-muted-foreground">Workshops Conducted</p>
                 <p className="text-3xl font-bold">{stats.tasksCompleted}</p>
               </div>
               <div className="p-3 rounded-xl bg-primary/10">
@@ -161,7 +161,7 @@ export function AdminOverview() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Pending Verifications</p>
+                <p className="text-sm text-muted-foreground">Upcoming Workshops</p>
                 <p className="text-3xl font-bold text-eco-sun">{stats.pendingVerifications}</p>
               </div>
               <div className="p-3 rounded-xl bg-eco-sun/10">

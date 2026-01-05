@@ -140,13 +140,13 @@ export default function Dashboard() {
   };
 
   const sidebarItems = [
-    { id: "dashboard", label: "Dashboard", icon: <Target className="h-4 w-4" /> },
-    { id: "quizzes", label: "Quiz Battles", icon: <Swords className="h-4 w-4" /> },
-    { id: "tracks", label: "Learning Tracks", icon: <GraduationCap className="h-4 w-4" /> },
-    { id: "calendar", label: "My Reminders", icon: <CalendarDays className="h-4 w-4" /> },
-    { id: "community", label: "Community", icon: <Lightbulb className="h-4 w-4" /> },
-    { id: "coach", label: "AI Coach", icon: <Bot className="h-4 w-4" /> },
-    { id: "support", label: "Help & Support", icon: <HelpCircle className="h-4 w-4" /> },
+    { id: "dashboard", label: "Overview Dashboard", icon: <Target className="h-4 w-4" /> },
+    { id: "quizzes", label: "Knowledge Challenges", icon: <Swords className="h-4 w-4" /> },
+    { id: "tracks", label: "AI Skill Modules", icon: <GraduationCap className="h-4 w-4" /> },
+    { id: "calendar", label: "My Schedule", icon: <CalendarDays className="h-4 w-4" /> },
+    { id: "community", label: "Learner Interaction Space", icon: <Lightbulb className="h-4 w-4" /> },
+    { id: "coach", label: "AI Learning Assistant", icon: <Bot className="h-4 w-4" /> },
+    { id: "support", label: "Help & Resources", icon: <HelpCircle className="h-4 w-4" /> },
   ];
 
   if (loading) {
@@ -170,7 +170,7 @@ export default function Dashboard() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Points</p>
+                <p className="text-sm text-muted-foreground">Learning Points</p>
                 <p className="text-3xl font-display font-bold text-foreground">
                   {stats.points.toLocaleString()}
                 </p>
@@ -186,7 +186,7 @@ export default function Dashboard() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Tasks Completed</p>
+                <p className="text-sm text-muted-foreground">Workshops Completed</p>
                 <p className="text-3xl font-display font-bold text-foreground">
                   {stats.tasksCompleted}
                 </p>
@@ -202,7 +202,7 @@ export default function Dashboard() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Pending Review</p>
+                <p className="text-sm text-muted-foreground">In Progress</p>
                 <p className="text-3xl font-display font-bold text-foreground">
                   {stats.pendingSubmissions}
                 </p>
@@ -218,7 +218,7 @@ export default function Dashboard() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Badges Earned</p>
+                <p className="text-sm text-muted-foreground">Achievements Earned</p>
                 <p className="text-3xl font-display font-bold text-foreground">
                   {stats.badges.length}
                 </p>
@@ -239,7 +239,7 @@ export default function Dashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Target className="h-5 w-5 text-primary" />
-                Quick Actions
+                Get Started
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -248,10 +248,10 @@ export default function Dashboard() {
                   <div className="p-4 rounded-xl border border-border hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer group">
                     <Leaf className="h-8 w-8 text-primary mb-3" />
                     <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                      Find Tasks
+                      Explore Workshops
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Browse and complete environmental tasks
+                      Discover hands-on environmental activities
                     </p>
                   </div>
                 </Link>
@@ -259,10 +259,10 @@ export default function Dashboard() {
                   <div className="p-4 rounded-xl border border-border hover:border-eco-sky/50 hover:bg-eco-sky/5 transition-all cursor-pointer group">
                     <GraduationCap className="h-8 w-8 text-eco-sky mb-3" />
                     <h3 className="font-semibold text-foreground group-hover:text-eco-sky transition-colors">
-                      Learning Tracks
+                      AI Skill Modules
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Explore courses and build your skills
+                      Advance your sustainability expertise
                     </p>
                   </div>
                 </Link>
@@ -275,7 +275,7 @@ export default function Dashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-eco-sun" />
-                Progress to Next Badge
+                Achievement Progress
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -311,11 +311,11 @@ export default function Dashboard() {
               <CardTitle className="flex items-center justify-between">
                 <span className="flex items-center gap-2">
                   <Award className="h-5 w-5 text-primary" />
-                  Your Badges
+                  Your Achievements
                 </span>
                 <Link to="/badges">
                   <Button variant="ghost" size="sm">
-                    View All
+                    View Details
                   </Button>
                 </Link>
               </CardTitle>
@@ -331,7 +331,7 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground text-center py-4">
-                  Complete tasks to earn your first badge!
+                  Complete workshops to earn your first achievement!
                 </p>
               )}
             </CardContent>
@@ -422,13 +422,13 @@ export default function Dashboard() {
           activeItem={activeSection}
           onItemClick={setActiveSection}
           title="Welcome back!"
-          subtitle="Track your impact & earn rewards"
+          subtitle="Track your learning journey"
           headerIcon={<Leaf className="h-5 w-5 text-primary" />}
           headerAction={
             <Link to="/tasks">
               <Button variant="hero" size="sm" className="w-full">
                 <Camera className="h-4 w-4 mr-2" />
-                Browse Tasks
+                Explore Workshops
               </Button>
             </Link>
           }

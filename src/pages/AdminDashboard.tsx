@@ -41,16 +41,16 @@ export default function AdminDashboard() {
   }
 
   const sidebarItems = [
-    { id: "overview", label: "Overview", icon: <LayoutDashboard className="h-4 w-4" /> },
-    { id: "users", label: "Users", icon: <Users className="h-4 w-4" /> },
-    { id: "tasks", label: "Tasks", icon: <ListTodo className="h-4 w-4" /> },
-    { id: "learning", label: "Learning", icon: <BookOpen className="h-4 w-4" /> },
-    { id: "community", label: "Community", icon: <Lightbulb className="h-4 w-4" /> },
-    { id: "analytics", label: "Analytics", icon: <BarChart3 className="h-4 w-4" /> },
-    { id: "partners", label: "Partners", icon: <Building2 className="h-4 w-4" /> },
+    { id: "overview", label: "Overview Dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
+    { id: "users", label: "Learners Management", icon: <Users className="h-4 w-4" /> },
+    { id: "tasks", label: "Workshop Management", icon: <ListTodo className="h-4 w-4" /> },
+    { id: "learning", label: "AI Learning Hub", icon: <BookOpen className="h-4 w-4" /> },
+    { id: "community", label: "Eco Learn Network", icon: <Lightbulb className="h-4 w-4" /> },
+    { id: "analytics", label: "Insights & Analytics", icon: <BarChart3 className="h-4 w-4" /> },
+    { id: "partners", label: "Startup Collaborations", icon: <Building2 className="h-4 w-4" /> },
     { 
       id: "notifications", 
-      label: "Notifications", 
+      label: "Announcements & Alerts", 
       icon: <Bell className="h-4 w-4" />,
       badge: unreadCount > 0 ? (
         <Badge variant="destructive" className="h-5 w-5 p-0 flex items-center justify-center text-xs">
@@ -58,9 +58,9 @@ export default function AdminDashboard() {
         </Badge>
       ) : undefined
     },
-    { id: "feedback", label: "Feedback", icon: <MessageSquare className="h-4 w-4" /> },
-    { id: "security", label: "Security", icon: <Shield className="h-4 w-4" /> },
-    { id: "settings", label: "Settings", icon: <Settings className="h-4 w-4" /> },
+    { id: "feedback", label: "Suggestions & Feedback", icon: <MessageSquare className="h-4 w-4" /> },
+    { id: "security", label: "Access & Security", icon: <Shield className="h-4 w-4" /> },
+    { id: "settings", label: "Platform Settings", icon: <Settings className="h-4 w-4" /> },
   ];
 
   const renderContent = () => {
@@ -89,14 +89,14 @@ export default function AdminDashboard() {
           items={sidebarItems}
           activeItem={activeSection}
           onItemClick={setActiveSection}
-          title="Admin Dashboard"
+          title="Eco Learn Control Center"
           subtitle="Platform Management"
           headerIcon={<Shield className="h-5 w-5 text-primary" />}
           headerAction={
             <Link to="/admin/review">
               <Button variant="hero" size="sm" className="w-full">
                 <Eye className="h-4 w-4 mr-2" />
-                Review
+                Review Submissions
               </Button>
             </Link>
           }
