@@ -16,12 +16,12 @@ import { EcoQuizBattles } from "@/components/quiz/EcoQuizBattles";
 import { LearningTracks } from "@/components/tracks/LearningTracks";
 import { EcoStories } from "@/components/stories/EcoStories";
 import { AIEcoCoach } from "@/components/coach/AIEcoCoach";
-import { SmartRewardBoost } from "@/components/rewards/SmartRewardBoost";
+
 import { EcoCalendar } from "@/components/calendar/EcoCalendar";
 import { 
-  Award, Gift, Target, TrendingUp, Clock, CheckCircle2, 
+  Award, Target, TrendingUp, Clock, CheckCircle2, 
   Leaf, Trophy, Star, Camera, Lightbulb, Bell, HelpCircle, Swords, GraduationCap,
-  Bot, Zap, CalendarDays
+  Bot, CalendarDays
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -121,8 +121,6 @@ export default function Dashboard() {
     switch (eventType) {
       case 'points_awarded':
         return <Star className="h-4 w-4 text-eco-sun" />;
-      case 'reward_redeemed':
-        return <Gift className="h-4 w-4 text-eco-reward" />;
       case 'badge_earned':
         return <Award className="h-4 w-4 text-primary" />;
       default:
@@ -134,8 +132,6 @@ export default function Dashboard() {
     switch (activity.event_type) {
       case 'points_awarded':
         return `Earned ${activity.payload?.points || 0} points`;
-      case 'reward_redeemed':
-        return 'Redeemed a reward';
       case 'badge_earned':
         return `Earned badge: ${activity.payload?.badge_name || 'Unknown'}`;
       default:
@@ -147,7 +143,6 @@ export default function Dashboard() {
     { id: "dashboard", label: "Dashboard", icon: <Target className="h-4 w-4" /> },
     { id: "quizzes", label: "Quiz Battles", icon: <Swords className="h-4 w-4" /> },
     { id: "tracks", label: "Learning Tracks", icon: <GraduationCap className="h-4 w-4" /> },
-    { id: "rewards", label: "Rewards", icon: <Zap className="h-4 w-4" /> },
     { id: "calendar", label: "My Reminders", icon: <CalendarDays className="h-4 w-4" /> },
     { id: "community", label: "Community", icon: <Lightbulb className="h-4 w-4" /> },
     { id: "coach", label: "AI Coach", icon: <Bot className="h-4 w-4" /> },
@@ -260,14 +255,14 @@ export default function Dashboard() {
                     </p>
                   </div>
                 </Link>
-                <Link to="/rewards">
-                  <div className="p-4 rounded-xl border border-border hover:border-eco-reward/50 hover:bg-eco-reward/5 transition-all cursor-pointer group">
-                    <Gift className="h-8 w-8 text-eco-reward mb-3" />
-                    <h3 className="font-semibold text-foreground group-hover:text-eco-reward transition-colors">
-                      Redeem Rewards
+                <Link to="/tracks">
+                  <div className="p-4 rounded-xl border border-border hover:border-eco-sky/50 hover:bg-eco-sky/5 transition-all cursor-pointer group">
+                    <GraduationCap className="h-8 w-8 text-eco-sky mb-3" />
+                    <h3 className="font-semibold text-foreground group-hover:text-eco-sky transition-colors">
+                      Learning Tracks
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Exchange points for eco-friendly rewards
+                      Explore courses and build your skills
                     </p>
                   </div>
                 </Link>
@@ -409,7 +404,6 @@ export default function Dashboard() {
       case "dashboard": return renderDashboardContent();
       case "quizzes": return <EcoQuizBattles />;
       case "tracks": return <LearningTracks />;
-      case "rewards": return <SmartRewardBoost />;
       case "calendar": return renderCalendarContent();
       case "community": return <InnovationHub />;
       case "coach": return <AIEcoCoach />;
