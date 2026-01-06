@@ -53,7 +53,7 @@ export function AIEcoCoach() {
       .from('profiles')
       .select('points')
       .eq('id', user.id)
-      .single();
+      .maybeSingle();
 
     const { count } = await supabase
       .from('task_submissions')

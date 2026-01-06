@@ -177,7 +177,7 @@ export function EcoQuizBattles() {
         .from('profiles')
         .select('points')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
       
       if (profile) {
         await supabase

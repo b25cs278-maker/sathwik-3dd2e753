@@ -86,7 +86,7 @@ export function EcoStories() {
             .from('profiles')
             .select('name, avatar_url')
             .eq('id', post.user_id)
-            .single();
+            .maybeSingle();
           
           return {
             ...post,
