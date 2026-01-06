@@ -13,14 +13,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { 
-  Bell, Send, Users, Megaphone, Calendar, CheckCircle2, Loader2, Trash2
+  Bell, Send, Users, Megaphone, Calendar, CheckCircle2, Loader2, Trash2, Gift
 } from "lucide-react";
 import { toast } from "sonner";
 
 interface NotificationDraft {
   title: string;
   message: string;
-  type: 'announcement' | 'challenge' | 'reminder' | 'success';
+  type: 'task_reminder' | 'approval' | 'challenge' | 'reward' | 'general';
   audience: 'all' | 'students' | 'admins';
 }
 
@@ -37,7 +37,7 @@ export function NotificationsPanel() {
   const [draft, setDraft] = useState<NotificationDraft>({
     title: "",
     message: "",
-    type: "announcement",
+    type: "general",
     audience: "all"
   });
   const [sending, setSending] = useState(false);
@@ -138,7 +138,7 @@ export function NotificationsPanel() {
       if (error) throw error;
       
       toast.success(`Notification sent to ${userIds.length} user(s)`);
-      setDraft({ title: "", message: "", type: "announcement", audience: "all" });
+      setDraft({ title: "", message: "", type: "general", audience: "all" });
       fetchSentNotifications();
     } catch (error) {
       console.error('Error sending notification:', error);
@@ -170,14 +170,16 @@ export function NotificationsPanel() {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'announcement':
+      case 'general':
         return <Megaphone className="h-4 w-4" />;
       case 'challenge':
         return <Calendar className="h-4 w-4" />;
-      case 'reminder':
+      case 'task_reminder':
         return <Bell className="h-4 w-4" />;
-      case 'success':
+      case 'approval':
         return <CheckCircle2 className="h-4 w-4" />;
+      case 'reward':
+        return <Gift className="h-4 w-4" />;
       default:
         return <Bell className="h-4 w-4" />;
     }
@@ -235,10 +237,11 @@ export function NotificationsPanel() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="announcement">Announcement</SelectItem>
+                    <SelectItem value="general">General Announcement</SelectItem>
                     <SelectItem value="challenge">Challenge</SelectItem>
-                    <SelectItem value="reminder">Reminder</SelectItem>
-                    <SelectItem value="success">Success Story</SelectItem>
+                    <SelectItem value="task_reminder">Task Reminder</SelectItem>
+                    <SelectItem value="approval">Approval Update</SelectItem>
+                    <SelectItem value="reward">Reward</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -362,8 +365,8 @@ export function NotificationsPanel() {
               onClick={() => setDraft({
                 title: "Weekly Reminder",
                 message: "Don't forget to complete your weekly environmental tasks to maintain your streak!",
-                type: "reminder",
-                audience: "students"
+                type: "task_reminder",
+                audience: "all"
               })}
             >
               <Bell className="h-5 w-5 mb-2 text-eco-sun" />
@@ -377,13 +380,13 @@ export function NotificationsPanel() {
               onClick={() => setDraft({
                 title: "Congratulations!",
                 message: "Our community has reached a major milestone. Thank you for your contributions!",
-                type: "success",
+                type: "approval",
                 audience: "all"
               })}
             >
               <CheckCircle2 className="h-5 w-5 mb-2 text-primary" />
-              <span className="font-medium">Success Story</span>
-              <span className="text-xs text-muted-foreground">Share achievements</span>
+              <span className="font-medium">Achievement</span>
+              <span className="text-xs text-muted-foreground">Share approvals</span>
             </Button>
 
             <Button 
@@ -392,7 +395,7 @@ export function NotificationsPanel() {
               onClick={() => setDraft({
                 title: "Important Update",
                 message: "We have some important news to share with you about upcoming changes.",
-                type: "announcement",
+                type: "general",
                 audience: "all"
               })}
             >
