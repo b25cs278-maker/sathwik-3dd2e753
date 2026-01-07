@@ -52,6 +52,7 @@ export default function Tasks() {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [difficultyFilter, setDifficultyFilter] = useState<string>("all");
+  const [programStatus, setProgramStatus] = useState<string>("all");
 
   useEffect(() => {
     fetchTasks();
@@ -151,6 +152,17 @@ export default function Tasks() {
               <SelectItem value="hard">Hard</SelectItem>
             </SelectContent>
           </Select>
+          <Select value={programStatus} onValueChange={setProgramStatus}>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Program Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Programs</SelectItem>
+              <SelectItem value="present">Present Programs</SelectItem>
+              <SelectItem value="upcoming">Upcoming Programs</SelectItem>
+              <SelectItem value="completed">Completed Programs</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Tasks Grid */}
@@ -222,7 +234,7 @@ export default function Tasks() {
             <p className="text-muted-foreground mb-4">
               Try adjusting your filters or check back later for new tasks
             </p>
-            <Button onClick={() => { setSearchQuery(""); setCategoryFilter("all"); setDifficultyFilter("all"); }}>
+            <Button onClick={() => { setSearchQuery(""); setCategoryFilter("all"); setDifficultyFilter("all"); setProgramStatus("all"); }}>
               Clear Filters
             </Button>
           </div>
