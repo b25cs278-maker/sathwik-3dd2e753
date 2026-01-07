@@ -50,8 +50,6 @@ export default function Tasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("all");
-  const [difficultyFilter, setDifficultyFilter] = useState<string>("all");
   const [programStatus, setProgramStatus] = useState<string>("all");
 
   useEffect(() => {
@@ -79,9 +77,7 @@ export default function Tasks() {
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           task.description?.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = categoryFilter === "all" || task.category === categoryFilter;
-    const matchesDifficulty = difficultyFilter === "all" || task.difficulty === difficultyFilter;
-    return matchesSearch && matchesCategory && matchesDifficulty;
+    return matchesSearch;
   });
 
   const getCategoryIcon = (category: string) => {
@@ -128,30 +124,6 @@ export default function Tasks() {
               className="pl-10"
             />
           </div>
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="recycling">Recycling</SelectItem>
-              <SelectItem value="conservation">Conservation</SelectItem>
-              <SelectItem value="water">Water</SelectItem>
-              <SelectItem value="community">Community</SelectItem>
-              <SelectItem value="energy">Energy</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={difficultyFilter} onValueChange={setDifficultyFilter}>
-            <SelectTrigger className="w-full sm:w-[150px]">
-              <SelectValue placeholder="Difficulty" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Levels</SelectItem>
-              <SelectItem value="easy">Easy</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="hard">Hard</SelectItem>
-            </SelectContent>
-          </Select>
           <Select value={programStatus} onValueChange={setProgramStatus}>
             <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Program Status" />
@@ -234,7 +206,7 @@ export default function Tasks() {
             <p className="text-muted-foreground mb-4">
               Try adjusting your filters or check back later for new tasks
             </p>
-            <Button onClick={() => { setSearchQuery(""); setCategoryFilter("all"); setDifficultyFilter("all"); setProgramStatus("all"); }}>
+            <Button onClick={() => { setSearchQuery(""); setProgramStatus("all"); }}>
               Clear Filters
             </Button>
           </div>
