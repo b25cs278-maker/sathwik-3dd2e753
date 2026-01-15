@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { InnovationHub } from "@/components/community/InnovationHub";
+import { LearnerNetwork } from "@/components/network/LearnerNetwork";
 import { NotificationsPanel } from "@/components/user/NotificationsPanel";
 import { FeedbackSupport } from "@/components/user/FeedbackSupport";
 import { EcoQuizBattles } from "@/components/quiz/EcoQuizBattles";
@@ -405,7 +405,7 @@ export default function Dashboard() {
       case "quizzes": return <EcoQuizBattles />;
       case "tracks": return <LearningTracks />;
       case "calendar": return renderCalendarContent();
-      case "community": return <InnovationHub />;
+      case "community": return <LearnerNetwork />;
       case "coach": return <AIEcoCoach />;
       case "support": return <FeedbackSupport />;
       default: return renderDashboardContent();
