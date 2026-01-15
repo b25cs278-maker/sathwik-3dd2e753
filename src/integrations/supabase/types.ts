@@ -89,6 +89,68 @@ export type Database = {
         }
         Relationships: []
       }
+      direct_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_read: boolean
+          read_at: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          read_at?: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          read_at?: string | null
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
+      event_attendees: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_attendees_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "network_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       faqs: {
         Row: {
           answer: string
@@ -118,6 +180,41 @@ export type Database = {
           question?: string
         }
         Relationships: []
+      }
+      group_members: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string
+          role: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string
+          role?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "network_groups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       innovation_posts: {
         Row: {
@@ -160,6 +257,190 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      network_events: {
+        Row: {
+          attendees_count: number
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          end_time: string | null
+          event_type: string
+          event_url: string | null
+          group_id: string | null
+          id: string
+          is_public: boolean
+          location: string | null
+          organizer_id: string
+          start_time: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          attendees_count?: number
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          end_time?: string | null
+          event_type?: string
+          event_url?: string | null
+          group_id?: string | null
+          id?: string
+          is_public?: boolean
+          location?: string | null
+          organizer_id: string
+          start_time: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          attendees_count?: number
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          end_time?: string | null
+          event_type?: string
+          event_url?: string | null
+          group_id?: string | null
+          id?: string
+          is_public?: boolean
+          location?: string | null
+          organizer_id?: string
+          start_time?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "network_events_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "network_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      network_groups: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          group_type: string
+          id: string
+          members_count: number
+          name: string
+          owner_id: string
+          posts_count: number
+          updated_at: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          group_type?: string
+          id?: string
+          members_count?: number
+          name: string
+          owner_id: string
+          posts_count?: number
+          updated_at?: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          group_type?: string
+          id?: string
+          members_count?: number
+          name?: string
+          owner_id?: string
+          posts_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      network_post_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          likes_count: number
+          mentions: string[] | null
+          parent_id: string | null
+          post_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          likes_count?: number
+          mentions?: string[] | null
+          parent_id?: string | null
+          post_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          likes_count?: number
+          mentions?: string[] | null
+          parent_id?: string | null
+          post_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "network_post_comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "network_post_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "network_post_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "network_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      network_post_engagements: {
+        Row: {
+          created_at: string
+          engagement_type: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          engagement_type: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          engagement_type?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "network_post_engagements_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "network_posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       network_posts: {
         Row: {
@@ -352,32 +633,65 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          cover_image_url: string | null
           created_at: string | null
+          education: Json | null
           email: string | null
+          experience: Json | null
+          github_url: string | null
+          headline: string | null
           id: string
+          is_visible: boolean | null
           last_active: string | null
+          linkedin_url: string | null
+          location: string | null
           name: string | null
           points: number | null
+          profile_views: number | null
+          skills: string[] | null
+          website: string | null
         }
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          cover_image_url?: string | null
           created_at?: string | null
+          education?: Json | null
           email?: string | null
+          experience?: Json | null
+          github_url?: string | null
+          headline?: string | null
           id: string
+          is_visible?: boolean | null
           last_active?: string | null
+          linkedin_url?: string | null
+          location?: string | null
           name?: string | null
           points?: number | null
+          profile_views?: number | null
+          skills?: string[] | null
+          website?: string | null
         }
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          cover_image_url?: string | null
           created_at?: string | null
+          education?: Json | null
           email?: string | null
+          experience?: Json | null
+          github_url?: string | null
+          headline?: string | null
           id?: string
+          is_visible?: boolean | null
           last_active?: string | null
+          linkedin_url?: string | null
+          location?: string | null
           name?: string | null
           points?: number | null
+          profile_views?: number | null
+          skills?: string[] | null
+          website?: string | null
         }
         Relationships: []
       }
@@ -802,6 +1116,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_connections: {
+        Row: {
+          addressee_id: string
+          created_at: string
+          id: string
+          requester_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          addressee_id: string
+          created_at?: string
+          id?: string
+          requester_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          addressee_id?: string
+          created_at?: string
+          id?: string
+          requester_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
