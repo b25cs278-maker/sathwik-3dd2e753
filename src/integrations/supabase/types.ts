@@ -161,6 +161,57 @@ export type Database = {
         }
         Relationships: []
       }
+      network_posts: {
+        Row: {
+          comments_count: number
+          content: string
+          created_at: string
+          document_urls: string[] | null
+          id: string
+          is_pinned: boolean
+          likes_count: number
+          media_urls: string[] | null
+          post_type: string
+          saves_count: number
+          shares_count: number
+          updated_at: string
+          user_id: string
+          visibility: string
+        }
+        Insert: {
+          comments_count?: number
+          content: string
+          created_at?: string
+          document_urls?: string[] | null
+          id?: string
+          is_pinned?: boolean
+          likes_count?: number
+          media_urls?: string[] | null
+          post_type?: string
+          saves_count?: number
+          shares_count?: number
+          updated_at?: string
+          user_id: string
+          visibility?: string
+        }
+        Update: {
+          comments_count?: number
+          content?: string
+          created_at?: string
+          document_urls?: string[] | null
+          id?: string
+          is_pinned?: boolean
+          likes_count?: number
+          media_urls?: string[] | null
+          post_type?: string
+          saves_count?: number
+          shares_count?: number
+          updated_at?: string
+          user_id?: string
+          visibility?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string
