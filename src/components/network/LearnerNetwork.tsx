@@ -28,8 +28,32 @@ export function LearnerNetwork() {
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="flex flex-wrap justify-start gap-1 w-auto">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full flex flex-col">
+        <TabsContent value="feed" className="mt-0 mb-6">
+          <NetworkFeed />
+        </TabsContent>
+
+        <TabsContent value="connections" className="mt-0 mb-6">
+          <NetworkConnections />
+        </TabsContent>
+
+        <TabsContent value="messages" className="mt-0 mb-6">
+          <NetworkMessages />
+        </TabsContent>
+
+        <TabsContent value="events" className="mt-0 mb-6">
+          <NetworkEvents />
+        </TabsContent>
+
+        <TabsContent value="groups" className="mt-0 mb-6">
+          <NetworkGroups />
+        </TabsContent>
+
+        <TabsContent value="profile" className="mt-0 mb-6">
+          <NetworkProfile />
+        </TabsContent>
+
+        <TabsList className="flex flex-wrap justify-start gap-1 w-auto mt-auto">
           <TabsTrigger value="feed" className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4" />
             <span className="hidden sm:inline">Feed</span>
@@ -55,30 +79,6 @@ export function LearnerNetwork() {
             <span className="hidden sm:inline">Profile</span>
           </TabsTrigger>
         </TabsList>
-
-        <TabsContent value="feed" className="mt-6">
-          <NetworkFeed />
-        </TabsContent>
-
-        <TabsContent value="connections" className="mt-6">
-          <NetworkConnections />
-        </TabsContent>
-
-        <TabsContent value="messages" className="mt-6">
-          <NetworkMessages />
-        </TabsContent>
-
-        <TabsContent value="events" className="mt-6">
-          <NetworkEvents />
-        </TabsContent>
-
-        <TabsContent value="groups" className="mt-6">
-          <NetworkGroups />
-        </TabsContent>
-
-        <TabsContent value="profile" className="mt-6">
-          <NetworkProfile />
-        </TabsContent>
       </Tabs>
     </div>
   );
