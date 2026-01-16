@@ -29,7 +29,7 @@ export function LearnerNetwork() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid grid-cols-3 lg:grid-cols-6 w-full">
+        <TabsList className="flex flex-wrap justify-start gap-1 w-auto">
           <TabsTrigger value="feed" className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4" />
             <span className="hidden sm:inline">Feed</span>
