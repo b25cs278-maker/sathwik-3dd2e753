@@ -8,6 +8,7 @@ import {
   ArrowRight, Sparkles, Zap, Globe, MessageSquare
 } from "lucide-react";
 import heroIllustration from "@/assets/hero-illustration.png";
+import { useRealtimeStats } from "@/hooks/useRealtimeStats";
 
 const features = [
   {
@@ -42,14 +43,23 @@ const features = [
   },
 ];
 
-const stats = [
-  { value: "50K+", label: "Active Learners" },
-  { value: "200+", label: "AI Projects" },
-  { value: "15K", label: "Eco Solutions" },
-  { value: "98%", label: "Success Rate" },
-];
+// Helper to format numbers
+const formatNumber = (num: number): string => {
+  if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+  if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+  return num.toString();
+};
 
 export default function Index() {
+  const { stats, isLoading } = useRealtimeStats();
+
+  const displayStats = [
+    { value: formatNumber(stats.totalLearners), label: "Active Learners", suffix: "+" },
+    { value: formatNumber(stats.completedTasks), label: "Tasks Completed", suffix: "+" },
+    { value: formatNumber(stats.totalPoints), label: "Points Earned", suffix: "" },
+    { value: `${stats.successRate}%`, label: "Success Rate", suffix: "" },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -114,11 +124,13 @@ export default function Index() {
                 </Link>
               </div>
               
-              {/* Stats */}
+              {/* Stats - Real-time data */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-lg lg:max-w-none mx-auto lg:mx-0">
-                {stats.map((stat, i) => (
+                {displayStats.map((stat, i) => (
                   <div key={i} className="text-center lg:text-left animate-fade-in" style={{ animationDelay: `${i * 100 + 200}ms` }}>
-                    <p className="text-2xl md:text-3xl font-display font-bold text-foreground">{stat.value}</p>
+                    <p className={`text-2xl md:text-3xl font-display font-bold text-foreground transition-all duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
+                      {stat.value}{stat.suffix}
+                    </p>
                     <p className="text-xs md:text-sm text-muted-foreground">{stat.label}</p>
                   </div>
                 ))}
