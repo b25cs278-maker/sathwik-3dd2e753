@@ -152,19 +152,6 @@ export default function Index() {
                   />
                 </div>
                 
-                {/* Floating Badge */}
-                <div className="absolute -bottom-4 -left-4 md:-bottom-6 md:-left-6 bg-card rounded-xl p-4 shadow-lg border border-border/50 animate-float delay-300">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-eco-leaf flex items-center justify-center">
-                      <Users className="h-5 w-5 text-primary-foreground" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">12K+ Learners</p>
-                      <p className="text-xs text-muted-foreground">Joined this month</p>
-                    </div>
-                  </div>
-                </div>
-                
                 {/* Floating Badge Right */}
                 <div className="absolute -top-4 -right-4 md:-top-6 md:-right-6 bg-card rounded-xl p-4 shadow-lg border border-border/50 animate-float delay-500">
                   <div className="flex items-center gap-3">
