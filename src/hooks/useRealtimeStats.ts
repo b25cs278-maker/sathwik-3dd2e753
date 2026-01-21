@@ -33,10 +33,10 @@ export function useRealtimeStats() {
       // Calculate total points
       const totalPoints = profilesResult.data?.reduce((sum, p) => sum + (p.points || 0), 0) || 0;
       
-      // Calculate success rate (default to 98 if no submissions yet)
+      // Calculate success rate based on actual data
       const successRate = totalSubmissions > 0 
         ? Math.round((approvedSubmissions / totalSubmissions) * 100) 
-        : 98;
+        : 0;
 
       setStats({
         totalLearners,
