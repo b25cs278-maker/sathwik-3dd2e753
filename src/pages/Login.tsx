@@ -17,18 +17,40 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { signIn, user, role } = useAuth();
+  const { signIn, signOut, user, role } = useAuth();
 
-  // Redirect authenticated users
+  // Redirect authenticated users based on their role
   useEffect(() => {
-    if (user) {
+    if (user && role) {
+      // If user selected admin tab but isn't admin, sign them out
+      if (loginType === "admin" && role !== "admin") {
+        signOut();
+        toast({
+          title: "Access Denied",
+          description: "You don't have admin privileges. Please use the Student tab.",
+          variant: "destructive",
+        });
+        return;
+      }
+      // If user selected student tab but is admin, sign them out  
+      if (loginType === "student" && role === "admin") {
+        signOut();
+        toast({
+          title: "Access Denied", 
+          description: "Admin accounts must use the Admin tab to login.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Redirect to appropriate dashboard
       if (role === "admin") {
-        navigate("/admin");
+        navigate("/admin/dashboard");
       } else {
-        navigate("/dashboard");
+        navigate("/student/dashboard");
       }
     }
-  }, [user, role, navigate]);
+  }, [user, role, loginType, navigate, signOut, toast]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,11 +175,6 @@ export default function Login() {
               )}
             </Button>
 
-            {loginType === "admin" && (
-              <p className="text-xs text-center text-muted-foreground">
-                Demo mode: Access admin dashboard without real credentials.
-              </p>
-            )}
           </form>
 
           <div className="mt-6 text-center text-sm text-muted-foreground">

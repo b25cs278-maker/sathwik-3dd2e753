@@ -79,12 +79,12 @@ const App = () => (
               } />
               {/* Admin Dashboard */}
               <Route path="/admin" element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredRole="admin">
                   <AdminDashboard />
                 </ProtectedRoute>
               } />
               <Route path="/admin/dashboard" element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredRole="admin">
                   <AdminDashboard />
                 </ProtectedRoute>
               } />
@@ -101,7 +101,7 @@ const App = () => (
                 </ProtectedRoute>
               } />
               <Route path="/admin/review" element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredRole="admin">
                   <AdminReview />
                 </ProtectedRoute>
               } />
