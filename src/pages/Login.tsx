@@ -75,7 +75,7 @@ export default function Login() {
         variant: "destructive",
       });
       setLoading(false);
-    } else {
+      setLoading(false);
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",

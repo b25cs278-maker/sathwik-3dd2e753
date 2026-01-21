@@ -16,7 +16,7 @@ const tracks = [
     description: "Learn AI concepts, data handling, and predictive logic through hands-on projects",
     projects: ["Chatbots", "Sentiment Analysis", "Predictive Dashboards"],
     skills: ["Data Handling", "Predictive Logic", "AI Concepts"],
-    lessonsCount: 12,
+    lessonsCount: 6,
     projectsCount: 6,
   },
   {
@@ -29,7 +29,7 @@ const tracks = [
     description: "Solve environmental problems with coding logic, data visualization, and analysis",
     projects: ["Waste Sorting Game", "CO₂ Tracker", "Recycling Dashboard"],
     skills: ["Data Visualization", "Problem Solving", "Environmental Analysis"],
-    lessonsCount: 12,
+    lessonsCount: 6,
     projectsCount: 6,
   },
 ];
