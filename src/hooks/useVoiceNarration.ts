@@ -116,9 +116,6 @@ export function useVoiceNarration(options: UseVoiceNarrationOptions = {}) {
         return;
       }
 
-      // Cancel anything pending before speaking the next chunk.
-      window.speechSynthesis.cancel();
-
       const utterance = new SpeechSynthesisUtterance(chunk);
       utterance.rate = rate;
       utterance.pitch = pitch;
@@ -159,6 +156,9 @@ export function useVoiceNarration(options: UseVoiceNarrationOptions = {}) {
       speakSessionIdRef.current += 1;
       const sessionId = speakSessionIdRef.current;
 
+      // Clear any leftover queued/pending speech before starting a fresh session.
+      window.speechSynthesis.cancel();
+
       queueRef.current = splitIntoChunks(text);
       queueIndexRef.current = 0;
       setIsSpeaking(queueRef.current.length > 0);
@@ -167,6 +167,22 @@ export function useVoiceNarration(options: UseVoiceNarrationOptions = {}) {
     },
     [isSupported, speakNextChunk, splitIntoChunks]
   );
+
+  // Keep-alive retry: some browsers stop early; retry the current chunk if speech halts unexpectedly.
+  useEffect(() => {
+    if (!isSupported) return;
+    if (!isSpeaking || isPaused) return;
+
+    const interval = window.setInterval(() => {
+      if (!isSpeaking || isPaused) return;
+      if (window.speechSynthesis.speaking || window.speechSynthesis.pending) return;
+      if (!queueRef.current[queueIndexRef.current]) return;
+
+      speakNextChunk(speakSessionIdRef.current);
+    }, 1200);
+
+    return () => window.clearInterval(interval);
+  }, [isPaused, isSpeaking, isSupported, speakNextChunk]);
 
   const pause = useCallback(() => {
     if (isSupported && isSpeaking) {
