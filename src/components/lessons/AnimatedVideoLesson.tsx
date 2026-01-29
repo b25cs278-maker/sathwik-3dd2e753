@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -6,6 +6,7 @@ import {
   Play, Pause, SkipForward, SkipBack, Volume2, VolumeX,
   Maximize, ChevronRight
 } from "lucide-react";
+import { useVoiceNarration } from "@/hooks/useVoiceNarration";
 
 interface AnimationScene {
   id: string;
@@ -42,11 +43,37 @@ export function AnimatedVideoLesson({
   const [progress, setProgress] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(true);
+  const lastNarrationRef = useRef<string>("");
+
+  const { speak, stop, isSpeaking, isSupported } = useVoiceNarration({
+    rate: 0.85,
+    pitch: 1.0,
+  });
 
   const scene = scenes[currentScene];
   const totalDuration = scenes.reduce((acc, s) => acc + s.duration, 0);
   const currentTime = scenes.slice(0, currentScene).reduce((acc, s) => acc + s.duration, 0) + 
     (progress / 100) * scene.duration;
+
+  // Handle voice narration when scene changes or play state changes
+  useEffect(() => {
+    if (isPlaying && !isMuted && isSupported && scene.narration) {
+      // Only speak if narration changed
+      if (lastNarrationRef.current !== scene.narration) {
+        lastNarrationRef.current = scene.narration;
+        speak(scene.narration);
+      }
+    } else if (!isPlaying || isMuted) {
+      stop();
+    }
+  }, [isPlaying, isMuted, currentScene, scene.narration, speak, stop, isSupported]);
+
+  // Stop narration when component unmounts
+  useEffect(() => {
+    return () => {
+      stop();
+    };
+  }, [stop]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -61,6 +88,7 @@ export function AnimatedVideoLesson({
               return 0;
             } else {
               setIsPlaying(false);
+              stop();
               onComplete();
               return 100;
             }
@@ -71,12 +99,19 @@ export function AnimatedVideoLesson({
     }
 
     return () => clearInterval(interval);
-  }, [isPlaying, currentScene, scene.duration, scenes.length, onComplete, onSceneChange]);
+  }, [isPlaying, currentScene, scene.duration, scenes.length, onComplete, onSceneChange, stop]);
 
-  const handlePlayPause = () => setIsPlaying(!isPlaying);
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      stop();
+    }
+    setIsPlaying(!isPlaying);
+  };
   
   const handleNext = () => {
     if (currentScene < scenes.length - 1) {
+      stop();
+      lastNarrationRef.current = "";
       setCurrentScene(prev => prev + 1);
       setProgress(0);
       onSceneChange?.(currentScene + 1);
@@ -84,6 +119,8 @@ export function AnimatedVideoLesson({
   };
 
   const handlePrev = () => {
+    stop();
+    lastNarrationRef.current = "";
     if (currentScene > 0) {
       setCurrentScene(prev => prev - 1);
       setProgress(0);
@@ -91,6 +128,13 @@ export function AnimatedVideoLesson({
     } else {
       setProgress(0);
     }
+  };
+
+  const handleMuteToggle = () => {
+    if (!isMuted) {
+      stop();
+    }
+    setIsMuted(!isMuted);
   };
 
   const formatTime = (seconds: number) => {
@@ -422,7 +466,7 @@ export function AnimatedVideoLesson({
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setIsMuted(!isMuted)}
+                  onClick={handleMuteToggle}
                   className="h-8 w-8"
                 >
                   {isMuted ? (
