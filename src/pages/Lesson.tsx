@@ -870,7 +870,7 @@ export default function Lesson() {
   };
 
   const handleContinue = () => {
-    toast.success("Lesson completed! You unlocked a new project.");
+    toast.success("Lesson completed! Take the module quiz to unlock the next lesson.");
     navigate(`/track/${trackId}`);
   };
 
@@ -908,10 +908,10 @@ export default function Lesson() {
               title={lesson.title}
               onComplete={handleVideoComplete}
             />
-            <div className="mt-6 flex justify-end">
-              <Button onClick={handleVideoComplete} variant="outline">
-                Skip to Quiz <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+            <div className="mt-6 p-4 bg-muted/50 rounded-lg border border-border">
+              <p className="text-sm text-muted-foreground text-center">
+                📚 Complete the video lesson to unlock the quiz. No skipping allowed!
+              </p>
             </div>
           </div>
         )}
@@ -1016,13 +1016,18 @@ export default function Lesson() {
                   <Trophy className="w-10 h-10 text-white" />
                 </div>
                 <h2 className="text-2xl font-bold mb-2">Lesson Complete!</h2>
-                <p className="text-muted-foreground mb-6">
+                <p className="text-muted-foreground mb-4">
                   You got {correctAnswers} out of {lesson.quiz.length} questions correct.
                   {correctAnswers === lesson.quiz.length && " Perfect score! 🎉"}
                 </p>
+                <div className="p-3 bg-amber-50 dark:bg-amber-950 rounded-lg border border-amber-200 dark:border-amber-800 mb-6">
+                  <p className="text-sm text-amber-800 dark:text-amber-200">
+                    🎯 <strong>Next Step:</strong> Take the Module Quiz on the track page to unlock the next lesson and project!
+                  </p>
+                </div>
                 <div className="flex flex-col gap-3">
                   <Button onClick={handleContinue} className="w-full">
-                    Continue to Track
+                    Go to Module Quiz
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
