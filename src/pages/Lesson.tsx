@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AnimatedVideoLesson } from "@/components/lessons/AnimatedVideoLesson";
+import { InteractiveVideoLesson } from "@/components/lessons/InteractiveVideoLesson";
+import { getInteractiveLesson } from "@/data/allLessonContent";
 import { 
   ArrowLeft, ArrowRight, CheckCircle2, Brain, Leaf,
   Lightbulb, BookOpen, HelpCircle, PlayCircle, Trophy
@@ -1005,11 +1007,20 @@ export default function Lesson() {
         {/* Video Phase */}
         {phase === "video" && (
           <div className="max-w-4xl mx-auto">
-            <AnimatedVideoLesson
-              scenes={lesson.videoScenes}
-              title={lesson.title}
-              onComplete={handleVideoComplete}
-            />
+            {/* Use interactive lessons for AI modules */}
+            {trackId === "ai-innovation" && getInteractiveLesson(lessonId || "") ? (
+              <InteractiveVideoLesson
+                scenes={getInteractiveLesson(lessonId || "")!.videoScenes}
+                title={getInteractiveLesson(lessonId || "")!.title}
+                onComplete={handleVideoComplete}
+              />
+            ) : (
+              <AnimatedVideoLesson
+                scenes={lesson.videoScenes}
+                title={lesson.title}
+                onComplete={handleVideoComplete}
+              />
+            )}
             <div className="mt-6 p-4 bg-muted/50 rounded-lg border border-border">
               <p className="text-sm text-muted-foreground text-center">
                 📚 Complete the video lesson to unlock the quiz. No skipping allowed!
