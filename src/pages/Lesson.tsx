@@ -118,6 +118,18 @@ const lessonContent: Record<string, LessonContent> = {
         options: ["A regular calculator", "A voice assistant like Siri", "A paper book", "A bicycle"],
         correctAnswer: 1,
         explanation: "Voice assistants use AI to understand your speech and respond intelligently!"
+      },
+      {
+        question: "What makes AI different from a regular computer program?",
+        options: ["AI uses electricity", "AI can learn and improve over time", "AI is always faster", "AI only works on phones"],
+        correctAnswer: 1,
+        explanation: "Unlike regular programs that follow fixed rules, AI can learn from experience and improve its performance!"
+      },
+      {
+        question: "Which of these tasks can AI help with?",
+        options: ["Only playing chess", "Only recognizing faces", "Many tasks like speech, images, predictions", "AI cannot do any tasks"],
+        correctAnswer: 2,
+        explanation: "AI is versatile and can help with many different tasks including speech recognition, image analysis, predictions, and more!"
       }
     ]
   },
@@ -188,6 +200,24 @@ const lessonContent: Record<string, LessonContent> = {
         options: ["It makes the AI faster", "It helps AI work for more situations", "It uses less computer memory", "It looks more colorful"],
         correctAnswer: 1,
         explanation: "Diverse data helps AI learn about many different situations, making it more useful and accurate in the real world!"
+      },
+      {
+        question: "What happens if AI is trained with only limited data?",
+        options: ["It becomes smarter", "It may make wrong conclusions", "It works perfectly", "Nothing changes"],
+        correctAnswer: 1,
+        explanation: "Limited data can lead to biased or incorrect conclusions - like thinking all animals are cats if you only show cat pictures!"
+      },
+      {
+        question: "Which of these is a type of data AI can learn from?",
+        options: ["Only numbers", "Only text", "Numbers, text, images, and more", "AI cannot learn from data"],
+        correctAnswer: 2,
+        explanation: "AI can learn from many types of data including numbers, text, images, audio, and even video!"
+      },
+      {
+        question: "Why is 'clean data' important for AI?",
+        options: ["It looks nicer", "It reduces mistakes and improves accuracy", "It's cheaper to store", "It's not important"],
+        correctAnswer: 1,
+        explanation: "Clean, accurate data helps AI learn correctly and make fewer mistakes in its predictions!"
       }
     ]
   },
@@ -246,6 +276,24 @@ const lessonContent: Record<string, LessonContent> = {
         options: ["It asks a human to identify each face", "It learns patterns like eye and nose positions", "It reads the person's name tag", "It guesses randomly"],
         correctAnswer: 1,
         explanation: "AI learns that faces have specific patterns - two eyes, a nose, and a mouth in predictable positions!"
+      },
+      {
+        question: "What is pattern recognition?",
+        options: ["Drawing patterns on paper", "Finding regularities and repeated elements in data", "A type of game", "Random guessing"],
+        correctAnswer: 1,
+        explanation: "Pattern recognition is identifying regularities, trends, or repeated elements in information!"
+      },
+      {
+        question: "Which of these uses pattern recognition?",
+        options: ["A simple light switch", "Email spam filters", "A paper notebook", "A regular clock"],
+        correctAnswer: 1,
+        explanation: "Spam filters use pattern recognition to identify characteristics common to spam emails!"
+      },
+      {
+        question: "What does AI analyze to find patterns in images?",
+        options: ["The image's file name", "Individual pixels and their arrangements", "Only the image colors", "Nothing - it guesses"],
+        correctAnswer: 1,
+        explanation: "AI breaks down images into pixels and analyzes how they're arranged to find patterns!"
       }
     ]
   },
@@ -304,6 +352,24 @@ const lessonContent: Record<string, LessonContent> = {
         options: ["Generate a random response", "Process and understand your input", "Ask another human for help", "Ignore the message"],
         correctAnswer: 1,
         explanation: "The chatbot first processes your input to understand what you're asking before it can respond!"
+      },
+      {
+        question: "What is 'intent' in chatbot design?",
+        options: ["The chatbot's appearance", "What the user is trying to accomplish", "The chatbot's speed", "A programming language"],
+        correctAnswer: 1,
+        explanation: "Intent is what the user wants to achieve with their message - like asking a question or making a request!"
+      },
+      {
+        question: "Which of these is an example of a chatbot?",
+        options: ["A calculator app", "A voice assistant like Alexa", "A photo gallery", "A video player"],
+        correctAnswer: 1,
+        explanation: "Voice assistants like Alexa, Siri, and Google Assistant are all examples of AI chatbots!"
+      },
+      {
+        question: "How do modern chatbots improve over time?",
+        options: ["They don't improve", "They learn from conversations", "Someone rewrites all their code", "They only work for a limited time"],
+        correctAnswer: 1,
+        explanation: "Modern chatbots learn from conversations to understand language better and give more helpful responses!"
       }
     ]
   },
@@ -373,6 +439,24 @@ const lessonContent: Record<string, LessonContent> = {
         options: ["The word is too short", "It could mean positive or negative depending on context", "AI cannot read English", "The sentence has no sentiment"],
         correctAnswer: 1,
         explanation: "Slang like 'sick' can mean 'cool/awesome' (positive) or 'bad/gross' (negative) - AI needs context to decide!"
+      },
+      {
+        question: "What are the three main sentiment categories?",
+        options: ["Hot, cold, warm", "Positive, negative, neutral", "Fast, slow, medium", "Big, small, average"],
+        correctAnswer: 1,
+        explanation: "Sentiment is typically classified as positive (happy), negative (upset), or neutral (factual)!"
+      },
+      {
+        question: "What does AI analyze to detect sentiment?",
+        options: ["Only the length of text", "Words, context, intensity, and emojis", "Only punctuation marks", "The author's name"],
+        correctAnswer: 1,
+        explanation: "AI looks at word choice, context, how strong the emotion is, and even emojis to understand sentiment!"
+      },
+      {
+        question: "Which business might use sentiment analysis?",
+        options: ["A company tracking customer reviews", "A bakery counting bread", "A construction site", "A parking lot"],
+        correctAnswer: 0,
+        explanation: "Companies use sentiment analysis to understand how customers feel about their products from reviews and social media!"
       }
     ]
   },
@@ -445,6 +529,24 @@ const lessonContent: Record<string, LessonContent> = {
         options: ["AI is always 100% accurate", "Patterns can change and past doesn't guarantee future", "Predictions don't use data", "Models only work on weekdays"],
         correctAnswer: 1,
         explanation: "Patterns can change over time, and past data doesn't always predict the future perfectly!"
+      },
+      {
+        question: "What is a predictive model?",
+        options: ["A toy model of a building", "A system that forecasts future outcomes based on data", "A fashion model", "A type of car"],
+        correctAnswer: 1,
+        explanation: "A predictive model uses historical data and patterns to make informed predictions about future events!"
+      },
+      {
+        question: "Which of these uses predictive AI?",
+        options: ["A simple calculator", "Weather forecasting systems", "A paper calendar", "A regular clock"],
+        correctAnswer: 1,
+        explanation: "Weather forecasting uses predictive AI to analyze patterns and predict future weather conditions!"
+      },
+      {
+        question: "What is the first step in building a predictive model?",
+        options: ["Make random guesses", "Collect historical data", "Skip all the steps", "Only use today's data"],
+        correctAnswer: 1,
+        explanation: "Building a predictive model starts with collecting historical data to find patterns that can help predict the future!"
       }
     ]
   },
