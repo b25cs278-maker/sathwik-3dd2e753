@@ -1,14 +1,18 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { 
   Brain, Leaf, Lock, CheckCircle2, Play, BookOpen, 
-  Rocket, Trophy, ArrowRight, Clock, Star
+  Rocket, Trophy, ArrowRight, Clock, Star, HelpCircle
 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { ModuleQuiz } from "@/components/tracks/ModuleQuiz";
+import { aiInnovationQuizzes, environmentalInnovationQuizzes } from "@/data/moduleQuizzes";
+import { toast } from "sonner";
 
 interface Lesson {
   id: string;
@@ -91,6 +95,11 @@ export default function TrackDetail() {
 
   const [completedLessons, setCompletedLessons] = useLocalStorage<string[]>(`${trackId}-lessons`, []);
   const [projectScores, setProjectScores] = useLocalStorage<Record<string, number>>(`${trackId}-projects`, {});
+  const [quizScores, setQuizScores] = useLocalStorage<Record<string, number>>(`${trackId}-quizzes`, {});
+  const [activeQuiz, setActiveQuiz] = useState<string | null>(null);
+
+  // Get the quiz data based on track
+  const quizData = trackId === "ai-innovation" ? aiInnovationQuizzes : environmentalInnovationQuizzes;
 
   if (!track) {
     return (
@@ -111,11 +120,32 @@ export default function TrackDetail() {
 
   const isLessonUnlocked = (index: number) => {
     if (index === 0) return true;
-    return completedLessons.includes(track.lessons[index - 1].id);
+    // Need to complete previous lesson AND its quiz
+    const prevLessonId = track.lessons[index - 1].id;
+    return completedLessons.includes(prevLessonId) && quizScores[prevLessonId] !== undefined && quizScores[prevLessonId] >= 70;
   };
 
   const isProjectUnlocked = (lessonRequired: string) => {
-    return completedLessons.includes(lessonRequired);
+    // Project unlocks after completing lesson AND passing quiz
+    return completedLessons.includes(lessonRequired) && quizScores[lessonRequired] !== undefined && quizScores[lessonRequired] >= 70;
+  };
+
+  const isQuizUnlocked = (lessonId: string) => {
+    return completedLessons.includes(lessonId);
+  };
+
+  const isQuizCompleted = (lessonId: string) => {
+    return quizScores[lessonId] !== undefined && quizScores[lessonId] >= 70;
+  };
+
+  const handleQuizComplete = (lessonId: string, score: number, passed: boolean) => {
+    setQuizScores({ ...quizScores, [lessonId]: score });
+    if (passed) {
+      toast.success(`Quiz passed with ${score}%! Next module unlocked.`);
+    } else {
+      toast.error(`Score: ${score}%. You need 70% to pass. Try again!`);
+    }
+    setActiveQuiz(null);
   };
 
   return (
@@ -162,46 +192,112 @@ export default function TrackDetail() {
                 const isCompleted = completedLessons.includes(lesson.id);
                 const unlocked = isLessonUnlocked(index);
                 const config = levelConfig[lesson.level];
+                const quizPassed = isQuizCompleted(lesson.id);
+                const quizUnlocked = isQuizUnlocked(lesson.id);
 
                 return (
-                  <Card 
-                    key={lesson.id} 
-                    className={`transition-all ${!unlocked ? 'opacity-60' : ''} ${isCompleted ? 'border-primary/50 bg-primary/5' : ''}`}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex items-start gap-4">
-                        <div className={`p-2 rounded-lg ${isCompleted ? 'bg-primary/20' : 'bg-muted'}`}>
-                          {isCompleted ? (
-                            <CheckCircle2 className="h-5 w-5 text-primary" />
-                          ) : unlocked ? (
-                            <Play className="h-5 w-5 text-muted-foreground" />
-                          ) : (
-                            <Lock className="h-5 w-5 text-muted-foreground" />
+                  <div key={lesson.id} className="space-y-2">
+                    {/* Lesson Card */}
+                    <Card 
+                      className={`transition-all ${!unlocked ? 'opacity-60' : ''} ${isCompleted ? 'border-primary/50 bg-primary/5' : ''}`}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-start gap-4">
+                          <div className={`p-2 rounded-lg ${isCompleted ? 'bg-primary/20' : 'bg-muted'}`}>
+                            {isCompleted ? (
+                              <CheckCircle2 className="h-5 w-5 text-primary" />
+                            ) : unlocked ? (
+                              <Play className="h-5 w-5 text-muted-foreground" />
+                            ) : (
+                              <Lock className="h-5 w-5 text-muted-foreground" />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className={`text-xs font-medium ${config.color}`}>{config.label}</span>
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Clock className="h-3 w-3" /> {lesson.duration}
+                              </span>
+                            </div>
+                            <h3 className="font-semibold text-foreground">{lesson.title}</h3>
+                            <p className="text-sm text-muted-foreground">{lesson.description}</p>
+                          </div>
+                          {unlocked && !isCompleted && (
+                            <Link to={`/lesson/${trackId}/${lesson.id}`}>
+                              <Button size="sm">Start</Button>
+                            </Link>
+                          )}
+                          {isCompleted && (
+                            <Link to={`/lesson/${trackId}/${lesson.id}`}>
+                              <Button size="sm" variant="outline">Review</Button>
+                            </Link>
                           )}
                         </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className={`text-xs font-medium ${config.color}`}>{config.label}</span>
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Clock className="h-3 w-3" /> {lesson.duration}
-                            </span>
+                      </CardContent>
+                    </Card>
+
+                    {/* Quiz Card - appears after lesson is completed */}
+                    {quizUnlocked && (
+                      <Card 
+                        className={`ml-8 transition-all border-l-4 ${quizPassed ? 'border-l-green-500 bg-green-50/50' : 'border-l-amber-500 bg-amber-50/50'}`}
+                      >
+                        <CardContent className="p-3">
+                          <div className="flex items-center gap-3">
+                            <div className={`p-2 rounded-lg ${quizPassed ? 'bg-green-100' : 'bg-amber-100'}`}>
+                              {quizPassed ? (
+                                <Trophy className="h-4 w-4 text-green-600" />
+                              ) : (
+                                <HelpCircle className="h-4 w-4 text-amber-600" />
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-medium text-sm">
+                                {lesson.title} Quiz
+                              </h4>
+                              <p className="text-xs text-muted-foreground">
+                                {quizPassed 
+                                  ? `Passed with ${quizScores[lesson.id]}%` 
+                                  : 'Complete to unlock next module'
+                                }
+                              </p>
+                            </div>
+                            {!quizPassed && (
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                className="border-amber-300 hover:bg-amber-100"
+                                onClick={() => setActiveQuiz(lesson.id)}
+                              >
+                                Take Quiz
+                              </Button>
+                            )}
+                            {quizPassed && (
+                              <Button 
+                                size="sm" 
+                                variant="ghost"
+                                onClick={() => setActiveQuiz(lesson.id)}
+                              >
+                                Retake
+                              </Button>
+                            )}
                           </div>
-                          <h3 className="font-semibold text-foreground">{lesson.title}</h3>
-                          <p className="text-sm text-muted-foreground">{lesson.description}</p>
-                        </div>
-                        {unlocked && !isCompleted && (
-                          <Link to={`/lesson/${trackId}/${lesson.id}`}>
-                            <Button size="sm">Start</Button>
-                          </Link>
-                        )}
-                        {isCompleted && (
-                          <Link to={`/lesson/${trackId}/${lesson.id}`}>
-                            <Button size="sm" variant="outline">Review</Button>
-                          </Link>
-                        )}
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* Active Quiz Modal/Inline */}
+                    {activeQuiz === lesson.id && quizData[lesson.id] && (
+                      <div className="ml-8">
+                        <ModuleQuiz
+                          lessonId={lesson.id}
+                          lessonTitle={lesson.title}
+                          questions={quizData[lesson.id]}
+                          onComplete={(score, passed) => handleQuizComplete(lesson.id, score, passed)}
+                          trackColor={track.color}
+                        />
                       </div>
-                    </CardContent>
-                  </Card>
+                    )}
+                  </div>
                 );
               })}
             </div>
