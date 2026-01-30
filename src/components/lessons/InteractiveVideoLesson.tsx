@@ -641,12 +641,21 @@ export function InteractiveVideoLesson({
               />
             </div>
 
-            {/* Scene elements - always visible in the center */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative w-full h-full">
-                {scene.elements.map((element, index) => renderElement(element, index))}
-              </div>
-            </div>
+            {/* Scene elements - visible when playing */}
+            <AnimatePresence>
+              {isPlaying && (
+                <motion.div 
+                  className="absolute inset-0 flex items-center justify-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <div className="relative w-full h-full">
+                    {scene.elements.map((element, index) => renderElement(element, index))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
             
             {/* Key takeaway popup */}
             <AnimatePresence>
