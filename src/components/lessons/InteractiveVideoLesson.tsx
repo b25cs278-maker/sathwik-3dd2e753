@@ -666,19 +666,24 @@ export function InteractiveVideoLesson({
               )}
             </AnimatePresence>
             
-            {/* Narration text - at the bottom */}
-            <motion.div
-              className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <div className="bg-background/80 backdrop-blur-md rounded-xl p-4 border border-border/50 shadow-lg">
-                <p className="text-center text-foreground text-sm md:text-base leading-relaxed">
-                  {scene.narration}
-                </p>
-              </div>
-            </motion.div>
+            {/* Narration text - subtitle at bottom, only shown when playing */}
+            <AnimatePresence>
+              {isPlaying && !waitingForInteraction && (
+                <motion.div
+                  className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full max-w-3xl px-6 z-20"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="bg-black/75 backdrop-blur-sm rounded-lg px-6 py-3 shadow-xl">
+                    <p className="text-center text-white text-base md:text-lg leading-relaxed font-medium">
+                      {scene.narration}
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Play button overlay */}
             {!isPlaying && !waitingForInteraction && (
