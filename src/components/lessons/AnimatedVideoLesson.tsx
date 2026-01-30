@@ -7,6 +7,7 @@ import {
   Maximize, ChevronRight
 } from "lucide-react";
 import { useVoiceNarration } from "@/hooks/useVoiceNarration";
+import { KaraokeSubtitle } from "./KaraokeSubtitle";
 
 interface AnimationScene {
   id: string;
@@ -387,19 +388,15 @@ export function AnimatedVideoLesson({
             {/* Scene elements */}
             {isPlaying && scene.elements.map((element, index) => renderElement(element, index))}
             
-            {/* Narration text at bottom */}
-            <motion.div
-              className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <div className="bg-background/80 backdrop-blur-md rounded-xl p-4 border border-border/50 shadow-lg">
-                <p className="text-center text-foreground text-sm md:text-base leading-relaxed">
-                  {scene.narration}
-                </p>
-              </div>
-            </motion.div>
+            {/* Karaoke-style subtitle - word by word sync with voice */}
+            <AnimatePresence>
+              <KaraokeSubtitle
+                text={scene.narration}
+                isPlaying={isPlaying}
+                isSpeaking={isSpeaking}
+                duration={scene.duration}
+              />
+            </AnimatePresence>
 
             {/* Play button overlay when paused */}
             {!isPlaying && (
