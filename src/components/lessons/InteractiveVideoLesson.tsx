@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useVoiceNarration } from "@/hooks/useVoiceNarration";
 import { cn } from "@/lib/utils";
+import { KaraokeSubtitle } from "./KaraokeSubtitle";
 
 export interface InteractiveElement {
   type: "click-reveal" | "drag-match" | "choice" | "highlight-tap";
@@ -666,22 +667,15 @@ export function InteractiveVideoLesson({
               )}
             </AnimatePresence>
             
-            {/* Narration text - subtitle at bottom, only shown when playing */}
+            {/* Karaoke-style subtitle - word by word sync with voice */}
             <AnimatePresence>
-              {isPlaying && !waitingForInteraction && (
-                <motion.div
-                  className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full max-w-3xl px-6 z-20"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="bg-black/75 backdrop-blur-sm rounded-lg px-6 py-3 shadow-xl">
-                    <p className="text-center text-white text-base md:text-lg leading-relaxed font-medium">
-                      {scene.narration}
-                    </p>
-                  </div>
-                </motion.div>
+              {!waitingForInteraction && (
+                <KaraokeSubtitle
+                  text={scene.narration}
+                  isPlaying={isPlaying}
+                  isSpeaking={isSpeaking}
+                  duration={scene.duration}
+                />
               )}
             </AnimatePresence>
 
