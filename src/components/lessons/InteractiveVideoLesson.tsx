@@ -640,8 +640,12 @@ export function InteractiveVideoLesson({
               />
             </div>
 
-            {/* Scene elements */}
-            {isPlaying && scene.elements.map((element, index) => renderElement(element, index))}
+            {/* Scene elements - always visible in the center */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="relative w-full h-full">
+                {scene.elements.map((element, index) => renderElement(element, index))}
+              </div>
+            </div>
             
             {/* Key takeaway popup */}
             <AnimatePresence>
