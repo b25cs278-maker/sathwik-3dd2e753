@@ -67,29 +67,28 @@ export function KaraokeSubtitle({ text, isPlaying, isSpeaking, duration }: Karao
 
   return (
     <motion.div
-      className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full max-w-4xl px-4 z-20"
-      initial={{ opacity: 0, y: 10 }}
+      className="absolute bottom-4 left-1/2 -translate-x-1/2 w-auto max-w-[90%] px-2 z-20"
+      initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 10 }}
-      transition={{ duration: 0.3 }}
+      exit={{ opacity: 0, y: 5 }}
+      transition={{ duration: 0.2 }}
     >
-      <div className="bg-black/80 backdrop-blur-sm rounded-lg px-6 py-4 shadow-2xl">
-        <p className="text-center leading-relaxed text-base md:text-lg lg:text-xl">
+      <div className="bg-black/80 backdrop-blur-sm rounded-md px-4 py-2 shadow-lg">
+        <p className="text-center leading-relaxed text-xs md:text-sm">
           {words.map((word, index) => (
             <motion.span
               key={`${word}-${index}`}
               className={cn(
-                "inline-block mx-0.5 transition-all duration-150",
+                "inline-block mx-0.5 transition-all duration-100",
                 index <= currentWordIndex
-                  ? "text-white font-semibold"
+                  ? "text-white font-medium"
                   : "text-white/40"
               )}
               initial={false}
               animate={{
-                scale: index === currentWordIndex ? 1.05 : 1,
-                y: index === currentWordIndex ? -1 : 0,
+                scale: index === currentWordIndex ? 1.02 : 1,
               }}
-              transition={{ duration: 0.1 }}
+              transition={{ duration: 0.08 }}
             >
               {word}
             </motion.span>
