@@ -666,15 +666,15 @@ export function InteractiveVideoLesson({
               )}
             </AnimatePresence>
             
-            {/* Narration text - centered in the middle */}
+            {/* Narration text - at the bottom */}
             <motion.div
-              className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 }}
+              className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
             >
-              <div className="bg-background/90 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-border/50 shadow-2xl max-w-2xl">
-                <p className="text-center text-foreground text-base md:text-xl lg:text-2xl leading-relaxed font-medium">
+              <div className="bg-background/80 backdrop-blur-md rounded-xl p-4 border border-border/50 shadow-lg">
+                <p className="text-center text-foreground text-sm md:text-base leading-relaxed">
                   {scene.narration}
                 </p>
               </div>
