@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface KaraokeSubtitleProps {
@@ -8,6 +8,11 @@ interface KaraokeSubtitleProps {
   isSpeaking: boolean;
   duration: number; // scene duration in seconds
 }
+
+// Approximate words per line based on average word length
+const WORDS_PER_LINE = 8;
+const MAX_LINES = 3;
+const WORDS_TO_SHOW = WORDS_PER_LINE * MAX_LINES; // ~24 words visible at a time
 
 export function KaraokeSubtitle({ text, isPlaying, isSpeaking, duration }: KaraokeSubtitleProps) {
   const [currentWordIndex, setCurrentWordIndex] = useState(-1);
@@ -20,11 +25,34 @@ export function KaraokeSubtitle({ text, isPlaying, isSpeaking, duration }: Karao
 
   // Calculate time per word based on duration and word count
   const timePerWord = useMemo(() => {
-    // Estimate speaking rate - roughly 150 words per minute for clear narration
-    // But we also need to fit within the scene duration
-    const totalTime = Math.min(duration * 0.85, words.length * 0.35); // 350ms per word average
-    return (totalTime * 1000) / words.length; // in milliseconds
+    const totalTime = Math.min(duration * 0.85, words.length * 0.35);
+    return (totalTime * 1000) / words.length;
   }, [duration, words.length]);
+
+  // Calculate visible word range (sliding window around current word)
+  const visibleRange = useMemo(() => {
+    if (currentWordIndex < 0) {
+      return { start: 0, end: Math.min(WORDS_TO_SHOW, words.length) };
+    }
+    
+    // Keep current word in the middle-ish of the visible range
+    const halfWindow = Math.floor(WORDS_TO_SHOW / 2);
+    let start = Math.max(0, currentWordIndex - halfWindow);
+    let end = start + WORDS_TO_SHOW;
+    
+    // Adjust if we're near the end
+    if (end > words.length) {
+      end = words.length;
+      start = Math.max(0, end - WORDS_TO_SHOW);
+    }
+    
+    return { start, end };
+  }, [currentWordIndex, words.length]);
+
+  // Get visible words
+  const visibleWords = useMemo(() => {
+    return words.slice(visibleRange.start, visibleRange.end);
+  }, [words, visibleRange]);
 
   // Reset when text changes or playback starts
   useEffect(() => {
@@ -50,7 +78,7 @@ export function KaraokeSubtitle({ text, isPlaying, isSpeaking, duration }: Karao
       } else {
         setCurrentWordIndex(words.length - 1);
       }
-    }, 50); // Update every 50ms for smooth animation
+    }, 50);
 
     return () => clearInterval(interval);
   }, [isPlaying, isSpeaking, startTime, timePerWord, words.length]);
@@ -58,7 +86,6 @@ export function KaraokeSubtitle({ text, isPlaying, isSpeaking, duration }: Karao
   // Reset when speech ends
   useEffect(() => {
     if (!isSpeaking && currentWordIndex >= 0) {
-      // Keep showing all words highlighted when speech ends
       setCurrentWordIndex(words.length - 1);
     }
   }, [isSpeaking, currentWordIndex, words.length]);
@@ -67,32 +94,40 @@ export function KaraokeSubtitle({ text, isPlaying, isSpeaking, duration }: Karao
 
   return (
     <motion.div
-      className="absolute bottom-4 left-1/2 -translate-x-1/2 w-auto max-w-[90%] px-2 z-20"
+      className="absolute bottom-4 left-1/2 -translate-x-1/2 w-auto max-w-[85%] md:max-w-[70%] px-2 z-20"
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 5 }}
       transition={{ duration: 0.2 }}
     >
-      <div className="bg-black/80 backdrop-blur-sm rounded-md px-4 py-2 shadow-lg">
-        <p className="text-center leading-relaxed text-xs md:text-sm">
-          {words.map((word, index) => (
-            <motion.span
-              key={`${word}-${index}`}
-              className={cn(
-                "inline-block mx-0.5 transition-all duration-100",
-                index <= currentWordIndex
-                  ? "text-white font-medium"
-                  : "text-white/40"
-              )}
-              initial={false}
-              animate={{
-                scale: index === currentWordIndex ? 1.02 : 1,
-              }}
-              transition={{ duration: 0.08 }}
-            >
-              {word}
-            </motion.span>
-          ))}
+      <div className="bg-black/85 backdrop-blur-sm rounded-md px-4 py-2 shadow-lg">
+        <p className="text-center leading-relaxed text-xs md:text-sm line-clamp-3">
+          <AnimatePresence mode="popLayout">
+            {visibleWords.map((word, index) => {
+              const actualIndex = visibleRange.start + index;
+              return (
+                <motion.span
+                  key={`${actualIndex}-${word}`}
+                  className={cn(
+                    "inline-block mx-0.5 transition-colors duration-100",
+                    actualIndex <= currentWordIndex
+                      ? "text-white font-medium"
+                      : "text-white/40"
+                  )}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ 
+                    opacity: 1, 
+                    y: 0,
+                    scale: actualIndex === currentWordIndex ? 1.05 : 1,
+                  }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  {word}
+                </motion.span>
+              );
+            })}
+          </AnimatePresence>
         </p>
       </div>
     </motion.div>
