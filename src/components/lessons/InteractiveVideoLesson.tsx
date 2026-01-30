@@ -74,6 +74,16 @@ export function InteractiveVideoLesson({
   });
 
   const scene = scenes[currentScene];
+  
+  // Safety check - return early if no scenes
+  if (!scene) {
+    return (
+      <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl bg-background border border-border flex items-center justify-center">
+        <p className="text-muted-foreground">No content available</p>
+      </div>
+    );
+  }
+  
   const totalDuration = scenes.reduce((acc, s) => acc + s.duration, 0);
   const currentTime = scenes.slice(0, currentScene).reduce((acc, s) => acc + s.duration, 0) + 
     (progress / 100) * scene.duration;
