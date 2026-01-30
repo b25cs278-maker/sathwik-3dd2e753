@@ -133,14 +133,15 @@ export function useVoiceNarration(options: UseVoiceNarrationOptions = {}) {
       utterance.onend = () => {
         if (sessionId !== speakSessionIdRef.current) return;
         queueIndexRef.current += 1;
-        speakNextChunk(sessionId);
+        // Minimal delay to reduce gaps between chunks
+        setTimeout(() => speakNextChunk(sessionId), 50);
       };
 
       utterance.onerror = () => {
         if (sessionId !== speakSessionIdRef.current) return;
         // Skip the problematic chunk and continue.
         queueIndexRef.current += 1;
-        speakNextChunk(sessionId);
+        setTimeout(() => speakNextChunk(sessionId), 50);
       };
 
       utteranceRef.current = utterance;
@@ -179,7 +180,7 @@ export function useVoiceNarration(options: UseVoiceNarrationOptions = {}) {
       if (!queueRef.current[queueIndexRef.current]) return;
 
       speakNextChunk(speakSessionIdRef.current);
-    }, 1200);
+    }, 500); // Faster retry for smoother continuity
 
     return () => window.clearInterval(interval);
   }, [isPaused, isSpeaking, isSupported, speakNextChunk]);
