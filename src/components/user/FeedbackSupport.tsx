@@ -8,7 +8,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { 
+  CollapsibleCard, 
+  CollapsibleCardHeader, 
+  CollapsibleCardContent 
+} from "@/components/ui/collapsible-card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
@@ -222,26 +226,32 @@ export function FeedbackSupport() {
           </TabsList>
 
           <TabsContent value="faq" className="mt-4">
-            {faqs.length > 0 ? (
-              <Accordion type="single" collapsible className="w-full">
-                {faqs.map((faq) => (
-                  <AccordionItem key={faq.id} value={faq.id}>
-                    <AccordionTrigger className="text-left text-sm">
-                      {faq.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground text-sm">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <HelpCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">No FAQs available yet</p>
-                <p className="text-xs mt-1">Submit a ticket if you need help!</p>
-              </div>
-            )}
+            <ScrollArea className="h-[300px] pr-2">
+              {faqs.length > 0 ? (
+                <div className="space-y-3">
+                  {faqs.map((faq) => (
+                    <CollapsibleCard key={faq.id}>
+                      <CollapsibleCardHeader className="py-3 px-4">
+                        <p className="text-sm font-medium text-foreground leading-snug">
+                          {faq.question}
+                        </p>
+                      </CollapsibleCardHeader>
+                      <CollapsibleCardContent className="px-4 pb-4">
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </CollapsibleCardContent>
+                    </CollapsibleCard>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <HelpCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No FAQs available yet</p>
+                  <p className="text-xs mt-1">Submit a ticket if you need help!</p>
+                </div>
+              )}
+            </ScrollArea>
           </TabsContent>
 
           <TabsContent value="tickets" className="mt-4">
