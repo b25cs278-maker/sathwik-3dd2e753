@@ -106,10 +106,10 @@ export default function Tasks() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-display font-bold text-foreground mb-2">
-            Environmental Tasks
+            Explore Workshops
           </h1>
           <p className="text-muted-foreground">
-            Complete tasks, submit evidence, and earn points for your environmental actions
+            Explore to learn, practice, and apply
           </p>
         </div>
 
