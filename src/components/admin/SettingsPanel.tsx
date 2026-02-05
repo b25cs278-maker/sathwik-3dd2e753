@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { 
+  CollapsibleCard, 
+  CollapsibleCardHeader, 
+  CollapsibleCardContent 
+} from "@/components/ui/collapsible-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -14,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { 
-  Settings, Lock, RefreshCw, FileText, Save
+  Settings, Lock, RefreshCw, FileText, Save, Globe, Zap, Shield
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -165,131 +170,181 @@ export function SettingsPanel() {
         </Button>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* General Settings */}
-        <Card variant="eco">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Settings className="h-5 w-5 text-primary" />
-              General Settings
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">App Name</label>
-              <Input
-                value={settings.appName}
-                onChange={(e) => setSettings({ ...settings, appName: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium mb-2 block">Default Language</label>
-              <Select 
-                value={settings.defaultLanguage} 
-                onValueChange={(v) => setSettings({ ...settings, defaultLanguage: v })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="hi">Hindi</SelectItem>
-                  <SelectItem value="es">Spanish</SelectItem>
-                  <SelectItem value="fr">French</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Feature Toggles */}
-        <Card variant="eco">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Lock className="h-5 w-5 text-primary" />
-              Feature Toggles
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Require Location</p>
-                <p className="text-sm text-muted-foreground">GPS required for task submissions</p>
+      <div className="space-y-6">
+        {/* General Settings - Collapsible */}
+        <CollapsibleCard defaultOpen>
+          <CollapsibleCardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Globe className="h-5 w-5 text-primary" />
               </div>
-              <Switch
-                checked={settings.requireLocation}
-                onCheckedChange={(v) => setSettings({ ...settings, requireLocation: v })}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium">Offline Mode</p>
-                <p className="text-sm text-muted-foreground">Allow offline task drafts</p>
+                <h3 className="font-semibold text-foreground">General Settings</h3>
+                <p className="text-sm text-muted-foreground">App name and language preferences</p>
               </div>
-              <Switch
-                checked={settings.offlineMode}
-                onCheckedChange={(v) => setSettings({ ...settings, offlineMode: v })}
-              />
             </div>
-
-            <div className="flex items-center justify-between">
+          </CollapsibleCardHeader>
+          <CollapsibleCardContent>
+            <div className="space-y-4 pt-2">
               <div>
-                <p className="font-medium">Auto-Approve High Scores</p>
-                <p className="text-sm text-muted-foreground">Auto-approve AI score above threshold</p>
-              </div>
-              <Switch
-                checked={settings.autoApprove}
-                onCheckedChange={(v) => setSettings({ ...settings, autoApprove: v })}
-              />
-            </div>
-
-            {settings.autoApprove && (
-              <div>
-                <label className="text-sm font-medium mb-2 block">Minimum AI Score for Auto-Approve</label>
+                <label className="text-sm font-medium mb-2 block">App Name</label>
                 <Input
-                  type="number"
-                  value={settings.minSubmissionScore}
-                  onChange={(e) => setSettings({ ...settings, minSubmissionScore: parseInt(e.target.value) || 70 })}
-                  min={50}
-                  max={100}
+                  value={settings.appName}
+                  onChange={(e) => setSettings({ ...settings, appName: e.target.value })}
+                  onClick={(e) => e.stopPropagation()}
                 />
               </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Policies */}
-        <Card variant="eco" className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5 text-primary" />
-              Policies & Terms
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">Terms of Service</label>
-              <Textarea
-                value={settings.termsOfService}
-                onChange={(e) => setSettings({ ...settings, termsOfService: e.target.value })}
-                rows={3}
-                placeholder="Enter your terms of service..."
-              />
+              <div>
+                <label className="text-sm font-medium mb-2 block">Default Language</label>
+                <Select 
+                  value={settings.defaultLanguage} 
+                  onValueChange={(v) => setSettings({ ...settings, defaultLanguage: v })}
+                >
+                  <SelectTrigger onClick={(e) => e.stopPropagation()}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="hi">Hindi</SelectItem>
+                    <SelectItem value="es">Spanish</SelectItem>
+                    <SelectItem value="fr">French</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
+          </CollapsibleCardContent>
+        </CollapsibleCard>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block">Privacy Policy</label>
-              <Textarea
-                value={settings.privacyPolicy}
-                onChange={(e) => setSettings({ ...settings, privacyPolicy: e.target.value })}
-                rows={3}
-                placeholder="Enter your privacy policy..."
-              />
+        {/* Feature Toggles - Collapsible */}
+        <CollapsibleCard>
+          <CollapsibleCardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-eco-sky/10">
+                <Zap className="h-5 w-5 text-eco-sky" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">Feature Toggles</h3>
+                <p className="text-sm text-muted-foreground">Control platform features and behaviors</p>
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          </CollapsibleCardHeader>
+          <CollapsibleCardContent>
+            <div className="space-y-4 pt-2">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                <div>
+                  <p className="font-medium">Require Location</p>
+                  <p className="text-sm text-muted-foreground">GPS required for task submissions</p>
+                </div>
+                <Switch
+                  checked={settings.requireLocation}
+                  onCheckedChange={(v) => setSettings({ ...settings, requireLocation: v })}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                <div>
+                  <p className="font-medium">Offline Mode</p>
+                  <p className="text-sm text-muted-foreground">Allow offline task drafts</p>
+                </div>
+                <Switch
+                  checked={settings.offlineMode}
+                  onCheckedChange={(v) => setSettings({ ...settings, offlineMode: v })}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                <div>
+                  <p className="font-medium">Auto-Approve High Scores</p>
+                  <p className="text-sm text-muted-foreground">Auto-approve AI score above threshold</p>
+                </div>
+                <Switch
+                  checked={settings.autoApprove}
+                  onCheckedChange={(v) => setSettings({ ...settings, autoApprove: v })}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+
+              {settings.autoApprove && (
+                <div className="ml-4 pl-4 border-l-2 border-primary/20">
+                  <label className="text-sm font-medium mb-2 block">Minimum AI Score for Auto-Approve</label>
+                  <Input
+                    type="number"
+                    value={settings.minSubmissionScore}
+                    onChange={(e) => setSettings({ ...settings, minSubmissionScore: parseInt(e.target.value) || 70 })}
+                    onClick={(e) => e.stopPropagation()}
+                    min={50}
+                    max={100}
+                  />
+                </div>
+              )}
+            </div>
+          </CollapsibleCardContent>
+        </CollapsibleCard>
+
+        {/* Security Settings - Collapsible */}
+        <CollapsibleCard>
+          <CollapsibleCardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-eco-sun/10">
+                <Shield className="h-5 w-5 text-eco-sun" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">Security & Privacy</h3>
+                <p className="text-sm text-muted-foreground">Access controls and data protection</p>
+              </div>
+            </div>
+          </CollapsibleCardHeader>
+          <CollapsibleCardContent>
+            <div className="space-y-4 pt-2">
+              <p className="text-sm text-muted-foreground">
+                Security settings are managed through the Access & Security panel.
+                Configure user permissions, audit logs, and data protection settings there.
+              </p>
+            </div>
+          </CollapsibleCardContent>
+        </CollapsibleCard>
+
+        {/* Policies - Collapsible */}
+        <CollapsibleCard>
+          <CollapsibleCardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <FileText className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">Policies & Terms</h3>
+                <p className="text-sm text-muted-foreground">Legal documents and user agreements</p>
+              </div>
+            </div>
+          </CollapsibleCardHeader>
+          <CollapsibleCardContent>
+            <div className="space-y-4 pt-2">
+              <div>
+                <label className="text-sm font-medium mb-2 block">Terms of Service</label>
+                <Textarea
+                  value={settings.termsOfService}
+                  onChange={(e) => setSettings({ ...settings, termsOfService: e.target.value })}
+                  onClick={(e) => e.stopPropagation()}
+                  rows={3}
+                  placeholder="Enter your terms of service..."
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">Privacy Policy</label>
+                <Textarea
+                  value={settings.privacyPolicy}
+                  onChange={(e) => setSettings({ ...settings, privacyPolicy: e.target.value })}
+                  onClick={(e) => e.stopPropagation()}
+                  rows={3}
+                  placeholder="Enter your privacy policy..."
+                />
+              </div>
+            </div>
+          </CollapsibleCardContent>
+        </CollapsibleCard>
       </div>
     </div>
   );
