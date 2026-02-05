@@ -2,8 +2,6 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TaskManager } from '@/components/productivity/TaskManager';
-import { HabitTracker } from '@/components/productivity/HabitTracker';
-import { GoalTracker } from '@/components/productivity/GoalTracker';
 import { DeepWorkAIPlanner } from '@/components/productivity/DeepWorkAIPlanner';
 import { BehaviorTracker } from '@/components/productivity/BehaviorTracker';
 import { ExecutionRulesPanel } from '@/components/productivity/ExecutionRulesPanel';
@@ -17,8 +15,6 @@ import {
 } from '@/hooks/useLocalStorage';
 import { 
   ListTodo, 
-  Target, 
-  Repeat, 
   Brain, 
   Sparkles
 } from 'lucide-react';
@@ -48,51 +44,6 @@ export default function Productivity() {
     setTasks(prev => prev.filter(t => t.id !== id));
   };
 
-  // Habit handlers
-  const handleAddHabit = (habit: Habit) => {
-    setHabits(prev => [...prev, habit]);
-  };
-
-  const handleToggleHabit = (id: string) => {
-    const today = new Date().toISOString().split('T')[0];
-    setHabits(prev => prev.map(h => {
-      if (h.id !== id) return h;
-      const isCompletedToday = h.completedDates.includes(today);
-      if (isCompletedToday) {
-        return {
-          ...h,
-          completedDates: h.completedDates.filter(d => d !== today),
-          streak: Math.max(0, h.streak - 1)
-        };
-      } else {
-        return {
-          ...h,
-          completedDates: [...h.completedDates, today],
-          streak: h.streak + 1
-        };
-      }
-    }));
-  };
-
-  const handleDeleteHabit = (id: string) => {
-    setHabits(prev => prev.filter(h => h.id !== id));
-  };
-
-  // Goal handlers
-  const handleAddGoal = (goal: Goal) => {
-    setGoals(prev => [...prev, goal]);
-  };
-
-  const handleUpdateGoalProgress = (id: string, progress: number) => {
-    setGoals(prev => prev.map(g => 
-      g.id === id ? { ...g, progress: Math.min(100, Math.max(0, progress)) } : g
-    ));
-  };
-
-  const handleDeleteGoal = (id: string) => {
-    setGoals(prev => prev.filter(g => g.id !== id));
-  };
-
   // Calculate life metrics for AI planner
   const lifeMetrics = {
     lifeScore: 75,
@@ -119,7 +70,7 @@ export default function Productivity() {
             Productivity Hub
           </h1>
           <p className="text-muted-foreground">
-            Track tasks, build habits, set goals & manage discipline. Everything runs offline.
+            Track tasks, manage discipline & plan with AI. Everything runs offline.
           </p>
         </div>
 
@@ -130,7 +81,7 @@ export default function Productivity() {
 
         {/* Main Tabs */}
         <Tabs defaultValue="ai-planner" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-flex">
             <TabsTrigger value="ai-planner" className="flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
               <span className="hidden sm:inline">AI Planner</span>
@@ -138,14 +89,6 @@ export default function Productivity() {
             <TabsTrigger value="tasks" className="flex items-center gap-2">
               <ListTodo className="h-4 w-4" />
               <span className="hidden sm:inline">Tasks</span>
-            </TabsTrigger>
-            <TabsTrigger value="habits" className="flex items-center gap-2">
-              <Repeat className="h-4 w-4" />
-              <span className="hidden sm:inline">Habits</span>
-            </TabsTrigger>
-            <TabsTrigger value="goals" className="flex items-center gap-2">
-              <Target className="h-4 w-4" />
-              <span className="hidden sm:inline">Goals</span>
             </TabsTrigger>
             <TabsTrigger value="discipline" className="flex items-center gap-2">
               <Brain className="h-4 w-4" />
@@ -172,24 +115,6 @@ export default function Productivity() {
               onAddTask={handleAddTask}
               onToggleTask={handleToggleTask}
               onDeleteTask={handleDeleteTask}
-            />
-          </TabsContent>
-
-          <TabsContent value="habits" className="space-y-6">
-            <HabitTracker
-              habits={habits}
-              onAddHabit={handleAddHabit}
-              onToggleHabit={handleToggleHabit}
-              onDeleteHabit={handleDeleteHabit}
-            />
-          </TabsContent>
-
-          <TabsContent value="goals" className="space-y-6">
-            <GoalTracker
-              goals={goals}
-              onAddGoal={handleAddGoal}
-              onUpdateProgress={handleUpdateGoalProgress}
-              onDeleteGoal={handleDeleteGoal}
             />
           </TabsContent>
 
