@@ -7,10 +7,11 @@ import { Footer } from "@/components/layout/Footer";
 import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
-  CollapsibleCard, 
-  CollapsibleCardHeader, 
-  CollapsibleCardContent 
-} from "@/components/ui/collapsible-card";
+  CollapsibleCardGroup,
+  AccordionCard,
+  AccordionCardHeader,
+  AccordionCardContent
+} from "@/components/ui/collapsible-card-group";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -169,10 +170,10 @@ export default function Dashboard() {
 
   const renderDashboardContent = () => (
     <div className="space-y-6">
-      {/* Stats Cards - Tap to Expand */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <CollapsibleCard>
-          <CollapsibleCardHeader className="p-4">
+      {/* Stats Cards - Tap to Expand (Accordion behavior) */}
+      <CollapsibleCardGroup className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <AccordionCard id="points">
+          <AccordionCardHeader className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Learning Points</p>
@@ -184,8 +185,8 @@ export default function Dashboard() {
                 <Star className="h-6 w-6 text-eco-sun" />
               </div>
             </div>
-          </CollapsibleCardHeader>
-          <CollapsibleCardContent className="px-4 pb-4">
+          </AccordionCardHeader>
+          <AccordionCardContent className="px-4 pb-4">
             <div className="space-y-2 pt-2 border-t border-border">
               <p className="text-sm text-muted-foreground">
                 Earn points by completing workshops and challenges
@@ -195,11 +196,11 @@ export default function Dashboard() {
                 {Math.max(0, 1000 - stats.points)} points to next level
               </p>
             </div>
-          </CollapsibleCardContent>
-        </CollapsibleCard>
+          </AccordionCardContent>
+        </AccordionCard>
 
-        <CollapsibleCard>
-          <CollapsibleCardHeader className="p-4">
+        <AccordionCard id="completed">
+          <AccordionCardHeader className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Workshops Completed</p>
@@ -211,8 +212,8 @@ export default function Dashboard() {
                 <CheckCircle2 className="h-6 w-6 text-primary" />
               </div>
             </div>
-          </CollapsibleCardHeader>
-          <CollapsibleCardContent className="px-4 pb-4">
+          </AccordionCardHeader>
+          <AccordionCardContent className="px-4 pb-4">
             <div className="space-y-2 pt-2 border-t border-border">
               <p className="text-sm text-muted-foreground">
                 Great progress! Keep completing workshops to level up.
@@ -221,11 +222,11 @@ export default function Dashboard() {
                 Browse more workshops →
               </Link>
             </div>
-          </CollapsibleCardContent>
-        </CollapsibleCard>
+          </AccordionCardContent>
+        </AccordionCard>
 
-        <CollapsibleCard>
-          <CollapsibleCardHeader className="p-4">
+        <AccordionCard id="pending">
+          <AccordionCardHeader className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">In Progress</p>
@@ -237,8 +238,8 @@ export default function Dashboard() {
                 <Clock className="h-6 w-6 text-eco-sky" />
               </div>
             </div>
-          </CollapsibleCardHeader>
-          <CollapsibleCardContent className="px-4 pb-4">
+          </AccordionCardHeader>
+          <AccordionCardContent className="px-4 pb-4">
             <div className="space-y-2 pt-2 border-t border-border">
               <p className="text-sm text-muted-foreground">
                 {stats.pendingSubmissions > 0 
@@ -246,11 +247,11 @@ export default function Dashboard() {
                   : "No pending submissions at the moment"}
               </p>
             </div>
-          </CollapsibleCardContent>
-        </CollapsibleCard>
+          </AccordionCardContent>
+        </AccordionCard>
 
-        <CollapsibleCard>
-          <CollapsibleCardHeader className="p-4">
+        <AccordionCard id="badges">
+          <AccordionCardHeader className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Achievements Earned</p>
@@ -262,8 +263,8 @@ export default function Dashboard() {
                 <Award className="h-6 w-6 text-eco-reward" />
               </div>
             </div>
-          </CollapsibleCardHeader>
-          <CollapsibleCardContent className="px-4 pb-4">
+          </AccordionCardHeader>
+          <AccordionCardContent className="px-4 pb-4">
             <div className="space-y-2 pt-2 border-t border-border">
               {stats.badges.length > 0 ? (
                 <div className="flex flex-wrap gap-1">
@@ -279,9 +280,9 @@ export default function Dashboard() {
                 </p>
               )}
             </div>
-          </CollapsibleCardContent>
-        </CollapsibleCard>
-      </div>
+          </AccordionCardContent>
+        </AccordionCard>
+      </CollapsibleCardGroup>
 
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Main Content */}
