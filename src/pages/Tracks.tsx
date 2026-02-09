@@ -3,36 +3,44 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { Brain, Leaf, ArrowRight, BookOpen, Rocket, Trophy, CheckCircle2 } from "lucide-react";
+import { ArrowRight, BookOpen, Rocket, Trophy, CheckCircle2 } from "lucide-react";
+import { trackData } from "@/data/trackData";
 
-const tracks = [
-  {
-    id: "ai-innovation",
-    title: "AI Innovation",
-    icon: Brain,
-    color: "from-violet-500 to-purple-600",
-    bgColor: "bg-violet-500/10",
-    textColor: "text-violet-600",
-    description: "Learn AI concepts, data handling, and predictive logic through hands-on projects",
-    projects: ["Chatbots", "Sentiment Analysis", "Predictive Dashboards"],
-    skills: ["Data Handling", "Predictive Logic", "AI Concepts"],
-    lessonsCount: 6,
-    projectsCount: 6,
-  },
-  {
-    id: "environmental-innovation",
-    title: "Environmental Innovation",
-    icon: Leaf,
-    color: "from-emerald-500 to-green-600",
-    bgColor: "bg-emerald-500/10",
-    textColor: "text-emerald-600",
-    description: "Solve environmental problems with coding logic, data visualization, and analysis",
-    projects: ["Waste Sorting Game", "CO₂ Tracker", "Recycling Dashboard"],
-    skills: ["Data Visualization", "Problem Solving", "Environmental Analysis"],
-    lessonsCount: 6,
-    projectsCount: 6,
-  },
-];
+const tracks = Object.entries(trackData).map(([id, track]) => ({
+  id,
+  title: track.title,
+  icon: track.icon,
+  color: track.color,
+  bgColor: track.bgColor,
+  textColor: track.textColor,
+  description: getTrackDescription(id),
+  projects: track.projects.slice(0, 3).map(p => p.title),
+  skills: getTrackSkills(id),
+  lessonsCount: track.lessons.length,
+  projectsCount: track.projects.length,
+}));
+
+function getTrackDescription(id: string): string {
+  const descriptions: Record<string, string> = {
+    "ai-innovation": "Learn AI concepts, data handling, and predictive logic through hands-on projects",
+    "environmental-innovation": "Solve environmental problems with coding logic, data visualization, and analysis",
+    "soft-skills": "Master communication, teamwork, and time management for personal and professional growth",
+    "english-learning": "Build English fluency through grammar, vocabulary, and professional communication",
+    "interview-skills": "Prepare for interviews with practice questions, mock sessions, and resume tips",
+  };
+  return descriptions[id] || "";
+}
+
+function getTrackSkills(id: string): string[] {
+  const skills: Record<string, string[]> = {
+    "ai-innovation": ["Data Handling", "Predictive Logic", "AI Concepts"],
+    "environmental-innovation": ["Data Visualization", "Problem Solving", "Environmental Analysis"],
+    "soft-skills": ["Communication", "Teamwork", "Time Management"],
+    "english-learning": ["Grammar", "Vocabulary", "Professional Writing"],
+    "interview-skills": ["Interview Prep", "Resume Building", "Mock Practice"],
+  };
+  return skills[id] || [];
+}
 
 const skillLevels = [
   { level: "Beginner", description: "Start with fundamentals and visual learning", icon: BookOpen },
@@ -57,7 +65,7 @@ export default function Tracks() {
               Choose Your <span className="eco-gradient-text">Learning Track</span>
             </h1>
             <p className="text-lg text-muted-foreground mb-8">
-              Two specialized paths designed for students with zero coding experience. 
+              Specialized paths designed for students with zero prior experience. 
               Learn through interactive lessons and build real projects.
             </p>
           </div>
@@ -87,7 +95,7 @@ export default function Tracks() {
       {/* Track Cards */}
       <section className="py-16">
         <div className="container">
-          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {tracks.map((track) => (
               <Card key={track.id} variant="eco" className="overflow-hidden group hover:shadow-eco transition-all duration-300">
                 <div className={`h-2 bg-gradient-to-r ${track.color}`} />

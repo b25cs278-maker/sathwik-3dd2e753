@@ -6,82 +6,15 @@ import { Progress } from "@/components/ui/progress";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { 
-  Brain, Leaf, Lock, CheckCircle2, Play, BookOpen, 
-  Rocket, Trophy, ArrowRight, Clock, Star, HelpCircle
+  Lock, CheckCircle2, Play, BookOpen, 
+  Rocket, Trophy, Clock, Star, HelpCircle
 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { ModuleQuiz } from "@/components/tracks/ModuleQuiz";
 import { aiInnovationQuizzes, environmentalInnovationQuizzes } from "@/data/moduleQuizzes";
+import { softSkillsQuizzes, englishLearningQuizzes, interviewSkillsQuizzes } from "@/data/skillTrainingQuizzes";
+import { trackData } from "@/data/trackData";
 import { toast } from "sonner";
-
-interface Lesson {
-  id: string;
-  title: string;
-  description: string;
-  duration: string;
-  level: "beginner" | "low-intermediate" | "intermediate";
-  projectId: string;
-  completed: boolean;
-}
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  lessonRequired: string;
-  unlocked: boolean;
-  completed: boolean;
-  score?: number;
-}
-
-const trackData = {
-  "ai-innovation": {
-    title: "AI Innovation",
-    icon: Brain,
-    color: "from-violet-500 to-purple-600",
-    bgColor: "bg-violet-500/10",
-    textColor: "text-violet-600",
-    lessons: [
-      { id: "ai-1", title: "What is AI?", description: "Introduction to artificial intelligence concepts", duration: "10 min", level: "beginner" as const, projectId: "proj-ai-1", completed: false },
-      { id: "ai-2", title: "Understanding Data", description: "Learn how AI uses data to make decisions", duration: "12 min", level: "beginner" as const, projectId: "proj-ai-2", completed: false },
-      { id: "ai-3", title: "Pattern Recognition", description: "How AI finds patterns in information", duration: "15 min", level: "beginner" as const, projectId: "proj-ai-3", completed: false },
-      { id: "ai-4", title: "Building a Chatbot", description: "Create your first conversational AI", duration: "15 min", level: "low-intermediate" as const, projectId: "proj-ai-4", completed: false },
-      { id: "ai-5", title: "Sentiment Analysis", description: "Teach AI to understand emotions", duration: "18 min", level: "low-intermediate" as const, projectId: "proj-ai-5", completed: false },
-      { id: "ai-6", title: "Predictive Models", description: "Build AI that predicts outcomes", duration: "20 min", level: "intermediate" as const, projectId: "proj-ai-6", completed: false },
-    ],
-    projects: [
-      { id: "proj-ai-1", title: "AI Concept Quiz", description: "Test your understanding of AI basics", lessonRequired: "ai-1", unlocked: false, completed: false },
-      { id: "proj-ai-2", title: "Data Explorer", description: "Visualize and understand datasets", lessonRequired: "ai-2", unlocked: false, completed: false },
-      { id: "proj-ai-3", title: "Pattern Finder Game", description: "Interactive pattern matching game", lessonRequired: "ai-3", unlocked: false, completed: false },
-      { id: "proj-ai-4", title: "Simple Chatbot", description: "Build a basic question-answer bot", lessonRequired: "ai-4", unlocked: false, completed: false },
-      { id: "proj-ai-5", title: "Mood Detector", description: "Analyze text sentiment", lessonRequired: "ai-5", unlocked: false, completed: false },
-      { id: "proj-ai-6", title: "Prediction Dashboard", description: "Create a predictive analytics app", lessonRequired: "ai-6", unlocked: false, completed: false },
-    ],
-  },
-  "environmental-innovation": {
-    title: "Environmental Innovation",
-    icon: Leaf,
-    color: "from-emerald-500 to-green-600",
-    bgColor: "bg-emerald-500/10",
-    textColor: "text-emerald-600",
-    lessons: [
-      { id: "env-1", title: "Environmental Data", description: "Understanding environmental metrics", duration: "10 min", level: "beginner" as const, projectId: "proj-env-1", completed: false },
-      { id: "env-2", title: "Waste & Recycling", description: "Learn about waste categories and recycling", duration: "12 min", level: "beginner" as const, projectId: "proj-env-2", completed: false },
-      { id: "env-3", title: "Carbon Footprint", description: "Understanding CO₂ emissions and impact", duration: "15 min", level: "beginner" as const, projectId: "proj-env-3", completed: false },
-      { id: "env-4", title: "Data Visualization", description: "Create charts and graphs for environmental data", duration: "15 min", level: "low-intermediate" as const, projectId: "proj-env-4", completed: false },
-      { id: "env-5", title: "Interactive Games", description: "Build engaging educational games", duration: "18 min", level: "low-intermediate" as const, projectId: "proj-env-5", completed: false },
-      { id: "env-6", title: "Dashboard Design", description: "Create full-featured analytics dashboards", duration: "20 min", level: "intermediate" as const, projectId: "proj-env-6", completed: false },
-    ],
-    projects: [
-      { id: "proj-env-1", title: "Environment Quiz", description: "Test your environmental knowledge", lessonRequired: "env-1", unlocked: false, completed: false },
-      { id: "proj-env-2", title: "Waste Sorting Game", description: "Interactive recycling game", lessonRequired: "env-2", unlocked: false, completed: false },
-      { id: "proj-env-3", title: "CO₂ Calculator", description: "Calculate your carbon footprint", lessonRequired: "env-3", unlocked: false, completed: false },
-      { id: "proj-env-4", title: "Eco Data Charts", description: "Visualize environmental statistics", lessonRequired: "env-4", unlocked: false, completed: false },
-      { id: "proj-env-5", title: "Recycling Challenge", description: "Build an educational game", lessonRequired: "env-5", unlocked: false, completed: false },
-      { id: "proj-env-6", title: "Sustainability Dashboard", description: "Full environmental analytics app", lessonRequired: "env-6", unlocked: false, completed: false },
-    ],
-  },
-};
 
 const levelConfig = {
   beginner: { label: "Beginner", icon: BookOpen, color: "text-blue-500" },
@@ -99,7 +32,14 @@ export default function TrackDetail() {
   const [activeQuiz, setActiveQuiz] = useState<string | null>(null);
 
   // Get the quiz data based on track
-  const quizData = trackId === "ai-innovation" ? aiInnovationQuizzes : environmentalInnovationQuizzes;
+  const quizDataMap: Record<string, Record<string, any>> = {
+    "ai-innovation": aiInnovationQuizzes,
+    "environmental-innovation": environmentalInnovationQuizzes,
+    "soft-skills": softSkillsQuizzes,
+    "english-learning": englishLearningQuizzes,
+    "interview-skills": interviewSkillsQuizzes,
+  };
+  const quizData = quizDataMap[trackId || ""] || {};
 
   if (!track) {
     return (
