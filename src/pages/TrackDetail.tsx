@@ -31,22 +31,17 @@ export default function TrackDetail() {
   const [projectScores, setProjectScores] = useLocalStorage<Record<string, number>>(`${trackId}-projects`, {});
   const [quizScores, setQuizScores] = useLocalStorage<Record<string, number>>(`${trackId}-quizzes`, {});
   const [activeQuiz, setActiveQuiz] = useState<string | null>(null);
-  const [videoModules, setVideoModules] = useState<Record<string, { youtube_url: string; resource_pdf_url: string | null }>>({});
+  const [videoModules, setVideoModules] = useState<Array<{ youtube_url: string; resource_pdf_url: string | null }>>([]);
 
   useEffect(() => {
     const fetchVideos = async () => {
       const { data } = await supabase
         .from("video_modules")
-        .select("title, youtube_url, resource_pdf_url")
-        .eq("is_active", true);
+        .select("youtube_url, resource_pdf_url")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
       if (data) {
-        // Map videos by normalized title (lowercase, no punctuation) for flexible matching
-        const normalize = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ');
-        const mapped: Record<string, { youtube_url: string; resource_pdf_url: string | null }> = {};
-        data.forEach((v) => {
-          mapped[normalize(v.title)] = { youtube_url: v.youtube_url, resource_pdf_url: v.resource_pdf_url };
-        });
-        setVideoModules(mapped);
+        setVideoModules(data);
       }
     };
     fetchVideos();
@@ -181,8 +176,7 @@ export default function TrackDetail() {
                             <p className="text-sm text-muted-foreground">{lesson.description}</p>
                           </div>
                           {(() => {
-                            const normalize = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ');
-                            const matchedVideo = videoModules[normalize(lesson.title)];
+                            const matchedVideo = videoModules[index];
                             if (unlocked && matchedVideo?.youtube_url) {
                               return (
                                 <a 
