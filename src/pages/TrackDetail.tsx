@@ -184,13 +184,12 @@ export default function TrackDetail() {
                             const matchedVideo = videoModules[normalize(lesson.title)];
                             if (unlocked && matchedVideo?.youtube_url) {
                               return (
-                                <a 
-                                  href={matchedVideo.youtube_url} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
+                                <Button 
+                                  size="sm" 
+                                  onClick={() => window.open(matchedVideo.youtube_url, '_blank', 'noopener,noreferrer')}
                                 >
-                                  <Button size="sm">Start</Button>
-                                </a>
+                                  Start
+                                </Button>
                               );
                             }
                             if (unlocked) {
