@@ -2,111 +2,119 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Leaf, Globe, Droplets, TreePine, Bird, Recycle, Sun, ChevronLeft, ChevronRight, Bell, Star } from "lucide-react";
+import { Calendar, GraduationCap, Globe, BookOpen, Brain, Mic, Code, Sparkles, ChevronLeft, ChevronRight, Bell, Star, Users, Briefcase } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isToday } from "date-fns";
 
-interface EcoDay {
+interface ScheduleDay {
   date: Date;
   name: string;
   description: string;
-  icon: typeof Leaf;
+  icon: typeof GraduationCap;
   color: string;
-  specialTasks?: string[];
+  activities?: string[];
 }
 
-// Environmental days calendar
-const environmentalDays: EcoDay[] = [
+// Learning & skill development events calendar
+const scheduledDays: ScheduleDay[] = [
   {
-    date: new Date(2025, 0, 5), // January 5
-    name: "National Bird Day",
-    description: "Celebrate and protect our feathered friends",
-    icon: Bird,
-    color: "text-sky-500",
-    specialTasks: ["Bird watching activity", "Build a bird feeder"]
+    date: new Date(2025, 0, 15),
+    name: "AI Innovation Kickoff",
+    description: "Introduction to AI concepts and hands-on activities",
+    icon: Brain,
+    color: "text-violet-500",
+    activities: ["AI Basics Workshop", "Chatbot Building Demo"]
   },
   {
-    date: new Date(2025, 1, 2), // February 2
-    name: "World Wetlands Day",
-    description: "Raising awareness about wetlands",
-    icon: Droplets,
+    date: new Date(2025, 1, 10),
+    name: "Communication Skills Day",
+    description: "Master verbal and non-verbal communication",
+    icon: Mic,
+    color: "text-rose-500",
+    activities: ["Public Speaking Practice", "Body Language Workshop"]
+  },
+  {
+    date: new Date(2025, 2, 8),
+    name: "English Proficiency Week",
+    description: "Intensive English grammar and speaking sessions",
+    icon: BookOpen,
     color: "text-blue-500",
-    specialTasks: ["Wetland cleanup", "Water conservation challenge"]
+    activities: ["Grammar Bootcamp", "Conversation Practice"]
   },
   {
-    date: new Date(2025, 2, 21), // March 21
-    name: "International Day of Forests",
-    description: "Celebrating the importance of forests",
-    icon: TreePine,
-    color: "text-green-600",
-    specialTasks: ["Tree planting", "Forest trail cleanup"]
+    date: new Date(2025, 3, 5),
+    name: "Mock Interview Day",
+    description: "Practice interviews with AI and peer feedback",
+    icon: Briefcase,
+    color: "text-amber-600",
+    activities: ["HR Interview Prep", "Technical Q&A Practice", "Resume Review"]
   },
   {
-    date: new Date(2025, 2, 22), // March 22
-    name: "World Water Day",
-    description: "Focus on the importance of freshwater",
-    icon: Droplets,
-    color: "text-cyan-500",
-    specialTasks: ["Water saving challenge", "Beach/river cleanup"]
-  },
-  {
-    date: new Date(2025, 3, 22), // April 22
-    name: "Earth Day",
-    description: "The biggest environmental event of the year",
+    date: new Date(2025, 3, 22),
+    name: "Earth Day Learning Sprint",
+    description: "Environmental innovation projects and challenges",
     icon: Globe,
     color: "text-emerald-500",
-    specialTasks: ["Community cleanup", "Recycling drive", "Plant a tree"]
+    activities: ["Eco Data Analysis", "Green Innovation Challenge"]
   },
   {
-    date: new Date(2025, 5, 5), // June 5
-    name: "World Environment Day",
-    description: "UN's principal vehicle for environmental awareness",
-    icon: Leaf,
-    color: "text-green-500",
-    specialTasks: ["Eco pledge", "Sustainable living workshop", "Zero waste day"]
+    date: new Date(2025, 4, 15),
+    name: "Teamwork & Leadership Day",
+    description: "Collaborate, lead, and solve problems together",
+    icon: Users,
+    color: "text-sky-500",
+    activities: ["Team Decision Simulator", "Leadership Challenge"]
   },
   {
-    date: new Date(2025, 5, 8), // June 8
-    name: "World Oceans Day",
-    description: "Celebrating and preserving our oceans",
-    icon: Droplets,
-    color: "text-blue-600",
-    specialTasks: ["Beach cleanup", "Plastic-free challenge"]
+    date: new Date(2025, 5, 10),
+    name: "AI Project Showcase",
+    description: "Present your AI projects and get feedback",
+    icon: Code,
+    color: "text-indigo-500",
+    activities: ["Project Presentations", "Peer Code Review", "Portfolio Building"]
   },
   {
-    date: new Date(2025, 8, 16), // September 16
-    name: "World Ozone Day",
-    description: "Preserving the ozone layer",
-    icon: Sun,
-    color: "text-yellow-500",
-    specialTasks: ["Energy saving challenge", "Air quality awareness"]
+    date: new Date(2025, 7, 20),
+    name: "Career Readiness Bootcamp",
+    description: "Prepare for real-world job applications",
+    icon: Briefcase,
+    color: "text-orange-500",
+    activities: ["Resume Building", "LinkedIn Optimization", "Interview Simulation"]
   },
   {
-    date: new Date(2025, 10, 15), // November 15
-    name: "America Recycles Day",
-    description: "Promoting recycling and buying recycled products",
-    icon: Recycle,
-    color: "text-emerald-600",
-    specialTasks: ["Recycling challenge", "Upcycling workshop"]
+    date: new Date(2025, 9, 5),
+    name: "Soft Skills Marathon",
+    description: "Full-day focus on essential workplace skills",
+    icon: Sparkles,
+    color: "text-pink-500",
+    activities: ["Time Management Workshop", "Confidence Builder", "Active Listening"]
+  },
+  {
+    date: new Date(2025, 11, 10),
+    name: "Year-End Learning Fest",
+    description: "Celebrate achievements and plan next year's goals",
+    icon: GraduationCap,
+    color: "text-primary",
+    activities: ["Achievement Awards", "Goal Setting Workshop", "Skill Assessment"]
   },
 ];
 
 export function EcoCalendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDay, setSelectedDay] = useState<EcoDay | null>(null);
+  const [selectedDay, setSelectedDay] = useState<ScheduleDay | null>(null);
 
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
   const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
-  const getEcoDay = (date: Date) => {
-    return environmentalDays.find(ed => 
-      ed.date.getMonth() === date.getMonth() && ed.date.getDate() === date.getDate()
+  const getScheduleDay = (date: Date) => {
+    return scheduledDays.find(sd => 
+      sd.date.getMonth() === date.getMonth() && sd.date.getDate() === date.getDate()
     );
   };
 
-  const upcomingDays = environmentalDays
-    .filter(ed => {
-      const thisYear = new Date(currentMonth.getFullYear(), ed.date.getMonth(), ed.date.getDate());
+  const upcomingDays = scheduledDays
+    .filter(sd => {
+      const thisYear = new Date(currentMonth.getFullYear(), sd.date.getMonth(), sd.date.getDate());
       return thisYear >= new Date();
     })
     .sort((a, b) => {
@@ -121,10 +129,10 @@ export function EcoCalendar() {
       {/* Header */}
       <div className="text-center">
         <h2 className="text-2xl font-display font-bold text-foreground mb-2">
-          Eco <span className="eco-gradient-text">Calendar</span>
+          My <span className="eco-gradient-text">Schedule</span>
         </h2>
         <p className="text-muted-foreground">
-          Environmental days and special eco tasks throughout the year
+          Upcoming learning events, workshops, and skill-building activities
         </p>
       </div>
 
@@ -164,31 +172,30 @@ export function EcoCalendar() {
 
             {/* Calendar grid */}
             <div className="grid grid-cols-7 gap-1">
-              {/* Empty cells for days before month start */}
               {Array.from({ length: monthStart.getDay() }).map((_, i) => (
                 <div key={`empty-${i}`} className="aspect-square" />
               ))}
               
               {days.map(day => {
-                const ecoDay = getEcoDay(day);
+                const scheduleDay = getScheduleDay(day);
                 const isCurrentDay = isToday(day);
                 
                 return (
                   <button
                     key={day.toISOString()}
-                    onClick={() => ecoDay && setSelectedDay(ecoDay)}
+                    onClick={() => scheduleDay && setSelectedDay(scheduleDay)}
                     className={`
                       aspect-square rounded-lg flex flex-col items-center justify-center text-sm
                       transition-all relative
                       ${isCurrentDay ? 'bg-primary text-primary-foreground font-bold' : ''}
-                      ${ecoDay ? 'bg-primary/10 hover:bg-primary/20 cursor-pointer' : 'hover:bg-muted'}
-                      ${!isCurrentDay && !ecoDay ? 'text-foreground' : ''}
+                      ${scheduleDay ? 'bg-primary/10 hover:bg-primary/20 cursor-pointer' : 'hover:bg-muted'}
+                      ${!isCurrentDay && !scheduleDay ? 'text-foreground' : ''}
                     `}
                   >
                     <span>{format(day, "d")}</span>
-                    {ecoDay && (
+                    {scheduleDay && (
                       <span className="absolute bottom-1">
-                        <ecoDay.icon className={`h-3 w-3 ${ecoDay.color}`} />
+                        <scheduleDay.icon className={`h-3 w-3 ${scheduleDay.color}`} />
                       </span>
                     )}
                   </button>
@@ -210,13 +217,13 @@ export function EcoCalendar() {
                       {format(new Date(currentMonth.getFullYear(), selectedDay.date.getMonth(), selectedDay.date.getDate()), "MMMM d, yyyy")}
                     </p>
                     
-                    {selectedDay.specialTasks && (
+                    {selectedDay.activities && (
                       <div className="mt-3">
-                        <p className="text-xs font-medium text-muted-foreground mb-2">Special Tasks:</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-2">Activities:</p>
                         <div className="flex flex-wrap gap-2">
-                          {selectedDay.specialTasks.map((task, i) => (
+                          {selectedDay.activities.map((activity, i) => (
                             <Badge key={i} variant="secondary" className="text-xs">
-                              <Star className="h-3 w-3 mr-1" /> {task}
+                              <Star className="h-3 w-3 mr-1" /> {activity}
                             </Badge>
                           ))}
                         </div>
@@ -234,7 +241,7 @@ export function EcoCalendar() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Bell className="h-5 w-5 text-primary" />
-              Upcoming Eco Days
+              Upcoming Events
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -271,7 +278,7 @@ export function EcoCalendar() {
 
             {upcomingDays.length === 0 && (
               <p className="text-center text-muted-foreground text-sm py-4">
-                Check back for upcoming eco events!
+                Check back for upcoming learning events!
               </p>
             )}
           </CardContent>
@@ -288,19 +295,19 @@ export function EcoCalendar() {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 rounded bg-primary/20" />
-              <span className="text-muted-foreground">Eco Day</span>
+              <span className="text-muted-foreground">Event Day</span>
             </div>
             <div className="flex items-center gap-2">
-              <Globe className="h-4 w-4 text-emerald-500" />
-              <span className="text-muted-foreground">Earth Day</span>
+              <Brain className="h-4 w-4 text-violet-500" />
+              <span className="text-muted-foreground">AI Workshop</span>
             </div>
             <div className="flex items-center gap-2">
-              <Droplets className="h-4 w-4 text-blue-500" />
-              <span className="text-muted-foreground">Water Day</span>
+              <Mic className="h-4 w-4 text-rose-500" />
+              <span className="text-muted-foreground">Soft Skills</span>
             </div>
             <div className="flex items-center gap-2">
-              <TreePine className="h-4 w-4 text-green-600" />
-              <span className="text-muted-foreground">Forest Day</span>
+              <Briefcase className="h-4 w-4 text-amber-600" />
+              <span className="text-muted-foreground">Interview Prep</span>
             </div>
           </div>
         </CardContent>
