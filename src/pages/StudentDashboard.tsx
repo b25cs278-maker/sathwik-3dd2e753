@@ -171,7 +171,6 @@ export default function Dashboard() {
   const sidebarItems = [
     { id: "dashboard", label: "Overview Dashboard", icon: <Target className="h-4 w-4" /> },
     { id: "quizzes", label: "Knowledge Challenges", icon: <Swords className="h-4 w-4" /> },
-    { id: "tracks", label: "AI Skill Modules", icon: <GraduationCap className="h-4 w-4" /> },
     { id: "calendar", label: "My Schedule", icon: <CalendarDays className="h-4 w-4" /> },
     { id: "community", label: "Learner Interaction Space", icon: <Lightbulb className="h-4 w-4" /> },
     { id: "coach", label: "AI Learning Assistant", icon: <Bot className="h-4 w-4" /> },
@@ -477,7 +476,6 @@ export default function Dashboard() {
     switch (activeSection) {
       case "dashboard": return renderDashboardContent();
       case "quizzes": return <EcoQuizBattles />;
-      case "tracks": return <LearningTracks />;
       case "calendar": return renderCalendarContent();
       case "community": return <LearnerNetwork />;
       case "coach": return <AIEcoCoach />;
