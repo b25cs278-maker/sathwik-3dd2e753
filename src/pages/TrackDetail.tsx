@@ -6,9 +6,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { 
   Lock, CheckCircle2, Play, BookOpen, 
-  Rocket, Trophy, Clock, Star, HelpCircle
+  Rocket, Trophy, Clock, Star, HelpCircle, X
 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { ModuleQuiz } from "@/components/tracks/ModuleQuiz";
@@ -32,7 +33,12 @@ export default function TrackDetail() {
   const [quizScores, setQuizScores] = useLocalStorage<Record<string, number>>(`${trackId}-quizzes`, {});
   const [activeQuiz, setActiveQuiz] = useState<string | null>(null);
   const [videoModules, setVideoModules] = useState<Record<string, { youtube_url: string; resource_pdf_url: string | null }>>({});
+  const [activeVideo, setActiveVideo] = useState<{ url: string; title: string } | null>(null);
 
+  const getYoutubeEmbedUrl = (url: string) => {
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([^&?\s]+)/);
+    return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` : null;
+  };
   useEffect(() => {
     const fetchVideos = async () => {
       const { data } = await supabase
@@ -186,9 +192,9 @@ export default function TrackDetail() {
                               return (
                                 <Button 
                                   size="sm" 
-                                  onClick={() => window.open(matchedVideo.youtube_url, '_blank', 'noopener,noreferrer')}
+                                  onClick={() => setActiveVideo({ url: matchedVideo.youtube_url, title: lesson.title })}
                                 >
-                                  Start
+                                  <Play className="h-3 w-3 mr-1" /> Start
                                 </Button>
                               );
                             }
@@ -330,6 +336,28 @@ export default function TrackDetail() {
           </div>
         </div>
       </div>
+
+      {/* Video Player Dialog */}
+      <Dialog open={!!activeVideo} onOpenChange={(open) => !open && setActiveVideo(null)}>
+        <DialogContent className="max-w-3xl p-0 overflow-hidden">
+          <DialogTitle className="sr-only">{activeVideo?.title || "Video"}</DialogTitle>
+          {activeVideo && getYoutubeEmbedUrl(activeVideo.url) ? (
+            <div className="aspect-video w-full">
+              <iframe
+                src={getYoutubeEmbedUrl(activeVideo.url)!}
+                title={activeVideo.title}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          ) : (
+            <div className="p-8 text-center text-muted-foreground">
+              <p>Unable to load video. <a href={activeVideo?.url} target="_blank" rel="noopener noreferrer" className="text-primary underline">Open in browser</a></p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>
