@@ -186,7 +186,7 @@ export function EcoQuizBattles() {
           .eq('id', user.id);
       }
 
-      toast.success(`Quiz complete! You earned ${score} green points!`);
+      toast.success(`Quiz complete! You earned ${score} learning credits!`);
       fetchRecentAttempts();
     } catch (error) {
       console.error('Error saving quiz attempt:', error);
