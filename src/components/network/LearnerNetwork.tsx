@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Users, MessageSquare, Calendar, Building2, 
-  TrendingUp, Bell
+  TrendingUp, Bell, Handshake, UserSearch
 } from "lucide-react";
 import { NetworkFeed } from "./NetworkFeed";
 import { NetworkConnections } from "./NetworkConnections";
@@ -10,6 +10,8 @@ import { NetworkMessages } from "./NetworkMessages";
 import { NetworkEvents } from "./NetworkEvents";
 import { NetworkGroups } from "./NetworkGroups";
 import { NetworkProfile } from "./NetworkProfile";
+import { FounderCollaboration } from "./FounderCollaboration";
+import { FindCoBuilder } from "./FindCoBuilder";
 
 export function LearnerNetwork() {
   const [activeTab, setActiveTab] = useState("feed");
@@ -54,6 +56,14 @@ export function LearnerNetwork() {
             <Bell className="h-4 w-4" />
             <span className="hidden sm:inline">Profile</span>
           </TabsTrigger>
+          <TabsTrigger value="founder" className="flex items-center gap-2 justify-start w-full">
+            <Handshake className="h-4 w-4" />
+            <span className="hidden sm:inline">Founder Collab</span>
+          </TabsTrigger>
+          <TabsTrigger value="cobuilder" className="flex items-center gap-2 justify-start w-full">
+            <UserSearch className="h-4 w-4" />
+            <span className="hidden sm:inline">Find Co-Builder</span>
+          </TabsTrigger>
         </TabsList>
 
         <div className="flex-1 min-w-0">
@@ -79,6 +89,14 @@ export function LearnerNetwork() {
 
           <TabsContent value="profile" className="mt-0">
             <NetworkProfile />
+          </TabsContent>
+
+          <TabsContent value="founder" className="mt-0">
+            <FounderCollaboration />
+          </TabsContent>
+
+          <TabsContent value="cobuilder" className="mt-0">
+            <FindCoBuilder />
           </TabsContent>
         </div>
       </Tabs>
