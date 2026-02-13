@@ -72,11 +72,8 @@ export default function TrackDetail() {
   const totalLessons = track.lessons.length;
   const progress = (completedCount / totalLessons) * 100;
 
-  const isLessonUnlocked = (index: number) => {
-    if (index === 0) return true;
-    // Need to complete previous lesson AND its quiz
-    const prevLessonId = track.lessons[index - 1].id;
-    return completedLessons.includes(prevLessonId) && quizScores[prevLessonId] !== undefined && quizScores[prevLessonId] >= 70;
+  const isLessonUnlocked = (_index: number) => {
+    return true; // All lessons are accessible
   };
 
   const isProjectUnlocked = (lessonRequired: string) => {
