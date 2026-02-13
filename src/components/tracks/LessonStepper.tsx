@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FlashcardDeck } from "./FlashcardDeck";
-import { ModuleQuiz } from "./ModuleQuiz";
+import { ModuleQuiz, type Question } from "./ModuleQuiz";
 import { Play, Layers, HelpCircle, FileText, CheckCircle2, ArrowRight, X, ExternalLink, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,14 +12,6 @@ import { toast } from "sonner";
 interface Flashcard {
   front: string;
   back: string;
-}
-
-interface Question {
-  id: string;
-  question: string;
-  options: string[];
-  correctAnswer: number;
-  explanation: string;
 }
 
 interface LessonStepperProps {
