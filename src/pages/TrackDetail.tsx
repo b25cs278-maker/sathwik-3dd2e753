@@ -142,6 +142,7 @@ export default function TrackDetail() {
               videoUrl={activeVideoModule.youtube_url}
               resourcePdfUrl={activeVideoModule.resource_pdf_url}
               quizQuestions={quizData[activeLesson.id] || null}
+              learningObjectives={activeLesson.learningObjectives}
               onComplete={(score, passed) => handleQuizComplete(activeLesson.id, score, passed)}
               onClose={() => setActiveLessonId(null)}
               onVideoCompleted={() => handleVideoCompleted(activeLesson.id)}
