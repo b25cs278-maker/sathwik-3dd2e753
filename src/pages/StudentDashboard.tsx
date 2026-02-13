@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { trackData } from "@/data/trackData";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
@@ -45,6 +46,13 @@ interface RecentActivity {
   created_at: string;
 }
 
+interface TrackProgress {
+  trackId: string;
+  trackName: string;
+  completedModules: number;
+  totalModules: number;
+}
+
 export default function Dashboard() {
   const { user } = useAuth();
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -55,6 +63,7 @@ export default function Dashboard() {
     badges: []
   });
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
+  const [trackProgress, setTrackProgress] = useState<TrackProgress[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -115,6 +124,20 @@ export default function Dashboard() {
       });
 
       setRecentActivity(activity || []);
+
+      // Fetch learning progress per track
+      const { data: progressData } = await supabase
+        .from('learning_progress')
+        .select('track_id, module_id, completed')
+        .eq('user_id', user.id)
+        .eq('completed', true);
+
+      const progressByTrack: TrackProgress[] = Object.entries(trackData).map(([trackId, track]) => {
+        const completedModules = progressData?.filter(p => p.track_id === trackId).length || 0;
+        const totalModules = track.lessons.length;
+        return { trackId, trackName: track.title, completedModules, totalModules };
+      });
+      setTrackProgress(progressByTrack);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
       toast.error('Failed to load dashboard data');
@@ -323,34 +346,32 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          {/* Progress to Next Badge */}
+          {/* Learning Track Progress */}
           <Card variant="eco">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-eco-sun" />
-                Achievement Progress
+                Learning Progress
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">Green Novice</span>
-                    <span className="text-sm text-muted-foreground">
-                      {Math.min(stats.tasksCompleted, 5)} / 5 tasks
-                    </span>
+                {trackProgress.map((tp) => (
+                  <div key={tp.trackId}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">{tp.trackName}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {tp.completedModules} / {tp.totalModules} lessons
+                      </span>
+                    </div>
+                    <Progress value={tp.totalModules > 0 ? (tp.completedModules / tp.totalModules) * 100 : 0} />
                   </div>
-                  <Progress value={Math.min((stats.tasksCompleted / 5) * 100, 100)} />
-                </div>
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">Eco Contributor</span>
-                    <span className="text-sm text-muted-foreground">
-                      {Math.min(stats.tasksCompleted, 25)} / 25 tasks
-                    </span>
-                  </div>
-                  <Progress value={Math.min((stats.tasksCompleted / 25) * 100, 100)} />
-                </div>
+                ))}
+                {trackProgress.length === 0 && (
+                  <p className="text-sm text-muted-foreground text-center py-2">
+                    Start a learning track to see your progress!
+                  </p>
+                )}
               </div>
             </CardContent>
           </Card>
