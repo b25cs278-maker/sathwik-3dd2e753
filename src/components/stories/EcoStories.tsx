@@ -90,7 +90,7 @@ export function EcoStories() {
           
           return {
             ...post,
-            user_name: profile?.name || 'Eco Warrior',
+            user_name: profile?.name || 'Learner',
             user_avatar: profile?.avatar_url
           };
         })
@@ -119,12 +119,12 @@ export function EcoStories() {
           title: newStory.title,
           content: newStory.content,
           post_type: 'story',
-          tags: ['success-story', 'eco-journey']
+          tags: ['success-story', 'learning-journey']
         });
 
       if (error) throw error;
 
-      toast.success('Your eco story has been shared!');
+      toast.success('Your story has been shared!');
       setNewStory({ title: "", content: "" });
       fetchData();
     } catch (error) {
@@ -157,10 +157,10 @@ export function EcoStories() {
       {/* Header */}
       <div className="text-center">
         <h2 className="text-2xl font-display font-bold text-foreground mb-2">
-          Eco Stories & <span className="eco-gradient-text">Success Wall</span>
+          Learner Stories & <span className="eco-gradient-text">Leaderboard</span>
         </h2>
         <p className="text-muted-foreground">
-          Celebrating our eco heroes and inspiring stories
+          Celebrating top learners and inspiring stories
         </p>
       </div>
 
@@ -170,7 +170,7 @@ export function EcoStories() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Trophy className="h-5 w-5 text-eco-sun" />
-              Monthly Eco Heroes
+              Top Learners
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -192,9 +192,9 @@ export function EcoStories() {
                   <AvatarFallback>{hero.name?.charAt(0) || 'E'}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm truncate">{hero.name || 'Eco Warrior'}</p>
+                  <p className="font-semibold text-sm truncate">{hero.name || 'Learner'}</p>
                   <p className="text-xs text-muted-foreground">
-                    {hero.points} pts • {hero.tasksCompleted} tasks
+                    {hero.points} credits • {hero.tasksCompleted} workshops
                   </p>
                 </div>
                 {index === 0 && (
@@ -218,7 +218,7 @@ export function EcoStories() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Star className="h-5 w-5 text-primary" />
-                Share Your Eco Journey
+                Share Your Learning Journey
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -228,7 +228,7 @@ export function EcoStories() {
                 onChange={(e) => setNewStory(prev => ({ ...prev, title: e.target.value }))}
               />
               <Textarea
-                placeholder="Share your eco success story, tips, or journey..."
+                placeholder="Share your learning success story, tips, or journey..."
                 value={newStory.content}
                 onChange={(e) => setNewStory(prev => ({ ...prev, content: e.target.value }))}
                 rows={3}
@@ -289,7 +289,7 @@ export function EcoStories() {
                 <CardContent className="py-8 text-center">
                   <Star className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
                   <p className="text-muted-foreground">
-                    No stories yet. Be the first to share your eco journey!
+                    No stories yet. Be the first to share your learning journey!
                   </p>
                 </CardContent>
               </Card>

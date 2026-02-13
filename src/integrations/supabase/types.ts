@@ -258,6 +258,90 @@ export type Database = {
         }
         Relationships: []
       }
+      learning_events: {
+        Row: {
+          activities: string[] | null
+          color: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          end_date: string | null
+          event_type: string
+          icon: string | null
+          id: string
+          is_public: boolean
+          start_date: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          activities?: string[] | null
+          color?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          end_date?: string | null
+          event_type?: string
+          icon?: string | null
+          id?: string
+          is_public?: boolean
+          start_date: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          activities?: string[] | null
+          color?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          end_date?: string | null
+          event_type?: string
+          icon?: string | null
+          id?: string
+          is_public?: boolean
+          start_date?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      learning_progress: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          id: string
+          module_id: string
+          score: number | null
+          track_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          module_id: string
+          score?: number | null
+          track_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          module_id?: string
+          score?: number | null
+          track_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       network_events: {
         Row: {
           attendees_count: number
