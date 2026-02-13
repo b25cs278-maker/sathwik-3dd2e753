@@ -40,10 +40,11 @@ export default function TrackDetail() {
         .select("title, youtube_url, resource_pdf_url")
         .eq("is_active", true);
       if (data) {
-        // Map videos by lowercase title for matching with lesson titles
+        // Map videos by normalized title (lowercase, no punctuation) for flexible matching
+        const normalize = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ');
         const mapped: Record<string, { youtube_url: string; resource_pdf_url: string | null }> = {};
         data.forEach((v) => {
-          mapped[v.title.toLowerCase().trim()] = { youtube_url: v.youtube_url, resource_pdf_url: v.resource_pdf_url };
+          mapped[normalize(v.title)] = { youtube_url: v.youtube_url, resource_pdf_url: v.resource_pdf_url };
         });
         setVideoModules(mapped);
       }
@@ -180,7 +181,8 @@ export default function TrackDetail() {
                             <p className="text-sm text-muted-foreground">{lesson.description}</p>
                           </div>
                           {(() => {
-                            const matchedVideo = videoModules[lesson.title.toLowerCase().trim()];
+                            const normalize = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ');
+                            const matchedVideo = videoModules[normalize(lesson.title)];
                             if (unlocked && matchedVideo?.youtube_url) {
                               return (
                                 <a 
