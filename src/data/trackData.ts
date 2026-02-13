@@ -9,6 +9,7 @@ export interface TrackLesson {
   level: "beginner" | "low-intermediate" | "intermediate";
   projectId: string;
   completed: boolean;
+  learningObjectives: string[];
 }
 
 export interface TrackProject {
