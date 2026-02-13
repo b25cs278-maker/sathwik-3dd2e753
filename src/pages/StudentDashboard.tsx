@@ -175,7 +175,7 @@ export default function Dashboard() {
     { id: "quizzes", label: "Knowledge Challenges", icon: <Swords className="h-4 w-4" /> },
     { id: "calendar", label: "My Schedule", icon: <CalendarDays className="h-4 w-4" /> },
     { id: "community", label: "Learner Interaction Space", icon: <Lightbulb className="h-4 w-4" /> },
-    { id: "videos", label: "Video Modules", icon: <Video className="h-4 w-4" /> },
+    
     { id: "coach", label: "AI Learning Assistant", icon: <Bot className="h-4 w-4" /> },
     { id: "support", label: "Help & Resources", icon: <HelpCircle className="h-4 w-4" /> },
   ];
@@ -479,7 +479,7 @@ export default function Dashboard() {
     switch (activeSection) {
       case "dashboard": return renderDashboardContent();
       case "quizzes": return <EcoQuizBattles />;
-      case "videos": return <VideoModulesGrid />;
+      
       case "calendar": return renderCalendarContent();
       case "community": return <LearnerNetwork />;
       case "coach": return <AIEcoCoach />;
