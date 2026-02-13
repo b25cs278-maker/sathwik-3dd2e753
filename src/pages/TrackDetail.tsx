@@ -162,14 +162,9 @@ export default function TrackDetail() {
                             <h3 className="font-semibold text-foreground">{lesson.title}</h3>
                             <p className="text-sm text-muted-foreground">{lesson.description}</p>
                           </div>
-                          {unlocked && !isCompleted && (
-                            <Link to={`/lesson/${trackId}/${lesson.id}`}>
+                          {unlocked && (
+                            <Link to="/student/dashboard">
                               <Button size="sm">Start</Button>
-                            </Link>
-                          )}
-                          {isCompleted && (
-                            <Link to={`/lesson/${trackId}/${lesson.id}`}>
-                              <Button size="sm" variant="outline">Review</Button>
                             </Link>
                           )}
                         </div>
