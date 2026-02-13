@@ -23,13 +23,13 @@ import { EcoQuizBattles } from "@/components/quiz/EcoQuizBattles";
 // LearningTracks removed from sidebar but still accessible via /tracks route
 import { EcoStories } from "@/components/stories/EcoStories";
 import { AIEcoCoach } from "@/components/coach/AIEcoCoach";
-import { VideoModulesGrid } from "@/components/modules/VideoModulesGrid";
+
 
 import { EcoCalendar } from "@/components/calendar/EcoCalendar";
 import { 
   Award, Target, TrendingUp, Clock, CheckCircle2, 
   Leaf, Trophy, Star, Camera, Lightbulb, Bell, HelpCircle, Swords, GraduationCap,
-  Bot, CalendarDays, Video
+  Bot, CalendarDays
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -171,7 +171,6 @@ export default function Dashboard() {
 
   const sidebarItems = [
     { id: "dashboard", label: "Overview Dashboard", icon: <Target className="h-4 w-4" /> },
-    { id: "video-modules", label: "Video Modules", icon: <Video className="h-4 w-4" /> },
     { id: "quizzes", label: "Knowledge Challenges", icon: <Swords className="h-4 w-4" /> },
     { id: "calendar", label: "My Schedule", icon: <CalendarDays className="h-4 w-4" /> },
     { id: "community", label: "Learner Interaction Space", icon: <Lightbulb className="h-4 w-4" /> },
@@ -477,7 +476,6 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (activeSection) {
       case "dashboard": return renderDashboardContent();
-      case "video-modules": return <VideoModulesGrid />;
       case "quizzes": return <EcoQuizBattles />;
       case "calendar": return renderCalendarContent();
       case "community": return <LearnerNetwork />;
