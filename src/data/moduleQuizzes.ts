@@ -1,10 +1,4 @@
-interface Question {
-  id: string;
-  question: string;
-  options: string[];
-  correctAnswer: number;
-  explanation: string;
-}
+import type { Question } from "@/components/tracks/ModuleQuiz";
 
 interface ModuleQuizData {
   [lessonId: string]: Question[];
@@ -26,15 +20,12 @@ export const aiInnovationQuizzes: ModuleQuizData = {
     },
     {
       id: "ai-1-q2",
-      question: "Which of the following is an example of AI in everyday life?",
-      options: [
-        "A calculator performing basic math",
-        "Voice assistants like Siri or Alexa",
-        "A light switch turning on/off",
-        "A printed book"
-      ],
-      correctAnswer: 1,
-      explanation: "Voice assistants use AI to understand and respond to natural language, making decisions based on your requests."
+      type: "fill-blank",
+      question: "Complete the sentence about AI:",
+      blankSentence: "AI stands for Artificial ___.",
+      correctAnswer: "Intelligence",
+      acceptableAnswers: ["intelligence", "INTELLIGENCE"],
+      explanation: "AI stands for Artificial Intelligence — the simulation of human intelligence by machines."
     },
     {
       id: "ai-1-q3",
@@ -47,6 +38,14 @@ export const aiInnovationQuizzes: ModuleQuizData = {
       ],
       correctAnswer: 1,
       explanation: "Unlike traditional programs that follow fixed rules, AI systems can learn from data and improve their performance over time."
+    },
+    {
+      id: "ai-1-q4",
+      type: "drag-drop",
+      question: "Arrange these AI concepts from simplest to most complex:",
+      items: ["Deep Learning", "Artificial Intelligence", "Machine Learning"],
+      correctOrder: ["Artificial Intelligence", "Machine Learning", "Deep Learning"],
+      explanation: "AI is the broadest concept, Machine Learning is a subset of AI, and Deep Learning is a specialized subset of Machine Learning."
     }
   ],
   "ai-2": [
@@ -64,18 +63,23 @@ export const aiInnovationQuizzes: ModuleQuizData = {
     },
     {
       id: "ai-2-q2",
-      question: "Why is having good quality data important for AI?",
-      options: [
-        "It makes the AI look prettier",
-        "AI can make better and more accurate decisions with good data",
-        "It's not important at all",
-        "It only matters for gaming AI"
-      ],
-      correctAnswer: 1,
-      explanation: "The quality of data directly affects AI performance - garbage in, garbage out. Better data leads to more accurate and reliable AI systems."
+      type: "fill-blank",
+      question: "Complete the data quality principle:",
+      blankSentence: "In AI, the principle 'garbage in, ___ out' means bad data leads to bad results.",
+      correctAnswer: "garbage",
+      acceptableAnswers: ["Garbage", "GARBAGE"],
+      explanation: "The 'garbage in, garbage out' principle means that AI can only be as good as the data it learns from."
     },
     {
       id: "ai-2-q3",
+      type: "drag-drop",
+      question: "Arrange the data pipeline steps in correct order:",
+      items: ["Train the Model", "Clean the Data", "Collect Raw Data", "Evaluate Results"],
+      correctOrder: ["Collect Raw Data", "Clean the Data", "Train the Model", "Evaluate Results"],
+      explanation: "The data pipeline flows from collection → cleaning → training → evaluation to ensure quality AI outcomes."
+    },
+    {
+      id: "ai-2-q4",
       question: "What is a 'dataset'?",
       options: [
         "A single piece of information",
@@ -102,18 +106,23 @@ export const aiInnovationQuizzes: ModuleQuizData = {
     },
     {
       id: "ai-3-q2",
-      question: "How does an AI learn to recognize patterns?",
-      options: [
-        "By being programmed with every possible pattern",
-        "By analyzing many examples and finding similarities",
-        "By asking humans for help each time",
-        "Patterns cannot be learned by AI"
-      ],
-      correctAnswer: 1,
-      explanation: "AI learns patterns by processing large amounts of examples, identifying common features, and building internal models to recognize similar patterns in new data."
+      type: "fill-blank",
+      question: "Fill in the blank:",
+      blankSentence: "Email spam filters use ___ recognition to identify junk mail.",
+      correctAnswer: "pattern",
+      acceptableAnswers: ["Pattern", "PATTERN"],
+      explanation: "Spam filters use pattern recognition to identify characteristics common to spam emails and filter them out."
     },
     {
       id: "ai-3-q3",
+      type: "drag-drop",
+      question: "Order these pattern recognition steps:",
+      items: ["Make Prediction", "Identify Patterns", "Collect Data", "Validate Results"],
+      correctOrder: ["Collect Data", "Identify Patterns", "Make Prediction", "Validate Results"],
+      explanation: "Pattern recognition follows: data collection → pattern identification → prediction → validation."
+    },
+    {
+      id: "ai-3-q4",
       question: "Which of these uses pattern recognition?",
       options: [
         "Email spam filters identifying junk mail",
@@ -122,7 +131,7 @@ export const aiInnovationQuizzes: ModuleQuizData = {
         "An electric fan spinning"
       ],
       correctAnswer: 0,
-      explanation: "Spam filters use pattern recognition to identify characteristics common to spam emails (certain words, sender patterns, formatting) and filter them out."
+      explanation: "Spam filters use pattern recognition to identify characteristics common to spam emails and filter them out."
     }
   ],
   "ai-4": [
@@ -140,15 +149,12 @@ export const aiInnovationQuizzes: ModuleQuizData = {
     },
     {
       id: "ai-4-q2",
-      question: "What technology helps chatbots understand human language?",
-      options: [
-        "HTML and CSS",
-        "Natural Language Processing (NLP)",
-        "Spreadsheet formulas",
-        "Photo editing software"
-      ],
-      correctAnswer: 1,
-      explanation: "Natural Language Processing (NLP) is the AI technology that enables computers to understand, interpret, and generate human language."
+      type: "fill-blank",
+      question: "Complete the sentence:",
+      blankSentence: "___ Language Processing (NLP) helps chatbots understand human language.",
+      correctAnswer: "Natural",
+      acceptableAnswers: ["natural", "NATURAL"],
+      explanation: "Natural Language Processing (NLP) is the AI technology that enables computers to understand and generate human language."
     },
     {
       id: "ai-4-q3",
@@ -160,7 +166,15 @@ export const aiInnovationQuizzes: ModuleQuizData = {
         "The chatbot's visual design"
       ],
       correctAnswer: 1,
-      explanation: "Intent refers to what the user is trying to accomplish with their message - like asking a question, making a request, or seeking information."
+      explanation: "Intent refers to what the user is trying to accomplish with their message."
+    },
+    {
+      id: "ai-4-q4",
+      type: "drag-drop",
+      question: "Arrange the chatbot conversation flow in correct order:",
+      items: ["Generate Response", "Identify Intent", "Receive User Input", "Deliver Reply"],
+      correctOrder: ["Receive User Input", "Identify Intent", "Generate Response", "Deliver Reply"],
+      explanation: "A chatbot first receives input, identifies what the user wants (intent), generates an appropriate response, and delivers it."
     }
   ],
   "ai-5": [
@@ -174,10 +188,19 @@ export const aiInnovationQuizzes: ModuleQuizData = {
         "Translating text to another language"
       ],
       correctAnswer: 1,
-      explanation: "Sentiment analysis uses AI to identify and extract emotions, opinions, and attitudes expressed in text - determining if content is positive, negative, or neutral."
+      explanation: "Sentiment analysis uses AI to identify and extract emotions, opinions, and attitudes expressed in text."
     },
     {
       id: "ai-5-q2",
+      type: "fill-blank",
+      question: "Fill in the blank:",
+      blankSentence: "The three typical sentiment categories are positive, negative, and ___.",
+      correctAnswer: "neutral",
+      acceptableAnswers: ["Neutral", "NEUTRAL"],
+      explanation: "Sentiment is typically classified as positive, negative, or neutral."
+    },
+    {
+      id: "ai-5-q3",
       question: "Which business might use sentiment analysis?",
       options: [
         "A company analyzing customer reviews",
@@ -186,19 +209,15 @@ export const aiInnovationQuizzes: ModuleQuizData = {
         "A farmer planting crops"
       ],
       correctAnswer: 0,
-      explanation: "Companies use sentiment analysis to understand customer opinions from reviews, social media, and feedback to improve products and services."
+      explanation: "Companies use sentiment analysis to understand customer opinions from reviews and social media."
     },
     {
-      id: "ai-5-q3",
-      question: "What are the typical sentiment categories?",
-      options: [
-        "Fast, slow, medium",
-        "Positive, negative, neutral",
-        "Big, small, average",
-        "Hot, cold, warm"
-      ],
-      correctAnswer: 1,
-      explanation: "Sentiment is typically classified as positive (happy, satisfied), negative (angry, disappointed), or neutral (factual, no strong emotion)."
+      id: "ai-5-q4",
+      type: "drag-drop",
+      question: "Classify these phrases from most negative to most positive sentiment:",
+      items: ["I love this product!", "Worst experience ever.", "It's okay, nothing special."],
+      correctOrder: ["Worst experience ever.", "It's okay, nothing special.", "I love this product!"],
+      explanation: "Sentiment ranges from negative ('Worst experience') through neutral ('It's okay') to positive ('I love this')."
     }
   ],
   "ai-6": [
@@ -212,19 +231,16 @@ export const aiInnovationQuizzes: ModuleQuizData = {
         "A fashion model"
       ],
       correctAnswer: 1,
-      explanation: "A predictive model uses historical data and AI algorithms to make informed predictions about future events or outcomes."
+      explanation: "A predictive model uses historical data and AI algorithms to make informed predictions about future events."
     },
     {
       id: "ai-6-q2",
-      question: "What is needed to build a good predictive model?",
-      options: [
-        "Only guessing and intuition",
-        "Historical data, patterns, and proper training",
-        "Just random numbers",
-        "A crystal ball"
-      ],
-      correctAnswer: 1,
-      explanation: "Good predictive models require quality historical data, identified patterns, proper algorithm training, and validation to make accurate forecasts."
+      type: "fill-blank",
+      question: "Complete the sentence:",
+      blankSentence: "Predictive models use ___ data to forecast future outcomes.",
+      correctAnswer: "historical",
+      acceptableAnswers: ["Historical", "HISTORICAL", "past", "Past"],
+      explanation: "Predictive models analyze historical (past) data to identify patterns and make predictions about the future."
     },
     {
       id: "ai-6-q3",
@@ -236,7 +252,15 @@ export const aiInnovationQuizzes: ModuleQuizData = {
         "A simple notepad app"
       ],
       correctAnswer: 1,
-      explanation: "Weather forecasting uses predictive AI models that analyze historical weather data, current conditions, and patterns to predict future weather."
+      explanation: "Weather forecasting uses predictive AI models that analyze historical weather data to predict future weather."
+    },
+    {
+      id: "ai-6-q4",
+      type: "drag-drop",
+      question: "Arrange the predictive modeling steps in order:",
+      items: ["Make Predictions", "Define the Problem", "Train the Model", "Collect Historical Data"],
+      correctOrder: ["Define the Problem", "Collect Historical Data", "Train the Model", "Make Predictions"],
+      explanation: "Building a predictive model starts with defining the problem, then collecting data, training the model, and finally making predictions."
     }
   ]
 };
@@ -253,10 +277,19 @@ export const environmentalInnovationQuizzes: ModuleQuizData = {
         "Pictures of nature"
       ],
       correctAnswer: 0,
-      explanation: "Environmental metrics are quantitative measures used to track, analyze, and report on environmental conditions, impacts, and sustainability efforts."
+      explanation: "Environmental metrics are quantitative measures used to track, analyze, and report on environmental conditions."
     },
     {
       id: "env-1-q2",
+      type: "fill-blank",
+      question: "Complete the sentence:",
+      blankSentence: "A carbon ___ measures the total greenhouse gas emissions caused by a person or organization.",
+      correctAnswer: "footprint",
+      acceptableAnswers: ["Footprint", "FOOTPRINT"],
+      explanation: "Carbon footprint measures the total amount of greenhouse gases produced by human activities."
+    },
+    {
+      id: "env-1-q3",
       question: "Why is environmental data important?",
       options: [
         "It's not important at all",
@@ -265,19 +298,7 @@ export const environmentalInnovationQuizzes: ModuleQuizData = {
         "It's only for decoration"
       ],
       correctAnswer: 1,
-      explanation: "Environmental data helps us understand the health of our planet, track changes over time, and make informed decisions to protect the environment."
-    },
-    {
-      id: "env-1-q3",
-      question: "What is carbon footprint?",
-      options: [
-        "Footprints made of carbon",
-        "The total greenhouse gas emissions caused by an individual or organization",
-        "A type of shoe",
-        "A hiking trail"
-      ],
-      correctAnswer: 1,
-      explanation: "Carbon footprint measures the total amount of greenhouse gases (especially CO₂) produced directly and indirectly by human activities."
+      explanation: "Environmental data helps us understand the health of our planet and make informed decisions."
     }
   ],
   "env-2": [
@@ -291,57 +312,42 @@ export const environmentalInnovationQuizzes: ModuleQuizData = {
         "Indoor and outdoor waste"
       ],
       correctAnswer: 1,
-      explanation: "Waste is typically categorized into recyclables (can be processed again), compostables (organic matter that decomposes), and landfill waste (non-recyclable)."
+      explanation: "Waste is typically categorized into recyclables, compostables, and landfill waste."
     },
     {
       id: "env-2-q2",
-      question: "What does 'recycling' mean?",
-      options: [
-        "Throwing things away",
-        "Converting waste materials into new products",
-        "Burning garbage",
-        "Burying trash underground"
-      ],
-      correctAnswer: 1,
-      explanation: "Recycling is the process of collecting and processing materials that would otherwise be thrown away and turning them into new products."
+      type: "drag-drop",
+      question: "Arrange these materials by decomposition time (shortest to longest):",
+      items: ["Plastic Bottle (450+ years)", "Banana Peel (2-5 weeks)", "Paper (2-6 weeks)", "Glass Bottle (1 million+ years)"],
+      correctOrder: ["Banana Peel (2-5 weeks)", "Paper (2-6 weeks)", "Plastic Bottle (450+ years)", "Glass Bottle (1 million+ years)"],
+      explanation: "Organic materials decompose fastest, while synthetic materials like plastic and glass take centuries."
     },
     {
       id: "env-2-q3",
-      question: "Which material takes the longest to decompose?",
-      options: [
-        "Paper (2-6 weeks)",
-        "Banana peel (2-5 weeks)",
-        "Plastic bottle (450+ years)",
-        "Cotton cloth (1-5 months)"
-      ],
-      correctAnswer: 2,
-      explanation: "Plastic takes hundreds of years to decompose, which is why reducing plastic use and proper recycling is so important for the environment."
+      type: "fill-blank",
+      question: "Complete the eco principle:",
+      blankSentence: "The 3 R's of waste management are Reduce, Reuse, and ___.",
+      correctAnswer: "Recycle",
+      acceptableAnswers: ["recycle", "RECYCLE"],
+      explanation: "Reduce, Reuse, Recycle are the three fundamental principles of waste management."
     }
   ],
   "env-3": [
     {
       id: "env-3-q1",
       question: "What is CO₂?",
-      options: [
-        "A type of vitamin",
-        "Carbon dioxide, a greenhouse gas",
-        "A computer code",
-        "A type of battery"
-      ],
+      options: ["A type of vitamin", "Carbon dioxide, a greenhouse gas", "A computer code", "A type of battery"],
       correctAnswer: 1,
-      explanation: "CO₂ (carbon dioxide) is a greenhouse gas that traps heat in Earth's atmosphere, contributing to global warming and climate change."
+      explanation: "CO₂ (carbon dioxide) is a greenhouse gas that traps heat in Earth's atmosphere."
     },
     {
       id: "env-3-q2",
-      question: "Which activity produces the most CO₂ emissions globally?",
-      options: [
-        "Reading books",
-        "Burning fossil fuels (coal, oil, gas)",
-        "Walking in parks",
-        "Drinking water"
-      ],
-      correctAnswer: 1,
-      explanation: "Burning fossil fuels for electricity, heat, and transportation is the largest source of CO₂ emissions, contributing significantly to climate change."
+      type: "fill-blank",
+      question: "Fill in the blank:",
+      blankSentence: "Burning ___ fuels like coal, oil, and gas is the largest source of CO₂ emissions.",
+      correctAnswer: "fossil",
+      acceptableAnswers: ["Fossil", "FOSSIL"],
+      explanation: "Burning fossil fuels for electricity, heat, and transportation is the largest source of CO₂ emissions."
     },
     {
       id: "env-3-q3",
@@ -353,121 +359,82 @@ export const environmentalInnovationQuizzes: ModuleQuizData = {
         "Buy more products"
       ],
       correctAnswer: 1,
-      explanation: "Individuals can reduce their carbon footprint through choices like using public transport, saving energy, reducing waste, and choosing sustainable products."
+      explanation: "Individuals can reduce their carbon footprint through choices like using public transport and saving energy."
     }
   ],
   "env-4": [
     {
       id: "env-4-q1",
       question: "What is data visualization?",
-      options: [
-        "Making data invisible",
-        "Presenting data in graphical or visual formats",
-        "Deleting all data",
-        "Writing data in code"
-      ],
+      options: ["Making data invisible", "Presenting data in graphical or visual formats", "Deleting all data", "Writing data in code"],
       correctAnswer: 1,
-      explanation: "Data visualization transforms complex data into visual formats like charts, graphs, and maps, making it easier to understand patterns and insights."
+      explanation: "Data visualization transforms complex data into visual formats like charts and graphs."
     },
     {
       id: "env-4-q2",
-      question: "Why are charts useful for environmental data?",
-      options: [
-        "They look pretty",
-        "They help identify trends and patterns quickly",
-        "They hide important information",
-        "They're only for decoration"
-      ],
-      correctAnswer: 1,
-      explanation: "Charts and graphs help people quickly understand complex environmental data, spot trends, compare values, and communicate findings effectively."
+      type: "fill-blank",
+      question: "Complete the sentence:",
+      blankSentence: "A ___ chart is ideal for showing how values change over time.",
+      correctAnswer: "line",
+      acceptableAnswers: ["Line", "LINE"],
+      explanation: "Line charts are ideal for showing how values change over time, making them perfect for tracking trends."
     },
     {
       id: "env-4-q3",
-      question: "Which chart type best shows change over time?",
-      options: [
-        "Pie chart",
-        "Line chart",
-        "Bar code",
-        "Word cloud"
-      ],
-      correctAnswer: 1,
-      explanation: "Line charts are ideal for showing how values change over time, making them perfect for tracking environmental metrics like temperature or emissions trends."
+      type: "drag-drop",
+      question: "Match the best chart type to use (from simple comparison to complex trends):",
+      items: ["Line Chart (trends over time)", "Pie Chart (proportions)", "Bar Chart (comparisons)"],
+      correctOrder: ["Pie Chart (proportions)", "Bar Chart (comparisons)", "Line Chart (trends over time)"],
+      explanation: "Pie charts show simple proportions, bar charts compare values, and line charts reveal trends over time."
     }
   ],
   "env-5": [
     {
       id: "env-5-q1",
       question: "Why are educational games effective for learning?",
-      options: [
-        "They're not effective",
-        "They make learning engaging and memorable",
-        "They only work for adults",
-        "They replace teachers completely"
-      ],
+      options: ["They're not effective", "They make learning engaging and memorable", "They only work for adults", "They replace teachers completely"],
       correctAnswer: 1,
-      explanation: "Educational games increase engagement, motivation, and retention by making learning interactive, fun, and providing immediate feedback."
+      explanation: "Educational games increase engagement, motivation, and retention by making learning interactive."
     },
     {
       id: "env-5-q2",
-      question: "What makes a good environmental education game?",
-      options: [
-        "Complex rules that no one understands",
-        "Clear goals, engaging mechanics, and accurate information",
-        "No learning objectives",
-        "Only violence and competition"
-      ],
-      correctAnswer: 1,
-      explanation: "Effective educational games balance fun gameplay with clear learning objectives, accurate content, and meaningful choices that reinforce key concepts."
+      type: "fill-blank",
+      question: "Fill in the blank:",
+      blankSentence: "___ is the application of game elements to non-game contexts to boost engagement.",
+      correctAnswer: "Gamification",
+      acceptableAnswers: ["gamification", "GAMIFICATION"],
+      explanation: "Gamification uses game mechanics like points, badges, and leaderboards in educational contexts."
     },
     {
       id: "env-5-q3",
-      question: "How can games promote environmental awareness?",
-      options: [
-        "By ignoring environmental issues",
-        "By simulating real-world environmental challenges and solutions",
-        "By only showing negative outcomes",
-        "Games can't teach about environment"
-      ],
+      question: "What makes a good environmental education game?",
+      options: ["Complex rules that no one understands", "Clear goals, engaging mechanics, and accurate information", "No learning objectives", "Only violence and competition"],
       correctAnswer: 1,
-      explanation: "Games can simulate environmental scenarios, letting players experience consequences of choices and discover sustainable solutions in a safe, engaging way."
+      explanation: "Effective educational games balance fun gameplay with clear learning objectives and accurate content."
     }
   ],
   "env-6": [
     {
       id: "env-6-q1",
       question: "What is an environmental dashboard?",
-      options: [
-        "A car's control panel",
-        "A visual interface displaying environmental metrics and analytics",
-        "A wooden board",
-        "A type of game"
-      ],
+      options: ["A car's control panel", "A visual interface displaying environmental metrics and analytics", "A wooden board", "A type of game"],
       correctAnswer: 1,
-      explanation: "An environmental dashboard is a visual tool that displays key environmental metrics, trends, and analytics in an organized, easy-to-understand format."
+      explanation: "An environmental dashboard displays key environmental metrics, trends, and analytics in an organized format."
     },
     {
       id: "env-6-q2",
-      question: "What key features should an environmental dashboard have?",
-      options: [
-        "Only text, no visuals",
-        "Real-time data, visualizations, and actionable insights",
-        "Random colors and shapes",
-        "Password protection only"
-      ],
-      correctAnswer: 1,
-      explanation: "Effective dashboards combine real-time data updates, clear visualizations, key metrics, and actionable insights to support decision-making."
+      type: "drag-drop",
+      question: "Arrange the dashboard design process in order:",
+      items: ["Build Visualizations", "Test with Users", "Define Key Metrics", "Gather Data Sources"],
+      correctOrder: ["Define Key Metrics", "Gather Data Sources", "Build Visualizations", "Test with Users"],
+      explanation: "Designing a dashboard starts with defining metrics, gathering data, building visuals, and testing with users."
     },
     {
       id: "env-6-q3",
       question: "Who can benefit from environmental dashboards?",
-      options: [
-        "Only large corporations",
-        "Individuals, organizations, governments, and communities",
-        "Only environmental scientists",
-        "No one really uses them"
-      ],
+      options: ["Only large corporations", "Individuals, organizations, governments, and communities", "Only environmental scientists", "No one really uses them"],
       correctAnswer: 1,
-      explanation: "Environmental dashboards help everyone from individuals tracking personal impact to governments monitoring national environmental policies and goals."
+      explanation: "Environmental dashboards help everyone from individuals to governments monitor environmental goals."
     }
   ]
 };
