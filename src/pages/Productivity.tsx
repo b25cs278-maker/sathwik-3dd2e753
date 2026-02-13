@@ -13,10 +13,12 @@ import {
   DayPlan,
   ExecutionRule 
 } from '@/hooks/useLocalStorage';
+import { ProductivityInsights } from '@/components/productivity/ProductivityInsights';
 import { 
   ListTodo, 
   Brain, 
-  Sparkles
+  Sparkles,
+  BarChart3
 } from 'lucide-react';
 
 export default function Productivity() {
@@ -81,10 +83,14 @@ export default function Productivity() {
 
         {/* Main Tabs */}
         <Tabs defaultValue="ai-planner" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
             <TabsTrigger value="ai-planner" className="flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
               <span className="hidden sm:inline">AI Planner</span>
+            </TabsTrigger>
+            <TabsTrigger value="insights" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              <span className="hidden sm:inline">Insights</span>
             </TabsTrigger>
             <TabsTrigger value="tasks" className="flex items-center gap-2">
               <ListTodo className="h-4 w-4" />
@@ -106,6 +112,14 @@ export default function Productivity() {
               onAddTask={handleAddTask}
               onAddHabit={(habit) => setHabits(prev => [...prev, habit])}
               onUpdateRules={setExecutionRules}
+            />
+          </TabsContent>
+
+          <TabsContent value="insights" className="space-y-6">
+            <ProductivityInsights
+              tasks={tasks}
+              habits={habits}
+              goals={goals}
             />
           </TabsContent>
 
