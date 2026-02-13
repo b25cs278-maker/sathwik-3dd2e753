@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -30,6 +31,19 @@ export default function TrackDetail() {
   const [projectScores, setProjectScores] = useLocalStorage<Record<string, number>>(`${trackId}-projects`, {});
   const [quizScores, setQuizScores] = useLocalStorage<Record<string, number>>(`${trackId}-quizzes`, {});
   const [activeQuiz, setActiveQuiz] = useState<string | null>(null);
+  const [videoModules, setVideoModules] = useState<{ youtube_url: string }[]>([]);
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      const { data } = await supabase
+        .from("video_modules")
+        .select("youtube_url")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
+      if (data) setVideoModules(data);
+    };
+    fetchVideos();
+  }, []);
 
   // Get the quiz data based on track
   const quizDataMap: Record<string, Record<string, any>> = {
@@ -163,9 +177,19 @@ export default function TrackDetail() {
                             <p className="text-sm text-muted-foreground">{lesson.description}</p>
                           </div>
                           {unlocked && (
-                            <Link to="/student/dashboard">
-                              <Button size="sm">Start</Button>
-                            </Link>
+                            <Button 
+                              size="sm"
+                              onClick={() => {
+                                const videoUrl = videoModules[index]?.youtube_url;
+                                if (videoUrl) {
+                                  window.open(videoUrl, "_blank", "noopener,noreferrer");
+                                } else {
+                                  toast.info("No video available for this module yet.");
+                                }
+                              }}
+                            >
+                              Start
+                            </Button>
                           )}
                         </div>
                       </CardContent>
