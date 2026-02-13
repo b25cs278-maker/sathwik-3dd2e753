@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,6 +25,7 @@ const levelConfig = {
 
 export default function TrackDetail() {
   const { trackId } = useParams<{ trackId: string }>();
+  const navigate = useNavigate();
   const track = trackData[trackId as keyof typeof trackData];
 
   const [completedLessons, setCompletedLessons] = useLocalStorage<string[]>(`${trackId}-lessons`, []);
@@ -96,6 +97,36 @@ export default function TrackDetail() {
     }
   };
 
+  const handleFinishLesson = (lessonId: string) => {
+    // Check if there's a related project that is now unlocked
+    const relatedProject = track.projects.find(p => p.lessonRequired === lessonId);
+    const projectUnlocked = relatedProject && isProjectUnlocked(lessonId);
+
+    if (relatedProject && projectUnlocked) {
+      // Redirect to related project
+      setActiveLessonId(null);
+      navigate(`/project/${trackId}/${relatedProject.id}`);
+    } else {
+      // Find the next lesson in the track
+      const currentIndex = track.lessons.findIndex(l => l.id === lessonId);
+      const nextLesson = currentIndex < track.lessons.length - 1 ? track.lessons[currentIndex + 1] : null;
+
+      if (nextLesson) {
+        const nextVideo = videoModules[normalize(nextLesson.title)];
+        if (nextVideo?.youtube_url) {
+          setActiveLessonId(nextLesson.id);
+          toast.info(`Starting next module: ${nextLesson.title}`);
+        } else {
+          setActiveLessonId(null);
+          toast.success("Module completed! Next module coming soon.");
+        }
+      } else {
+        setActiveLessonId(null);
+        toast.success("🎉 You've completed all modules in this track!");
+      }
+    }
+  };
+
   // Find the active lesson data
   const activeLesson = activeLessonId ? track.lessons.find(l => l.id === activeLessonId) : null;
   const activeVideoModule = activeLesson ? videoModules[normalize(activeLesson.title)] : null;
@@ -146,6 +177,7 @@ export default function TrackDetail() {
               onComplete={(score, passed) => handleQuizComplete(activeLesson.id, score, passed)}
               onClose={() => setActiveLessonId(null)}
               onVideoCompleted={() => handleVideoCompleted(activeLesson.id)}
+              onFinishLesson={() => handleFinishLesson(activeLesson.id)}
             />
           </div>
         )}

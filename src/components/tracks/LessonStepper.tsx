@@ -27,6 +27,7 @@ interface LessonStepperProps {
   onComplete: (quizScore: number, passed: boolean) => void;
   onClose: () => void;
   onVideoCompleted: () => void;
+  onFinishLesson: () => void;
 }
 
 const steps = [
@@ -49,6 +50,7 @@ export function LessonStepper({
   onComplete,
   onClose,
   onVideoCompleted,
+  onFinishLesson,
 }: LessonStepperProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
@@ -279,7 +281,7 @@ export function LessonStepper({
               <Button
                 onClick={() => {
                   handleResourcesComplete();
-                  onClose();
+                  onFinishLesson();
                   toast.success("Lesson completed! 🎉");
                 }}
                 className={`bg-gradient-to-r ${trackColor} text-white`}
