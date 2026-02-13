@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FlashcardDeck } from "./FlashcardDeck";
 import { ModuleQuiz } from "./ModuleQuiz";
-import { Play, Layers, HelpCircle, FileText, CheckCircle2, ArrowRight, X, ExternalLink } from "lucide-react";
+import { Play, Layers, HelpCircle, FileText, CheckCircle2, ArrowRight, X, ExternalLink, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -31,6 +31,7 @@ interface LessonStepperProps {
   videoUrl: string;
   resourcePdfUrl: string | null;
   quizQuestions: Question[] | null;
+  learningObjectives: string[];
   onComplete: (quizScore: number, passed: boolean) => void;
   onClose: () => void;
   onVideoCompleted: () => void;
@@ -52,6 +53,7 @@ export function LessonStepper({
   videoUrl,
   resourcePdfUrl,
   quizQuestions,
+  learningObjectives,
   onComplete,
   onClose,
   onVideoCompleted,
@@ -154,6 +156,23 @@ export function LessonStepper({
       {currentStep === 0 && (
         <Card>
           <CardContent className="p-0 overflow-hidden rounded-xl">
+            {/* Learning Objectives */}
+            {learningObjectives.length > 0 && (
+              <div className="p-4 border-b bg-muted/30">
+                <h4 className="text-sm font-semibold flex items-center gap-2 mb-2 text-foreground">
+                  <Target className="h-4 w-4 text-primary" />
+                  What you'll learn
+                </h4>
+                <ul className="space-y-1.5">
+                  {learningObjectives.map((obj, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 text-primary/60 shrink-0" />
+                      <span>{obj}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             {getYoutubeEmbedUrl(videoUrl) ? (
               <div className="aspect-video w-full">
                 <iframe
