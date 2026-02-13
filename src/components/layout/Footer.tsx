@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Leaf, Linkedin, Instagram, Youtube, Mail, MapPin, Phone } from "lucide-react";
+import { Leaf, Linkedin, Instagram, Youtube, Mail } from "lucide-react";
 
 export function Footer() {
   return (
@@ -78,28 +78,6 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Contact Section */}
-          <div>
-            <h4 className="font-display font-bold text-foreground mb-5">Contact Us</h4>
-            <ul className="space-y-4 text-sm text-muted-foreground">
-              <li className="flex items-start gap-3">
-                <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <span>EcoLearn Innovation Hub,<br />Bangalore, Karnataka, India</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-primary shrink-0" />
-                <a href="mailto:hello@ecolearn.com" className="hover:text-primary transition-colors">
-                  hello@ecolearn.com
-                </a>
-              </li>
-              <li className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-primary shrink-0" />
-                <a href="tel:+919876543210" className="hover:text-primary transition-colors">
-                  +91 98765 43210
-                </a>
-              </li>
-            </ul>
-          </div>
         </div>
 
         {/* Bottom Bar */}
