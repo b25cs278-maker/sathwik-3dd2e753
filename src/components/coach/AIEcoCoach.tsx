@@ -15,10 +15,10 @@ interface Message {
 }
 
 const quickPrompts = [
-  { icon: Leaf, text: "Daily eco tips", prompt: "What are some easy eco-friendly habits I can start today?" },
-  { icon: MapPin, text: "Tasks near me", prompt: "What eco tasks can I do in my local area?" },
-  { icon: Lightbulb, text: "Motivate me", prompt: "I need some motivation to keep up with my eco journey. Can you help?" },
-  { icon: Sparkles, text: "Fun eco facts", prompt: "Share some interesting environmental facts that would inspire me!" },
+  { icon: Lightbulb, text: "Study tips", prompt: "What are some effective study strategies to learn faster and retain more?" },
+  { icon: Sparkles, text: "AI concepts", prompt: "Explain some key AI concepts like machine learning, neural networks, and chatbots in simple terms." },
+  { icon: Leaf, text: "Interview prep", prompt: "Help me prepare for a job interview. What are the most common questions and how should I answer them?" },
+  { icon: MapPin, text: "English practice", prompt: "Help me practice English. Give me a conversation scenario and correct my grammar." },
 ];
 
 export function AIEcoCoach() {
@@ -26,7 +26,7 @@ export function AIEcoCoach() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hi there! 🌱 I'm your AI Eco Coach. I'm here to help you on your sustainability journey. Ask me about daily eco habits, tasks near you, or get some motivation. How can I help you today?"
+      content: "Hi there! 📚 I'm your AI Learning Assistant. I can help you with AI concepts, soft skills, English practice, interview prep, and more. What would you like to learn today?"
     }
   ]);
   const [input, setInput] = useState("");
@@ -145,7 +145,7 @@ export function AIEcoCoach() {
       toast.error(error instanceof Error ? error.message : "Failed to get response");
       setMessages(prev => [
         ...prev,
-        { role: "assistant", content: "Sorry, I'm having trouble connecting right now. Please try again in a moment! 🌿" }
+        { role: "assistant", content: "Sorry, I'm having trouble connecting right now. Please try again in a moment! 📚" }
       ]);
     } finally {
       setIsLoading(false);
@@ -162,10 +162,10 @@ export function AIEcoCoach() {
       {/* Header */}
       <div className="text-center">
         <h2 className="text-2xl font-display font-bold text-foreground mb-2">
-          Your AI <span className="eco-gradient-text">Eco Coach</span>
+          Your AI <span className="eco-gradient-text">Learning Assistant</span>
         </h2>
         <p className="text-muted-foreground">
-          Get personalized eco tips, task suggestions, and motivation
+          Get help with AI, soft skills, English, interview prep & more
         </p>
       </div>
 
@@ -196,7 +196,7 @@ export function AIEcoCoach() {
           <CardHeader className="border-b">
             <CardTitle className="flex items-center gap-2">
               <Bot className="h-5 w-5 text-primary" />
-              EcoCoach Chat
+              LearnBot Chat
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
@@ -258,7 +258,7 @@ export function AIEcoCoach() {
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask your eco coach..."
+                  placeholder="Ask your learning assistant..."
                   disabled={isLoading}
                   className="flex-1"
                 />
