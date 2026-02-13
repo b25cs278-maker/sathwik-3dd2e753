@@ -20,7 +20,7 @@ import { LearnerNetwork } from "@/components/network/LearnerNetwork";
 import { NotificationsPanel } from "@/components/user/NotificationsPanel";
 import { FeedbackSupport } from "@/components/user/FeedbackSupport";
 import { EcoQuizBattles } from "@/components/quiz/EcoQuizBattles";
-import { LearningTracks } from "@/components/tracks/LearningTracks";
+// LearningTracks removed from sidebar but still accessible via /tracks route
 import { EcoStories } from "@/components/stories/EcoStories";
 import { AIEcoCoach } from "@/components/coach/AIEcoCoach";
 
@@ -326,7 +326,7 @@ export default function Dashboard() {
                       Explore Workshops
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Discover hands-on environmental activities
+                      Discover hands-on learning activities
                     </p>
                   </div>
                 </Link>
@@ -334,10 +334,10 @@ export default function Dashboard() {
                   <div className="p-4 rounded-xl border border-border hover:border-eco-sky/50 hover:bg-eco-sky/5 transition-all cursor-pointer group">
                     <GraduationCap className="h-8 w-8 text-eco-sky mb-3" />
                     <h3 className="font-semibold text-foreground group-hover:text-eco-sky transition-colors">
-                      AI Skill Modules
+                      Learning Tracks
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Advance your sustainability expertise
+                      Advance your skills with guided courses
                     </p>
                   </div>
                 </Link>
