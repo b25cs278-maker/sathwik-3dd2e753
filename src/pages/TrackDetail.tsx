@@ -173,21 +173,19 @@ export default function TrackDetail() {
                             <h3 className="font-semibold text-foreground">{lesson.title}</h3>
                             <p className="text-sm text-muted-foreground">{lesson.description}</p>
                           </div>
-                          {unlocked && (
-                            <Button 
-                              size="sm"
-                              onClick={() => {
-                                const videoUrl = videoModules[index]?.youtube_url;
-                                if (videoUrl) {
-                                  window.open(videoUrl, "_blank", "noopener,noreferrer");
-                                } else {
-                                  toast.info("No video available for this module yet.");
-                                }
-                              }}
+                          {unlocked && videoModules[index]?.youtube_url ? (
+                            <a 
+                              href={videoModules[index].youtube_url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
                             >
-                              Start
+                              <Button size="sm">Start</Button>
+                            </a>
+                          ) : unlocked ? (
+                            <Button size="sm" variant="outline" disabled>
+                              Coming Soon
                             </Button>
-                          )}
+                          ) : null}
                         </div>
                       </CardContent>
                     </Card>
