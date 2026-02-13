@@ -6,13 +6,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { 
   Lock, CheckCircle2, Play, BookOpen, 
-  Rocket, Trophy, Clock, Star, HelpCircle, X
+  Rocket, Trophy, Clock, Star, HelpCircle
 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { ModuleQuiz } from "@/components/tracks/ModuleQuiz";
+import { LessonStepper } from "@/components/tracks/LessonStepper";
 import { aiInnovationQuizzes, environmentalInnovationQuizzes } from "@/data/moduleQuizzes";
 import { softSkillsQuizzes, englishLearningQuizzes, interviewSkillsQuizzes } from "@/data/skillTrainingQuizzes";
 import { trackData } from "@/data/trackData";
@@ -31,14 +30,9 @@ export default function TrackDetail() {
   const [completedLessons, setCompletedLessons] = useLocalStorage<string[]>(`${trackId}-lessons`, []);
   const [projectScores, setProjectScores] = useLocalStorage<Record<string, number>>(`${trackId}-projects`, {});
   const [quizScores, setQuizScores] = useLocalStorage<Record<string, number>>(`${trackId}-quizzes`, {});
-  const [activeQuiz, setActiveQuiz] = useState<string | null>(null);
+  const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [videoModules, setVideoModules] = useState<Record<string, { youtube_url: string; resource_pdf_url: string | null }>>({});
-  const [activeVideo, setActiveVideo] = useState<{ url: string; title: string } | null>(null);
 
-  const getYoutubeEmbedUrl = (url: string) => {
-    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([^&?\s]+)/);
-    return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` : null;
-  };
   useEffect(() => {
     const fetchVideos = async () => {
       const { data } = await supabase
@@ -57,7 +51,6 @@ export default function TrackDetail() {
     fetchVideos();
   }, []);
 
-  // Get the quiz data based on track
   const quizDataMap: Record<string, Record<string, any>> = {
     "ai-innovation": aiInnovationQuizzes,
     "environmental-innovation": environmentalInnovationQuizzes,
@@ -72,9 +65,7 @@ export default function TrackDetail() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Track not found</h1>
-          <Link to="/tracks">
-            <Button>Back to Tracks</Button>
-          </Link>
+          <Link to="/tracks"><Button>Back to Tracks</Button></Link>
         </div>
       </div>
     );
@@ -84,21 +75,10 @@ export default function TrackDetail() {
   const totalLessons = track.lessons.length;
   const progress = (completedCount / totalLessons) * 100;
 
-  const isLessonUnlocked = (_index: number) => {
-    return true; // All lessons are accessible
-  };
+  const normalize = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ');
 
   const isProjectUnlocked = (lessonRequired: string) => {
-    // Project unlocks after completing lesson AND passing quiz
     return completedLessons.includes(lessonRequired) && quizScores[lessonRequired] !== undefined && quizScores[lessonRequired] >= 70;
-  };
-
-  const isQuizUnlocked = (lessonId: string) => {
-    return completedLessons.includes(lessonId);
-  };
-
-  const isQuizCompleted = (lessonId: string) => {
-    return quizScores[lessonId] !== undefined && quizScores[lessonId] >= 70;
   };
 
   const handleQuizComplete = (lessonId: string, score: number, passed: boolean) => {
@@ -108,8 +88,17 @@ export default function TrackDetail() {
     } else {
       toast.error(`Score: ${score}%. You need 70% to pass. Try again!`);
     }
-    setActiveQuiz(null);
   };
+
+  const handleVideoCompleted = (lessonId: string) => {
+    if (!completedLessons.includes(lessonId)) {
+      setCompletedLessons([...completedLessons, lessonId]);
+    }
+  };
+
+  // Find the active lesson data
+  const activeLesson = activeLessonId ? track.lessons.find(l => l.id === activeLessonId) : null;
+  const activeVideoModule = activeLesson ? videoModules[normalize(activeLesson.title)] : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -119,9 +108,7 @@ export default function TrackDetail() {
       <section className={`relative py-12 bg-gradient-to-r ${track.color}`}>
         <div className="container">
           <div className="flex items-center gap-4 mb-4">
-            <Link to="/tracks" className="text-white/80 hover:text-white text-sm">
-              ← Back to Tracks
-            </Link>
+            <Link to="/tracks" className="text-white/80 hover:text-white text-sm">← Back to Tracks</Link>
           </div>
           <div className="flex items-center gap-4">
             <div className="p-4 rounded-2xl bg-white/20 backdrop-blur">
@@ -143,6 +130,25 @@ export default function TrackDetail() {
       </section>
 
       <div className="container py-8">
+        {/* Active Lesson Stepper */}
+        {activeLessonId && activeLesson && activeVideoModule && (
+          <div className="mb-8 max-w-3xl mx-auto">
+            <LessonStepper
+              lessonId={activeLesson.id}
+              lessonTitle={activeLesson.title}
+              lessonDescription={activeLesson.description}
+              trackTitle={track.title}
+              trackColor={track.color}
+              videoUrl={activeVideoModule.youtube_url}
+              resourcePdfUrl={activeVideoModule.resource_pdf_url}
+              quizQuestions={quizData[activeLesson.id] || null}
+              onComplete={(score, passed) => handleQuizComplete(activeLesson.id, score, passed)}
+              onClose={() => setActiveLessonId(null)}
+              onVideoCompleted={() => handleVideoCompleted(activeLesson.id)}
+            />
+          </div>
+        )}
+
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Lessons Column */}
           <div>
@@ -151,128 +157,52 @@ export default function TrackDetail() {
               Learning Modules
             </h2>
             <div className="space-y-4">
-              {track.lessons.map((lesson, index) => {
+              {track.lessons.map((lesson) => {
                 const isCompleted = completedLessons.includes(lesson.id);
-                const unlocked = isLessonUnlocked(index);
                 const config = levelConfig[lesson.level];
-                const quizPassed = isQuizCompleted(lesson.id);
-                const quizUnlocked = isQuizUnlocked(lesson.id);
+                const matchedVideo = videoModules[normalize(lesson.title)];
+                const isActive = activeLessonId === lesson.id;
 
                 return (
-                  <div key={lesson.id} className="space-y-2">
-                    {/* Lesson Card */}
-                    <Card 
-                      className={`transition-all ${!unlocked ? 'opacity-60' : ''} ${isCompleted ? 'border-primary/50 bg-primary/5' : ''}`}
-                    >
-                      <CardContent className="p-4">
-                        <div className="flex items-start gap-4">
-                          <div className={`p-2 rounded-lg ${isCompleted ? 'bg-primary/20' : 'bg-muted'}`}>
-                            {isCompleted ? (
-                              <CheckCircle2 className="h-5 w-5 text-primary" />
-                            ) : unlocked ? (
-                              <Play className="h-5 w-5 text-muted-foreground" />
-                            ) : (
-                              <Lock className="h-5 w-5 text-muted-foreground" />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className={`text-xs font-medium ${config.color}`}>{config.label}</span>
-                              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Clock className="h-3 w-3" /> {lesson.duration}
-                              </span>
-                            </div>
-                            <h3 className="font-semibold text-foreground">{lesson.title}</h3>
-                            <p className="text-sm text-muted-foreground">{lesson.description}</p>
-                          </div>
-                          {(() => {
-                            const normalize = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ');
-                            const matchedVideo = videoModules[normalize(lesson.title)];
-                            if (unlocked && matchedVideo?.youtube_url) {
-                              return (
-                                <Button 
-                                  size="sm" 
-                                  onClick={() => setActiveVideo({ url: matchedVideo.youtube_url, title: lesson.title })}
-                                >
-                                  <Play className="h-3 w-3 mr-1" /> Start
-                                </Button>
-                              );
-                            }
-                            if (unlocked) {
-                              return (
-                                <Button size="sm" variant="outline" disabled>
-                                  Coming Soon
-                                </Button>
-                              );
-                            }
-                            return null;
-                          })()}
+                  <Card 
+                    key={lesson.id}
+                    className={`transition-all ${isCompleted ? 'border-primary/50 bg-primary/5' : ''} ${isActive ? 'ring-2 ring-primary' : ''}`}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-4">
+                        <div className={`p-2 rounded-lg ${isCompleted ? 'bg-primary/20' : 'bg-muted'}`}>
+                          {isCompleted ? (
+                            <CheckCircle2 className="h-5 w-5 text-primary" />
+                          ) : (
+                            <Play className="h-5 w-5 text-muted-foreground" />
+                          )}
                         </div>
-                      </CardContent>
-                    </Card>
-
-                    {/* Quiz Card - appears after lesson is completed */}
-                    {quizUnlocked && (
-                      <Card 
-                        className={`ml-8 transition-all border-l-4 ${quizPassed ? 'border-l-green-500 bg-green-50/50' : 'border-l-amber-500 bg-amber-50/50'}`}
-                      >
-                        <CardContent className="p-3">
-                          <div className="flex items-center gap-3">
-                            <div className={`p-2 rounded-lg ${quizPassed ? 'bg-green-100' : 'bg-amber-100'}`}>
-                              {quizPassed ? (
-                                <Trophy className="h-4 w-4 text-green-600" />
-                              ) : (
-                                <HelpCircle className="h-4 w-4 text-amber-600" />
-                              )}
-                            </div>
-                            <div className="flex-1">
-                              <h4 className="font-medium text-sm">
-                                {lesson.title} Quiz
-                              </h4>
-                              <p className="text-xs text-muted-foreground">
-                                {quizPassed 
-                                  ? `Passed with ${quizScores[lesson.id]}%` 
-                                  : 'Complete to unlock next module'
-                                }
-                              </p>
-                            </div>
-                            {!quizPassed && (
-                              <Button 
-                                size="sm" 
-                                variant="outline"
-                                className="border-amber-300 hover:bg-amber-100"
-                                onClick={() => setActiveQuiz(lesson.id)}
-                              >
-                                Take Quiz
-                              </Button>
-                            )}
-                            {quizPassed && (
-                              <Button 
-                                size="sm" 
-                                variant="ghost"
-                                onClick={() => setActiveQuiz(lesson.id)}
-                              >
-                                Retake
-                              </Button>
-                            )}
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className={`text-xs font-medium ${config.color}`}>{config.label}</span>
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Clock className="h-3 w-3" /> {lesson.duration}
+                            </span>
                           </div>
-                        </CardContent>
-                      </Card>
-                    )}
-
-                    {/* Active Quiz Modal/Inline */}
-                    {activeQuiz === lesson.id && quizData[lesson.id] && (
-                      <div className="ml-8">
-                        <ModuleQuiz
-                          lessonId={lesson.id}
-                          lessonTitle={lesson.title}
-                          questions={quizData[lesson.id]}
-                          onComplete={(score, passed) => handleQuizComplete(lesson.id, score, passed)}
-                          trackColor={track.color}
-                        />
+                          <h3 className="font-semibold text-foreground">{lesson.title}</h3>
+                          <p className="text-sm text-muted-foreground">{lesson.description}</p>
+                        </div>
+                        {matchedVideo?.youtube_url ? (
+                          <Button 
+                            size="sm" 
+                            onClick={() => setActiveLessonId(lesson.id)}
+                            variant={isActive ? "secondary" : "default"}
+                          >
+                            <Play className="h-3 w-3 mr-1" /> {isActive ? "Active" : "Start"}
+                          </Button>
+                        ) : (
+                          <Button size="sm" variant="outline" disabled>
+                            Coming Soon
+                          </Button>
+                        )}
                       </div>
-                    )}
-                  </div>
+                    </CardContent>
+                  </Card>
                 );
               })}
             </div>
@@ -317,9 +247,7 @@ export default function TrackDetail() {
                         </div>
                         {unlocked && !isCompleted && (
                           <Link to={`/project/${trackId}/${project.id}`}>
-                            <Button size="sm" className={`bg-gradient-to-r ${track.color} text-white`}>
-                              Build
-                            </Button>
+                            <Button size="sm" className={`bg-gradient-to-r ${track.color} text-white`}>Build</Button>
                           </Link>
                         )}
                         {isCompleted && (
@@ -336,28 +264,6 @@ export default function TrackDetail() {
           </div>
         </div>
       </div>
-
-      {/* Video Player Dialog */}
-      <Dialog open={!!activeVideo} onOpenChange={(open) => !open && setActiveVideo(null)}>
-        <DialogContent className="max-w-3xl p-0 overflow-hidden">
-          <DialogTitle className="sr-only">{activeVideo?.title || "Video"}</DialogTitle>
-          {activeVideo && getYoutubeEmbedUrl(activeVideo.url) ? (
-            <div className="aspect-video w-full">
-              <iframe
-                src={getYoutubeEmbedUrl(activeVideo.url)!}
-                title={activeVideo.title}
-                className="w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          ) : (
-            <div className="p-8 text-center text-muted-foreground">
-              <p>Unable to load video. <a href={activeVideo?.url} target="_blank" rel="noopener noreferrer" className="text-primary underline">Open in browser</a></p>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
 
       <Footer />
     </div>
