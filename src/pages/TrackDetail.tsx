@@ -31,16 +31,22 @@ export default function TrackDetail() {
   const [projectScores, setProjectScores] = useLocalStorage<Record<string, number>>(`${trackId}-projects`, {});
   const [quizScores, setQuizScores] = useLocalStorage<Record<string, number>>(`${trackId}-quizzes`, {});
   const [activeQuiz, setActiveQuiz] = useState<string | null>(null);
-  const [videoModules, setVideoModules] = useState<{ youtube_url: string }[]>([]);
+  const [videoModules, setVideoModules] = useState<Record<string, { youtube_url: string; resource_pdf_url: string | null }>>({});
 
   useEffect(() => {
     const fetchVideos = async () => {
       const { data } = await supabase
         .from("video_modules")
-        .select("youtube_url")
-        .eq("is_active", true)
-        .order("display_order", { ascending: true });
-      if (data) setVideoModules(data);
+        .select("title, youtube_url, resource_pdf_url")
+        .eq("is_active", true);
+      if (data) {
+        // Map videos by lowercase title for matching with lesson titles
+        const mapped: Record<string, { youtube_url: string; resource_pdf_url: string | null }> = {};
+        data.forEach((v) => {
+          mapped[v.title.toLowerCase().trim()] = { youtube_url: v.youtube_url, resource_pdf_url: v.resource_pdf_url };
+        });
+        setVideoModules(mapped);
+      }
     };
     fetchVideos();
   }, []);
@@ -173,19 +179,28 @@ export default function TrackDetail() {
                             <h3 className="font-semibold text-foreground">{lesson.title}</h3>
                             <p className="text-sm text-muted-foreground">{lesson.description}</p>
                           </div>
-                          {unlocked && videoModules[index]?.youtube_url ? (
-                            <a 
-                              href={videoModules[index].youtube_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                            >
-                              <Button size="sm">Start</Button>
-                            </a>
-                          ) : unlocked ? (
-                            <Button size="sm" variant="outline" disabled>
-                              Coming Soon
-                            </Button>
-                          ) : null}
+                          {(() => {
+                            const matchedVideo = videoModules[lesson.title.toLowerCase().trim()];
+                            if (unlocked && matchedVideo?.youtube_url) {
+                              return (
+                                <a 
+                                  href={matchedVideo.youtube_url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                >
+                                  <Button size="sm">Start</Button>
+                                </a>
+                              );
+                            }
+                            if (unlocked) {
+                              return (
+                                <Button size="sm" variant="outline" disabled>
+                                  Coming Soon
+                                </Button>
+                              );
+                            }
+                            return null;
+                          })()}
                         </div>
                       </CardContent>
                     </Card>
