@@ -56,7 +56,7 @@ export default function Index() {
   const displayStats = [
     { value: formatNumber(stats.totalLearners), label: "Active Learners", suffix: "+" },
     { value: formatNumber(stats.completedTasks), label: "Workshops Completed", suffix: "+" },
-    { value: formatNumber(stats.totalPoints), label: "Points Earned", suffix: "" },
+    { value: formatNumber(stats.totalPoints), label: "Credits Earned", suffix: "" },
     { value: `${stats.successRate}%`, label: "Success Rate", suffix: "" },
   ];
 

@@ -441,7 +441,7 @@ export function EcoQuizBattles() {
                 <span className="font-bold">{recentAttempts.filter(a => a.score >= 70).length}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Total Points</span>
+                <span className="text-sm text-muted-foreground">Total Credits</span>
                 <span className="font-bold text-eco-sun">
                   {recentAttempts.reduce((sum, a) => sum + a.points_earned, 0)}
                 </span>
