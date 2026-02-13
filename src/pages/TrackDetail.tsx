@@ -31,17 +31,21 @@ export default function TrackDetail() {
   const [projectScores, setProjectScores] = useLocalStorage<Record<string, number>>(`${trackId}-projects`, {});
   const [quizScores, setQuizScores] = useLocalStorage<Record<string, number>>(`${trackId}-quizzes`, {});
   const [activeQuiz, setActiveQuiz] = useState<string | null>(null);
-  const [videoModules, setVideoModules] = useState<Array<{ youtube_url: string; resource_pdf_url: string | null }>>([]);
+  const [videoModules, setVideoModules] = useState<Record<string, { youtube_url: string; resource_pdf_url: string | null }>>({});
 
   useEffect(() => {
     const fetchVideos = async () => {
       const { data } = await supabase
         .from("video_modules")
-        .select("youtube_url, resource_pdf_url")
-        .eq("is_active", true)
-        .order("display_order", { ascending: true });
+        .select("title, youtube_url, resource_pdf_url")
+        .eq("is_active", true);
       if (data) {
-        setVideoModules(data);
+        const normalize = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ');
+        const mapped: Record<string, { youtube_url: string; resource_pdf_url: string | null }> = {};
+        data.forEach((v) => {
+          mapped[normalize(v.title)] = { youtube_url: v.youtube_url, resource_pdf_url: v.resource_pdf_url };
+        });
+        setVideoModules(mapped);
       }
     };
     fetchVideos();
@@ -176,7 +180,8 @@ export default function TrackDetail() {
                             <p className="text-sm text-muted-foreground">{lesson.description}</p>
                           </div>
                           {(() => {
-                            const matchedVideo = videoModules[index];
+                            const normalize = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ');
+                            const matchedVideo = videoModules[normalize(lesson.title)];
                             if (unlocked && matchedVideo?.youtube_url) {
                               return (
                                 <a 
