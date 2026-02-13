@@ -74,14 +74,14 @@ export default function Login() {
         description: error.message || "Invalid email or password. Please try again.",
         variant: "destructive",
       });
-      setLoading(false);
-      setLoading(false);
+    } else {
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
       // Navigation is handled by the useEffect above
     }
+    setLoading(false);
   };
 
   return (
