@@ -58,7 +58,7 @@ export const en = {
   tabs: {
     dashboard: "Overview Dashboard",
     quizBattles: "Knowledge Challenges",
-    tracks: "AI Skill Modules",
+    tracks: "Learning Tracks",
     rewards: "Rewards",
     myReminders: "My Schedule",
     community: "Learner Interaction Space",
@@ -172,7 +172,7 @@ export const en = {
     myPosts: "My Posts",
   },
 
-  // Tracks (AI Skill Modules)
+  // Tracks (Learning Tracks)
   tracks: {
     title: "Choose Your Learning Path",
     subtitle: "Specialized modules designed for learners at every level",
