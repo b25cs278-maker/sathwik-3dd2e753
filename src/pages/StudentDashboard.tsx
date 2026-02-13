@@ -176,7 +176,7 @@ export default function Dashboard() {
           <AccordionCardHeader className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Learning Points</p>
+                <p className="text-sm text-muted-foreground">Learning Credits</p>
                 <p className="text-3xl font-display font-bold text-foreground">
                   {stats.points.toLocaleString()}
                 </p>
