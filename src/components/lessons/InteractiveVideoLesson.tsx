@@ -148,7 +148,7 @@ export function InteractiveVideoLesson({
 
   // Progress timer
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     
     if (isPlaying && !waitingForNarration && !waitingForInteraction) {
       interval = setInterval(() => {
