@@ -98,7 +98,14 @@ export default function Signup() {
             </span>
           </Link>
           <CardTitle className="text-2xl">Create your account</CardTitle>
-          <CardDescription>Join thousands making a positive impact</CardDescription>
+          <CardDescription>
+            Join thousands making a positive impact
+            {refCode && (
+              <span className="block mt-1 text-primary font-medium">
+                🎉 Referred by a friend!
+              </span>
+            )}
+          </CardDescription>
         </CardHeader>
         
         <CardContent>
