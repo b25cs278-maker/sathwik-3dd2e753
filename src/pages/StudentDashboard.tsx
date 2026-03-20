@@ -27,10 +27,11 @@ import { AIEcoCoach } from "@/components/coach/AIEcoCoach";
 
 import { EcoCalendar } from "@/components/calendar/EcoCalendar";
 import { VideoModulesGrid } from "@/components/modules/VideoModulesGrid";
+import { ReferralQuizFlow } from "@/components/referral/ReferralQuizFlow";
 import { 
   Award, Target, TrendingUp, Clock, CheckCircle2, 
   Leaf, Trophy, Star, Camera, Lightbulb, Bell, HelpCircle, Swords, GraduationCap,
-  Bot, CalendarDays, Video
+  Bot, CalendarDays, Video, Share2
 } from "lucide-react";
 import { toast } from "sonner";
 
