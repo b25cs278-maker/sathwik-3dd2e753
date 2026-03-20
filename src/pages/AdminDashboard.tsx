@@ -74,6 +74,7 @@ export default function AdminDashboard() {
       case "tasks": return <TaskManagement />;
       case "learning": return <LearningManagement />;
       case "video-modules": return <VideoModuleManagement />;
+      case "referrals": return <ReferralManagement />;
       case "community": return <CommunityModeration />;
       case "analytics": return <AnalyticsPanel />;
       case "partners": return <PartnerManagement />;
