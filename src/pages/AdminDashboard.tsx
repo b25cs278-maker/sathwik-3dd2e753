@@ -15,6 +15,7 @@ import { FeedbackManagement } from "@/components/admin/FeedbackManagement";
 import { SecurityPanel } from "@/components/admin/SecurityPanel";
 import { SettingsPanel } from "@/components/admin/SettingsPanel";
 import { VideoModuleManagement } from "@/components/admin/VideoModuleManagement";
+import { ReferralManagement } from "@/components/admin/ReferralManagement";
 import { useRealtimeSubmissions } from "@/hooks/useRealtimeSubmissions";
 import { Badge } from "@/components/ui/badge";
 import { 
