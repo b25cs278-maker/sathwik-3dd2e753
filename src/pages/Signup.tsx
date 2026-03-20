@@ -58,7 +58,7 @@ export default function Signup() {
     
     setLoading(true);
     
-    const { error } = await signUp(email, password, name);
+    const { error } = await signUp(email, password, name, refCode);
     
     if (error) {
       let errorMessage = error.message;
