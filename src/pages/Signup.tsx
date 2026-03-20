@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +15,8 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const refCode = searchParams.get("ref") || "";
   const { toast } = useToast();
   const { signUp, user } = useAuth();
 
@@ -56,7 +58,7 @@ export default function Signup() {
     
     setLoading(true);
     
-    const { error } = await signUp(email, password, name);
+    const { error } = await signUp(email, password, name, refCode);
     
     if (error) {
       let errorMessage = error.message;
@@ -96,7 +98,14 @@ export default function Signup() {
             </span>
           </Link>
           <CardTitle className="text-2xl">Create your account</CardTitle>
-          <CardDescription>Join thousands making a positive impact</CardDescription>
+          <CardDescription>
+            Join thousands making a positive impact
+            {refCode && (
+              <span className="block mt-1 text-primary font-medium">
+                🎉 Referred by a friend!
+              </span>
+            )}
+          </CardDescription>
         </CardHeader>
         
         <CardContent>

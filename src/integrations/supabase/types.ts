@@ -717,11 +717,14 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          bonus_given: boolean
           cover_image_url: string | null
           created_at: string | null
+          device_id: string | null
           education: Json | null
           email: string | null
           experience: Json | null
+          extra_attempt_unlocked: boolean
           github_url: string | null
           headline: string | null
           id: string
@@ -732,17 +735,27 @@ export type Database = {
           name: string | null
           points: number | null
           profile_views: number | null
+          quiz_attempts: number
+          quiz_completed: boolean
+          referral_code: string | null
+          referrals_count: number
+          referred_by: string | null
           skills: string[] | null
+          user_ip: string | null
+          valid_referrals: number
           website: string | null
         }
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          bonus_given?: boolean
           cover_image_url?: string | null
           created_at?: string | null
+          device_id?: string | null
           education?: Json | null
           email?: string | null
           experience?: Json | null
+          extra_attempt_unlocked?: boolean
           github_url?: string | null
           headline?: string | null
           id: string
@@ -753,17 +766,27 @@ export type Database = {
           name?: string | null
           points?: number | null
           profile_views?: number | null
+          quiz_attempts?: number
+          quiz_completed?: boolean
+          referral_code?: string | null
+          referrals_count?: number
+          referred_by?: string | null
           skills?: string[] | null
+          user_ip?: string | null
+          valid_referrals?: number
           website?: string | null
         }
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          bonus_given?: boolean
           cover_image_url?: string | null
           created_at?: string | null
+          device_id?: string | null
           education?: Json | null
           email?: string | null
           experience?: Json | null
+          extra_attempt_unlocked?: boolean
           github_url?: string | null
           headline?: string | null
           id?: string
@@ -774,7 +797,14 @@ export type Database = {
           name?: string | null
           points?: number | null
           profile_views?: number | null
+          quiz_attempts?: number
+          quiz_completed?: boolean
+          referral_code?: string | null
+          referrals_count?: number
+          referred_by?: string | null
           skills?: string[] | null
+          user_ip?: string | null
+          valid_referrals?: number
           website?: string | null
         }
         Relationships: []
@@ -908,6 +938,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      referrals: {
+        Row: {
+          counted: boolean
+          created_at: string
+          email_verified: boolean
+          id: string
+          quiz_completed: boolean
+          referred_device_id: string | null
+          referred_id: string
+          referred_ip: string | null
+          referrer_id: string
+          status: string
+          validated_at: string | null
+        }
+        Insert: {
+          counted?: boolean
+          created_at?: string
+          email_verified?: boolean
+          id?: string
+          quiz_completed?: boolean
+          referred_device_id?: string | null
+          referred_id: string
+          referred_ip?: string | null
+          referrer_id: string
+          status?: string
+          validated_at?: string | null
+        }
+        Update: {
+          counted?: boolean
+          created_at?: string
+          email_verified?: boolean
+          id?: string
+          quiz_completed?: boolean
+          referred_device_id?: string | null
+          referred_id?: string
+          referred_ip?: string | null
+          referrer_id?: string
+          status?: string
+          validated_at?: string | null
+        }
+        Relationships: []
       }
       rewards: {
         Row: {
@@ -1338,6 +1410,7 @@ export type Database = {
         Args: { p_reward_id: string; p_user_id: string }
         Returns: Json
       }
+      validate_referral: { Args: { p_referred_id: string }; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "student"

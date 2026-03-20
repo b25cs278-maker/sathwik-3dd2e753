@@ -94,7 +94,7 @@ export function AnimatedVideoLesson({
 
   // Progress timer - waits for narration to finish before advancing
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     
     if (isPlaying && !waitingForNarration) {
       interval = setInterval(() => {

@@ -27,10 +27,11 @@ import { AIEcoCoach } from "@/components/coach/AIEcoCoach";
 
 import { EcoCalendar } from "@/components/calendar/EcoCalendar";
 import { VideoModulesGrid } from "@/components/modules/VideoModulesGrid";
+import { ReferralQuizFlow } from "@/components/referral/ReferralQuizFlow";
 import { 
   Award, Target, TrendingUp, Clock, CheckCircle2, 
   Leaf, Trophy, Star, Camera, Lightbulb, Bell, HelpCircle, Swords, GraduationCap,
-  Bot, CalendarDays, Video
+  Bot, CalendarDays, Video, Share2
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -172,6 +173,7 @@ export default function Dashboard() {
 
   const sidebarItems = [
     { id: "dashboard", label: "Overview Dashboard", icon: <Target className="h-4 w-4" /> },
+    { id: "quiz-referral", label: "Quiz & Referrals", icon: <Share2 className="h-4 w-4" /> },
     { id: "quizzes", label: "Knowledge Challenges", icon: <Swords className="h-4 w-4" /> },
     { id: "calendar", label: "My Schedule", icon: <CalendarDays className="h-4 w-4" /> },
     { id: "community", label: "Learner Interaction Space", icon: <Lightbulb className="h-4 w-4" /> },
@@ -478,6 +480,7 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (activeSection) {
       case "dashboard": return renderDashboardContent();
+      case "quiz-referral": return <ReferralQuizFlow />;
       case "quizzes": return <EcoQuizBattles />;
       
       case "calendar": return renderCalendarContent();

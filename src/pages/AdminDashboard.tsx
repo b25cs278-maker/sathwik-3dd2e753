@@ -15,12 +15,13 @@ import { FeedbackManagement } from "@/components/admin/FeedbackManagement";
 import { SecurityPanel } from "@/components/admin/SecurityPanel";
 import { SettingsPanel } from "@/components/admin/SettingsPanel";
 import { VideoModuleManagement } from "@/components/admin/VideoModuleManagement";
+import { ReferralManagement } from "@/components/admin/ReferralManagement";
 import { useRealtimeSubmissions } from "@/hooks/useRealtimeSubmissions";
 import { Badge } from "@/components/ui/badge";
 import { 
   LayoutDashboard, Users, ListTodo, BookOpen,
   BarChart3, Shield, Bell, Settings, Eye, Lightbulb,
-  Building2, MessageSquare, Video
+  Building2, MessageSquare, Video, Share2
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,7 @@ export default function AdminDashboard() {
     { id: "tasks", label: "Workshop Management", icon: <ListTodo className="h-4 w-4" /> },
     { id: "learning", label: "AI Learning Hub", icon: <BookOpen className="h-4 w-4" /> },
     { id: "video-modules", label: "Video Modules", icon: <Video className="h-4 w-4" /> },
+    { id: "referrals", label: "Referral Management", icon: <Share2 className="h-4 w-4" /> },
     { id: "community", label: "Eco Learn Network", icon: <Lightbulb className="h-4 w-4" /> },
     { id: "analytics", label: "Insights & Analytics", icon: <BarChart3 className="h-4 w-4" /> },
     { id: "partners", label: "Startup Collaborations", icon: <Building2 className="h-4 w-4" /> },
@@ -72,6 +74,7 @@ export default function AdminDashboard() {
       case "tasks": return <TaskManagement />;
       case "learning": return <LearningManagement />;
       case "video-modules": return <VideoModuleManagement />;
+      case "referrals": return <ReferralManagement />;
       case "community": return <CommunityModeration />;
       case "analytics": return <AnalyticsPanel />;
       case "partners": return <PartnerManagement />;
