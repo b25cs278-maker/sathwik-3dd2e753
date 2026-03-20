@@ -21,7 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { 
   LayoutDashboard, Users, ListTodo, BookOpen,
   BarChart3, Shield, Bell, Settings, Eye, Lightbulb,
-  Building2, MessageSquare, Video
+  Building2, MessageSquare, Video, Share2
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
