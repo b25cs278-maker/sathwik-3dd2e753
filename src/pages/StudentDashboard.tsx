@@ -480,6 +480,7 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (activeSection) {
       case "dashboard": return renderDashboardContent();
+      case "quiz-referral": return <ReferralQuizFlow />;
       case "quizzes": return <EcoQuizBattles />;
       
       case "calendar": return renderCalendarContent();
