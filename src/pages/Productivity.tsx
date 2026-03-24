@@ -3,8 +3,6 @@ import { Footer } from '@/components/layout/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TaskManager } from '@/components/productivity/TaskManager';
 import { DeepWorkAIPlanner } from '@/components/productivity/DeepWorkAIPlanner';
-import { BehaviorTracker } from '@/components/productivity/BehaviorTracker';
-import { ExecutionRulesPanel } from '@/components/productivity/ExecutionRulesPanel';
 import { 
   useLocalStorage, 
   ProductivityTask, 
