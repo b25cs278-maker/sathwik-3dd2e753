@@ -25,13 +25,13 @@ import { EcoStories } from "@/components/stories/EcoStories";
 import { AIEcoCoach } from "@/components/coach/AIEcoCoach";
 
 
-import { EcoCalendar } from "@/components/calendar/EcoCalendar";
+
 import { VideoModulesGrid } from "@/components/modules/VideoModulesGrid";
 import { ReferralQuizFlow } from "@/components/referral/ReferralQuizFlow";
 import { 
   Award, Target, TrendingUp, Clock, CheckCircle2, 
   Leaf, Trophy, Star, Camera, Lightbulb, Bell, HelpCircle, Swords, GraduationCap,
-  Bot, CalendarDays, Video, Share2
+  Bot, Video, Share2
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -175,7 +175,7 @@ export default function Dashboard() {
     { id: "dashboard", label: "Overview Dashboard", icon: <Target className="h-4 w-4" /> },
     { id: "quiz-referral", label: "Quiz & Referrals", icon: <Share2 className="h-4 w-4" /> },
     { id: "quizzes", label: "Knowledge Challenges", icon: <Swords className="h-4 w-4" /> },
-    { id: "calendar", label: "My Schedule", icon: <CalendarDays className="h-4 w-4" /> },
+    { id: "competitions", label: "Competitions", icon: <Trophy className="h-4 w-4" /> },
     { id: "community", label: "Learner Interaction Space", icon: <Lightbulb className="h-4 w-4" /> },
     
     { id: "coach", label: "AI Learning Assistant", icon: <Bot className="h-4 w-4" /> },
@@ -455,25 +455,18 @@ export default function Dashboard() {
     </div>
   );
 
-  const renderCalendarContent = () => (
-    <div className="space-y-8">
-      <EcoCalendar />
-      <div className="grid md:grid-cols-2 gap-6">
-        <NotificationsPanel />
-        <Card variant="eco">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Bell className="h-5 w-5 text-primary" />
-              Alert Settings
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Configure your notification preferences for upcoming eco-events and task reminders.
-            </p>
-          </CardContent>
-        </Card>
+  const renderCompetitionsContent = () => (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-display font-bold flex items-center gap-2">
+          <Trophy className="h-6 w-6 text-primary" />
+          Competitions
+        </h2>
+        <p className="text-muted-foreground">
+          Compete with fellow learners and climb the leaderboard
+        </p>
       </div>
+      <EcoQuizBattles />
     </div>
   );
 
@@ -483,7 +476,7 @@ export default function Dashboard() {
       case "quiz-referral": return <ReferralQuizFlow />;
       case "quizzes": return <EcoQuizBattles />;
       
-      case "calendar": return renderCalendarContent();
+      case "competitions": return renderCompetitionsContent();
       case "community": return <LearnerNetwork />;
       case "coach": return <AIEcoCoach />;
       case "support": return <FeedbackSupport />;
