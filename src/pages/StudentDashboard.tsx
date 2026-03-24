@@ -476,7 +476,7 @@ export default function Dashboard() {
       case "quiz-referral": return <ReferralQuizFlow />;
       case "quizzes": return <EcoQuizBattles />;
       
-      case "calendar": return renderCalendarContent();
+      case "competitions": return renderCompetitionsContent();
       case "community": return <LearnerNetwork />;
       case "coach": return <AIEcoCoach />;
       case "support": return <FeedbackSupport />;
