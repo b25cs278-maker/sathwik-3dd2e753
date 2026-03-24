@@ -69,7 +69,7 @@ export default function Productivity() {
             Productivity Hub
           </h1>
           <p className="text-muted-foreground">
-            Track tasks, manage discipline & plan with AI. Everything runs offline.
+            Track tasks & plan with AI. Everything runs offline.
           </p>
         </div>
 
