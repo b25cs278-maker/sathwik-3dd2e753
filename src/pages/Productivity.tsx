@@ -24,7 +24,7 @@ export default function Productivity() {
   const [habits, setHabits] = useLocalStorage<Habit[]>('productivity-habits', []);
   const [goals, setGoals] = useLocalStorage<Goal[]>('productivity-goals', []);
   const [dayPlan, setDayPlan] = useLocalStorage<DayPlan[]>('productivity-day-plan', []);
-  const [executionRules, setExecutionRules] = useLocalStorage<ExecutionRule[]>('execution-rules', []);
+  
 
   // Task handlers
   const handleAddTask = (task: ProductivityTask) => {
