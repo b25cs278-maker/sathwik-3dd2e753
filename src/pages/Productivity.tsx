@@ -16,7 +16,6 @@ import {
   ListTodo, 
   Brain, 
   Sparkles,
-  BarChart3
 } from 'lucide-react';
 
 export default function Productivity() {
