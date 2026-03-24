@@ -123,6 +123,7 @@ export function ReferralQuizFlow() {
   const finishQuiz = async (finalScore?: number) => {
     const actualScore = finalScore ?? score;
     if (!user) return;
+    setScore(actualScore);
     setQuizFinished(true);
     setQuizActive(false);
 
