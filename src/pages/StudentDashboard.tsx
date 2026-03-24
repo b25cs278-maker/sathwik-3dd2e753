@@ -25,7 +25,7 @@ import { EcoStories } from "@/components/stories/EcoStories";
 import { AIEcoCoach } from "@/components/coach/AIEcoCoach";
 
 
-import { EcoCalendar } from "@/components/calendar/EcoCalendar";
+
 import { VideoModulesGrid } from "@/components/modules/VideoModulesGrid";
 import { ReferralQuizFlow } from "@/components/referral/ReferralQuizFlow";
 import { 
