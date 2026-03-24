@@ -174,7 +174,6 @@ export default function Dashboard() {
   const sidebarItems = [
     { id: "dashboard", label: "Overview Dashboard", icon: <Target className="h-4 w-4" /> },
     { id: "quiz-referral", label: "Quiz & Referrals", icon: <Share2 className="h-4 w-4" /> },
-    { id: "quizzes", label: "Knowledge Challenges", icon: <Swords className="h-4 w-4" /> },
     { id: "competitions", label: "Competitions", icon: <Trophy className="h-4 w-4" /> },
     { id: "community", label: "Learner Interaction Space", icon: <Lightbulb className="h-4 w-4" /> },
     
