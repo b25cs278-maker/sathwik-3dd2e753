@@ -73,10 +73,6 @@ export default function Productivity() {
           </p>
         </div>
 
-        {/* Quick Stats Row */}
-        <div className="mb-8">
-          <BehaviorTracker tasks={tasks} habits={habits} goals={goals} />
-        </div>
 
         {/* Main Tabs */}
         <Tabs defaultValue="ai-planner" className="space-y-6">
