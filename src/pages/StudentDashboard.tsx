@@ -455,25 +455,18 @@ export default function Dashboard() {
     </div>
   );
 
-  const renderCalendarContent = () => (
-    <div className="space-y-8">
-      <EcoCalendar />
-      <div className="grid md:grid-cols-2 gap-6">
-        <NotificationsPanel />
-        <Card variant="eco">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Bell className="h-5 w-5 text-primary" />
-              Alert Settings
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Configure your notification preferences for upcoming eco-events and task reminders.
-            </p>
-          </CardContent>
-        </Card>
+  const renderCompetitionsContent = () => (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-display font-bold flex items-center gap-2">
+          <Trophy className="h-6 w-6 text-primary" />
+          Competitions
+        </h2>
+        <p className="text-muted-foreground">
+          Compete with fellow learners and climb the leaderboard
+        </p>
       </div>
+      <EcoQuizBattles />
     </div>
   );
 
