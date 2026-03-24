@@ -76,22 +76,18 @@ export default function Productivity() {
 
         {/* Main Tabs */}
         <Tabs defaultValue="ai-planner" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-flex">
             <TabsTrigger value="ai-planner" className="flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
               <span className="hidden sm:inline">AI Planner</span>
             </TabsTrigger>
             <TabsTrigger value="insights" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
+              <Sparkles className="h-4 w-4" />
               <span className="hidden sm:inline">Insights</span>
             </TabsTrigger>
             <TabsTrigger value="tasks" className="flex items-center gap-2">
               <ListTodo className="h-4 w-4" />
               <span className="hidden sm:inline">Tasks</span>
-            </TabsTrigger>
-            <TabsTrigger value="discipline" className="flex items-center gap-2">
-              <Brain className="h-4 w-4" />
-              <span className="hidden sm:inline">Discipline</span>
             </TabsTrigger>
           </TabsList>
 
