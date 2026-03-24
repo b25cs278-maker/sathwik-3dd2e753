@@ -19,7 +19,7 @@ import { Progress } from "@/components/ui/progress";
 import { LearnerNetwork } from "@/components/network/LearnerNetwork";
 import { NotificationsPanel } from "@/components/user/NotificationsPanel";
 import { FeedbackSupport } from "@/components/user/FeedbackSupport";
-import { EcoQuizBattles } from "@/components/quiz/EcoQuizBattles";
+
 // LearningTracks removed from sidebar but still accessible via /tracks route
 import { EcoStories } from "@/components/stories/EcoStories";
 import { AIEcoCoach } from "@/components/coach/AIEcoCoach";
