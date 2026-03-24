@@ -120,7 +120,8 @@ export function ReferralQuizFlow() {
     }
   };
 
-  const finishQuiz = async () => {
+  const finishQuiz = async (finalScore?: number) => {
+    const actualScore = finalScore ?? score;
     if (!user) return;
     setQuizFinished(true);
     setQuizActive(false);
