@@ -128,7 +128,7 @@ export function ReferralQuizFlow() {
 
     const isSecondAttempt = profile.quiz_attempts === 1;
     const newAttempts = (profile.quiz_attempts || 0) + 1;
-    const basePoints = Math.round((score / QUIZ_QUESTIONS.length) * 20);
+    const basePoints = Math.round((actualScore / QUIZ_QUESTIONS.length) * 20);
     const bonusPoints = isSecondAttempt ? 5 : 0;
     const totalNewPoints = basePoints + bonusPoints;
 
