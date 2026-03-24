@@ -108,26 +108,28 @@ export function ReferralQuizFlow() {
   const submitAnswer = () => {
     if (selectedAnswer === null) return;
 
-    if (selectedAnswer === QUIZ_QUESTIONS[currentQuestion].correct) {
-      setScore((s) => s + 1);
-    }
+    const isCorrect = selectedAnswer === QUIZ_QUESTIONS[currentQuestion].correct;
+    const newScore = isCorrect ? score + 1 : score;
+    if (isCorrect) setScore(newScore);
 
     if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
       setCurrentQuestion((q) => q + 1);
       setSelectedAnswer(null);
     } else {
-      finishQuiz();
+      finishQuiz(newScore);
     }
   };
 
-  const finishQuiz = async () => {
+  const finishQuiz = async (finalScore?: number) => {
+    const actualScore = finalScore ?? score;
     if (!user) return;
+    setScore(actualScore);
     setQuizFinished(true);
     setQuizActive(false);
 
     const isSecondAttempt = profile.quiz_attempts === 1;
     const newAttempts = (profile.quiz_attempts || 0) + 1;
-    const basePoints = Math.round((score / QUIZ_QUESTIONS.length) * 20);
+    const basePoints = Math.round((actualScore / QUIZ_QUESTIONS.length) * 20);
     const bonusPoints = isSecondAttempt ? 5 : 0;
     const totalNewPoints = basePoints + bonusPoints;
 
@@ -175,7 +177,7 @@ export function ReferralQuizFlow() {
         event_type: "quiz_completed",
         payload: {
           attempt: newAttempts,
-          score,
+          score: actualScore,
           total: QUIZ_QUESTIONS.length,
           points_earned: totalNewPoints,
           bonus: bonusPoints > 0,
