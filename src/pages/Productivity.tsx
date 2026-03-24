@@ -121,12 +121,6 @@ export default function Productivity() {
             />
           </TabsContent>
 
-          <TabsContent value="discipline" className="space-y-6">
-            <ExecutionRulesPanel
-              rules={executionRules}
-              onUpdateRules={setExecutionRules}
-            />
-          </TabsContent>
         </Tabs>
       </main>
 
