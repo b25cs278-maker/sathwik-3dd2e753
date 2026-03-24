@@ -465,7 +465,15 @@ export default function Dashboard() {
           Compete with fellow learners and climb the leaderboard
         </p>
       </div>
-      <EcoQuizBattles />
+      <Card variant="eco">
+        <CardContent className="py-12 text-center">
+          <Trophy className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-foreground mb-2">Coming Soon!</h3>
+          <p className="text-muted-foreground">
+            Exciting competitions are being prepared. Stay tuned!
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 
