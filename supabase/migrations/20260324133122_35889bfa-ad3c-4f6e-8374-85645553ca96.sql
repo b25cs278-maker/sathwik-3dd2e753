@@ -1,0 +1,2 @@
+ALTER TABLE public.innovation_posts DROP CONSTRAINT innovation_posts_post_type_check;
+ALTER TABLE public.innovation_posts ADD CONSTRAINT innovation_posts_post_type_check CHECK (post_type = ANY (ARRAY['idea'::text, 'project'::text, 'challenge'::text, 'story'::text]));
