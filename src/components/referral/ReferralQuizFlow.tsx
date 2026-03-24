@@ -108,15 +108,15 @@ export function ReferralQuizFlow() {
   const submitAnswer = () => {
     if (selectedAnswer === null) return;
 
-    if (selectedAnswer === QUIZ_QUESTIONS[currentQuestion].correct) {
-      setScore((s) => s + 1);
-    }
+    const isCorrect = selectedAnswer === QUIZ_QUESTIONS[currentQuestion].correct;
+    const newScore = isCorrect ? score + 1 : score;
+    if (isCorrect) setScore(newScore);
 
     if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
       setCurrentQuestion((q) => q + 1);
       setSelectedAnswer(null);
     } else {
-      finishQuiz();
+      finishQuiz(newScore);
     }
   };
 
