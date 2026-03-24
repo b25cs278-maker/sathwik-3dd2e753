@@ -97,10 +97,10 @@ export default function Productivity() {
               habits={habits}
               goals={goals}
               metrics={lifeMetrics}
-              executionRules={executionRules}
+              executionRules={[]}
               onAddTask={handleAddTask}
               onAddHabit={(habit) => setHabits(prev => [...prev, habit])}
-              onUpdateRules={setExecutionRules}
+              onUpdateRules={() => {}}
             />
           </TabsContent>
 
