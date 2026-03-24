@@ -31,7 +31,7 @@ import { ReferralQuizFlow } from "@/components/referral/ReferralQuizFlow";
 import { 
   Award, Target, TrendingUp, Clock, CheckCircle2, 
   Leaf, Trophy, Star, Camera, Lightbulb, Bell, HelpCircle, Swords, GraduationCap,
-  Bot, CalendarDays, Video, Share2
+  Bot, Video, Share2
 } from "lucide-react";
 import { toast } from "sonner";
 
