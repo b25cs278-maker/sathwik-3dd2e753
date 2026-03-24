@@ -481,7 +481,7 @@ export default function Dashboard() {
     switch (activeSection) {
       case "dashboard": return renderDashboardContent();
       case "quiz-referral": return <ReferralQuizFlow />;
-      case "quizzes": return <EcoQuizBattles />;
+      
       
       case "competitions": return renderCompetitionsContent();
       case "community": return <LearnerNetwork />;
