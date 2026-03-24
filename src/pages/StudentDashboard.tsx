@@ -19,7 +19,7 @@ import { Progress } from "@/components/ui/progress";
 import { LearnerNetwork } from "@/components/network/LearnerNetwork";
 import { NotificationsPanel } from "@/components/user/NotificationsPanel";
 import { FeedbackSupport } from "@/components/user/FeedbackSupport";
-import { EcoQuizBattles } from "@/components/quiz/EcoQuizBattles";
+
 // LearningTracks removed from sidebar but still accessible via /tracks route
 import { EcoStories } from "@/components/stories/EcoStories";
 import { AIEcoCoach } from "@/components/coach/AIEcoCoach";
@@ -174,7 +174,6 @@ export default function Dashboard() {
   const sidebarItems = [
     { id: "dashboard", label: "Overview Dashboard", icon: <Target className="h-4 w-4" /> },
     { id: "quiz-referral", label: "Quiz & Referrals", icon: <Share2 className="h-4 w-4" /> },
-    { id: "quizzes", label: "Knowledge Challenges", icon: <Swords className="h-4 w-4" /> },
     { id: "competitions", label: "Competitions", icon: <Trophy className="h-4 w-4" /> },
     { id: "community", label: "Learner Interaction Space", icon: <Lightbulb className="h-4 w-4" /> },
     
@@ -466,7 +465,15 @@ export default function Dashboard() {
           Compete with fellow learners and climb the leaderboard
         </p>
       </div>
-      <EcoQuizBattles />
+      <Card variant="eco">
+        <CardContent className="py-12 text-center">
+          <Trophy className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-foreground mb-2">Coming Soon!</h3>
+          <p className="text-muted-foreground">
+            Exciting competitions are being prepared. Stay tuned!
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 
@@ -474,7 +481,7 @@ export default function Dashboard() {
     switch (activeSection) {
       case "dashboard": return renderDashboardContent();
       case "quiz-referral": return <ReferralQuizFlow />;
-      case "quizzes": return <EcoQuizBattles />;
+      
       
       case "competitions": return renderCompetitionsContent();
       case "community": return <LearnerNetwork />;
