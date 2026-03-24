@@ -3,8 +3,6 @@ import { Footer } from '@/components/layout/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TaskManager } from '@/components/productivity/TaskManager';
 import { DeepWorkAIPlanner } from '@/components/productivity/DeepWorkAIPlanner';
-import { BehaviorTracker } from '@/components/productivity/BehaviorTracker';
-import { ExecutionRulesPanel } from '@/components/productivity/ExecutionRulesPanel';
 import { 
   useLocalStorage, 
   ProductivityTask, 
@@ -18,7 +16,6 @@ import {
   ListTodo, 
   Brain, 
   Sparkles,
-  BarChart3
 } from 'lucide-react';
 
 export default function Productivity() {
@@ -27,7 +24,7 @@ export default function Productivity() {
   const [habits, setHabits] = useLocalStorage<Habit[]>('productivity-habits', []);
   const [goals, setGoals] = useLocalStorage<Goal[]>('productivity-goals', []);
   const [dayPlan, setDayPlan] = useLocalStorage<DayPlan[]>('productivity-day-plan', []);
-  const [executionRules, setExecutionRules] = useLocalStorage<ExecutionRule[]>('execution-rules', []);
+  
 
   // Task handlers
   const handleAddTask = (task: ProductivityTask) => {
@@ -72,33 +69,25 @@ export default function Productivity() {
             Productivity Hub
           </h1>
           <p className="text-muted-foreground">
-            Track tasks, manage discipline & plan with AI. Everything runs offline.
+            Track tasks & plan with AI. Everything runs offline.
           </p>
         </div>
 
-        {/* Quick Stats Row */}
-        <div className="mb-8">
-          <BehaviorTracker tasks={tasks} habits={habits} goals={goals} />
-        </div>
 
         {/* Main Tabs */}
         <Tabs defaultValue="ai-planner" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-flex">
             <TabsTrigger value="ai-planner" className="flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
               <span className="hidden sm:inline">AI Planner</span>
             </TabsTrigger>
             <TabsTrigger value="insights" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
+              <Sparkles className="h-4 w-4" />
               <span className="hidden sm:inline">Insights</span>
             </TabsTrigger>
             <TabsTrigger value="tasks" className="flex items-center gap-2">
               <ListTodo className="h-4 w-4" />
               <span className="hidden sm:inline">Tasks</span>
-            </TabsTrigger>
-            <TabsTrigger value="discipline" className="flex items-center gap-2">
-              <Brain className="h-4 w-4" />
-              <span className="hidden sm:inline">Discipline</span>
             </TabsTrigger>
           </TabsList>
 
@@ -108,10 +97,10 @@ export default function Productivity() {
               habits={habits}
               goals={goals}
               metrics={lifeMetrics}
-              executionRules={executionRules}
+              executionRules={[]}
               onAddTask={handleAddTask}
               onAddHabit={(habit) => setHabits(prev => [...prev, habit])}
-              onUpdateRules={setExecutionRules}
+              onUpdateRules={() => {}}
             />
           </TabsContent>
 
@@ -132,12 +121,6 @@ export default function Productivity() {
             />
           </TabsContent>
 
-          <TabsContent value="discipline" className="space-y-6">
-            <ExecutionRulesPanel
-              rules={executionRules}
-              onUpdateRules={setExecutionRules}
-            />
-          </TabsContent>
         </Tabs>
       </main>
 
