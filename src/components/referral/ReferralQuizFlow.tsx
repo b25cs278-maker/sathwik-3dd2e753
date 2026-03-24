@@ -176,7 +176,7 @@ export function ReferralQuizFlow() {
         event_type: "quiz_completed",
         payload: {
           attempt: newAttempts,
-          score,
+          score: actualScore,
           total: QUIZ_QUESTIONS.length,
           points_earned: totalNewPoints,
           bonus: bonusPoints > 0,
