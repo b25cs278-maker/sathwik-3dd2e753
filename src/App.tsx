@@ -26,6 +26,7 @@ import TaskDetail from "./pages/TaskDetail";
 import AdminReview from "./pages/AdminReview";
 import Productivity from "./pages/Productivity";
 import NotFound from "./pages/NotFound";
+import SkillPowerWidget from "./components/SkillPowerWidget";
 
 const queryClient = new QueryClient();
 
@@ -108,6 +109,7 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <SkillPowerWidget />
             </AuthProvider>
           </BrowserRouter>
         </TooltipProvider>
