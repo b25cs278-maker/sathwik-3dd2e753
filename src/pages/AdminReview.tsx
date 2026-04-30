@@ -106,7 +106,9 @@ export default function AdminReview() {
       // Resolve signed URLs for all photos in parallel
       const entries = await Promise.all(
         submissionsWithProfiles.map(async (s) => {
-          const refs: string[] = Array.isArray(s.photos) ? s.photos : [];
+          const refs: string[] = Array.isArray(s.photos)
+            ? (s.photos as unknown[]).filter((p): p is string => typeof p === 'string')
+            : [];
           const urls = await resolvePhotoUrls(refs);
           return [s.id, urls] as const;
         })
