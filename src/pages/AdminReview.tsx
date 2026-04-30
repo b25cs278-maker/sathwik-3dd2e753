@@ -23,6 +23,7 @@ import {
   MapPin, Clock, Camera, User, Loader2, Bot
 } from "lucide-react";
 import { toast } from "sonner";
+import { resolvePhotoUrls } from "@/lib/photoUrl";
 
 interface Submission {
   id: string;
@@ -63,6 +64,7 @@ export default function AdminReview() {
   const [reviewNotes, setReviewNotes] = useState("");
   const [pointsToAward, setPointsToAward] = useState(0);
   const [activeTab, setActiveTab] = useState("pending");
+  const [photoUrlMap, setPhotoUrlMap] = useState<Record<string, string[]>>({});
 
   useEffect(() => {
     if (role !== 'admin') {
@@ -100,6 +102,18 @@ export default function AdminReview() {
       }));
       
       setSubmissions(submissionsWithProfiles as Submission[]);
+
+      // Resolve signed URLs for all photos in parallel
+      const entries = await Promise.all(
+        submissionsWithProfiles.map(async (s) => {
+          const refs: string[] = Array.isArray(s.photos)
+            ? (s.photos as unknown[]).filter((p): p is string => typeof p === 'string')
+            : [];
+          const urls = await resolvePhotoUrls(refs);
+          return [s.id, urls] as const;
+        })
+      );
+      setPhotoUrlMap(Object.fromEntries(entries));
     } catch (error) {
       console.error('Error fetching submissions:', error);
       toast.error('Failed to load submissions');
@@ -295,7 +309,7 @@ export default function AdminReview() {
                       <div className="flex flex-col lg:flex-row gap-6">
                         {/* Photos */}
                         <div className="flex gap-2 flex-wrap lg:w-1/3">
-                          {submission.photos?.slice(0, 3).map((photo: string, idx: number) => (
+                          {(photoUrlMap[submission.id] || []).slice(0, 3).map((photo: string, idx: number) => (
                             <div key={idx} className="w-24 h-24 rounded-lg overflow-hidden bg-muted">
                               <img
                                 src={photo}
@@ -405,7 +419,7 @@ export default function AdminReview() {
               <div>
                 <label className="text-sm font-medium mb-2 block">Submitted Photos</label>
                 <div className="grid grid-cols-2 gap-3">
-                  {selectedSubmission.photos?.map((photo: string, idx: number) => (
+                  {(photoUrlMap[selectedSubmission.id] || []).map((photo: string, idx: number) => (
                     <a key={idx} href={photo} target="_blank" rel="noopener noreferrer">
                       <img
                         src={photo}

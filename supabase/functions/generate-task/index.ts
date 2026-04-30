@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,6 +12,47 @@ serve(async (req) => {
   }
 
   try {
+    // Authentication: require a valid JWT
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: authError } = await supabase.auth.getClaims(token);
+    if (authError || !claimsData?.claims) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const userId = claimsData.claims.sub;
+
+    // Authorization: only admins may generate tasks
+    const { data: roleData } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .eq('role', 'admin')
+      .maybeSingle();
+
+    if (!roleData) {
+      return new Response(JSON.stringify({ error: 'Admin access required' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const { prompt, category } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
@@ -85,10 +127,8 @@ Only output the JSON object, no additional text.`;
       throw new Error("No content in AI response");
     }
 
-    // Parse the JSON from the response
     let taskData;
     try {
-      // Try to extract JSON from the response (in case there's extra text)
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         taskData = JSON.parse(jsonMatch[0]);
@@ -100,7 +140,6 @@ Only output the JSON object, no additional text.`;
       throw new Error("Failed to parse AI response as JSON");
     }
 
-    // Validate and sanitize the response
     const validCategories = ["recycling", "conservation", "water", "community"];
     const validDifficulties = ["easy", "medium", "hard"];
     const validTiers = ["basic", "advanced", "company"];
@@ -117,7 +156,7 @@ Only output the JSON object, no additional text.`;
       location_required: Boolean(taskData.location_required)
     };
 
-    console.log("Generated task:", sanitizedTask);
+    console.log("Generated task by admin:", userId);
 
     return new Response(JSON.stringify({ task: sanitizedTask }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

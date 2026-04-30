@@ -175,11 +175,8 @@ export default function TaskDetail() {
 
         if (uploadError) throw uploadError;
 
-        const { data: urlData } = supabase.storage
-          .from('my-bucket-green')
-          .getPublicUrl(fileName);
-
-        photoUrls.push(urlData.publicUrl);
+        // Store the storage path; signed URLs are generated on demand for display
+        photoUrls.push(fileName);
       }
 
       // Create submission
