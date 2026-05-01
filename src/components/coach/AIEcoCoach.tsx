@@ -34,6 +34,27 @@ export function AIEcoCoach() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [userStats, setUserStats] = useState({ points: 0, tasksCompleted: 0 });
+
+  // Quick Solution (Gemini tutor) state
+  const [tutorInput, setTutorInput] = useState("");
+  const [tutorOutput, setTutorOutput] = useState("");
+  const [tutorLoading, setTutorLoading] = useState(false);
+
+  const handleAsk = async () => {
+    if (!tutorInput.trim() || tutorLoading) return;
+    setTutorLoading(true);
+    setTutorOutput("");
+    try {
+      const result = await getSolution(tutorInput);
+      setTutorOutput(result);
+    } catch (err) {
+      toast.error("Couldn't fetch a solution. Try again.");
+    } finally {
+      setTutorLoading(false);
+    }
+  };
+
+  const scrollRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
