@@ -4,10 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Bot, Send, User, Sparkles, Leaf, Lightbulb, MapPin } from "lucide-react";
+import { Bot, Send, User, Sparkles, Leaf, Lightbulb, MapPin, Wand2 } from "lucide-react";
 import { toast } from "sonner";
+import { getSolution } from "@/lib/gemini";
 
 interface Message {
   role: "user" | "assistant";
@@ -32,6 +34,26 @@ export function AIEcoCoach() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [userStats, setUserStats] = useState({ points: 0, tasksCompleted: 0 });
+
+  // Quick Solution (Gemini tutor) state
+  const [tutorInput, setTutorInput] = useState("");
+  const [tutorOutput, setTutorOutput] = useState("");
+  const [tutorLoading, setTutorLoading] = useState(false);
+
+  const handleAsk = async () => {
+    if (!tutorInput.trim() || tutorLoading) return;
+    setTutorLoading(true);
+    setTutorOutput("");
+    try {
+      const result = await getSolution(tutorInput);
+      setTutorOutput(result);
+    } catch (err) {
+      toast.error("Couldn't fetch a solution. Try again.");
+    } finally {
+      setTutorLoading(false);
+    }
+  };
+
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -168,6 +190,38 @@ export function AIEcoCoach() {
           Get help with AI, soft skills, English, interview prep & more
         </p>
       </div>
+
+      {/* Quick Solution — Gemini tutor */}
+      <Card variant="eco">
+        <CardHeader className="border-b">
+          <CardTitle className="flex items-center gap-2">
+            <Wand2 className="h-5 w-5 text-primary" />
+            Quick Solution
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4 space-y-3">
+          <Textarea
+            value={tutorInput}
+            onChange={(e) => setTutorInput(e.target.value)}
+            placeholder="Type your question and get a clear, step-by-step solution…"
+            disabled={tutorLoading}
+            className="min-h-[100px]"
+          />
+          <Button
+            onClick={handleAsk}
+            disabled={tutorLoading || !tutorInput.trim()}
+            variant="hero"
+            className="w-full"
+          >
+            {tutorLoading ? "Thinking..." : "Get Solution"}
+          </Button>
+          {tutorOutput && (
+            <div className="mt-2 p-4 rounded-lg bg-muted text-foreground whitespace-pre-wrap text-sm leading-relaxed border border-border">
+              {tutorOutput}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <div className="grid lg:grid-cols-4 gap-6">
         {/* Quick Prompts Sidebar */}
