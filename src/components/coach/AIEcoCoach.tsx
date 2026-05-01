@@ -55,7 +55,6 @@ export function AIEcoCoach() {
   };
 
   const scrollRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user) {
