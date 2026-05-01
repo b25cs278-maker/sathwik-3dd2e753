@@ -4,10 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Bot, Send, User, Sparkles, Leaf, Lightbulb, MapPin } from "lucide-react";
+import { Bot, Send, User, Sparkles, Leaf, Lightbulb, MapPin, Wand2 } from "lucide-react";
 import { toast } from "sonner";
+import { getSolution } from "@/lib/gemini";
 
 interface Message {
   role: "user" | "assistant";
