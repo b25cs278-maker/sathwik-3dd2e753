@@ -16,7 +16,7 @@ interface Msg {
 const INITIAL_GREETING: Msg = {
   role: "assistant",
   content:
-    "Hi! 👋 I'm your **Help & Resources Bot**. Ask me anything about EcoLearn — Tracks, Workshops, Learning Credits, submissions, or how to find a feature.",
+    "Hi! I'm your **AI Learning Assistant**. Ask me for quick tips or detailed step-by-step solutions for **AI**, **Soft Skills**, **English**, or the **Environment**!",
 };
 
 export default function SkillPowerWidget() {
