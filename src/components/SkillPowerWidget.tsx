@@ -42,14 +42,10 @@ export default function SkillPowerWidget() {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke("support-chat", {
-        body: { messages: next },
-      });
-      if (error) throw new Error(error.message);
-      if (data?.error) throw new Error(data.error);
-      setMessages((prev) => [...prev, { role: "assistant", content: data?.reply || "" }]);
+      const reply = await getSolution(text);
+      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch (err: any) {
-      console.error("support-chat error", err);
+      console.error("AI assistant error", err);
       toast.error("Couldn't reach the assistant. Try again.");
       setMessages((prev) => [
         ...prev,
