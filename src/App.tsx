@@ -40,7 +40,7 @@ const App = () => (
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <AuthProvider>
             <Routes>
-              <Route path="/" element={<Signup />} />
+              <Route path="/" element={<Index />} />
               <Route path="/home" element={<Navigate to="/" replace />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
