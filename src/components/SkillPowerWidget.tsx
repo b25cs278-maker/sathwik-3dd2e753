@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { Bot, X, Send, HelpCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "sonner";
+import { getSolution } from "@/lib/gemini";
 
 interface Msg {
   role: "user" | "assistant";
