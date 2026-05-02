@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { Bot, X, Send, HelpCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "sonner";
+import { getSolution } from "@/lib/gemini";
 
 interface Msg {
   role: "user" | "assistant";
@@ -16,7 +16,7 @@ interface Msg {
 const INITIAL_GREETING: Msg = {
   role: "assistant",
   content:
-    "Hi! 👋 I'm your **Help & Resources Bot**. Ask me anything about EcoLearn — Tracks, Workshops, Learning Credits, submissions, or how to find a feature.",
+    "Hi! I'm your **AI Learning Assistant**. Ask me for quick tips or detailed step-by-step solutions for **AI**, **Soft Skills**, **English**, or the **Environment**!",
 };
 
 export default function SkillPowerWidget() {
@@ -42,14 +42,10 @@ export default function SkillPowerWidget() {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke("support-chat", {
-        body: { messages: next },
-      });
-      if (error) throw new Error(error.message);
-      if (data?.error) throw new Error(data.error);
-      setMessages((prev) => [...prev, { role: "assistant", content: data?.reply || "" }]);
+      const reply = await getSolution(text);
+      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch (err: any) {
-      console.error("support-chat error", err);
+      console.error("AI assistant error", err);
       toast.error("Couldn't reach the assistant. Try again.");
       setMessages((prev) => [
         ...prev,
@@ -72,7 +68,7 @@ export default function SkillPowerWidget() {
       {/* Floating button */}
       <button
         onClick={() => setOpen((v) => !v)}
-        aria-label="Open Help & Resources Bot"
+        aria-label="Open AI Learning Assistant"
         className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-eco-glow hover:scale-105 active:scale-95 transition flex items-center justify-center"
       >
         {open ? <X className="h-6 w-6" /> : <HelpCircle className="h-7 w-7" />}
@@ -83,7 +79,7 @@ export default function SkillPowerWidget() {
         <div
           className="fixed bottom-24 right-6 z-50 w-[min(92vw,380px)] h-[min(70vh,560px)] rounded-2xl bg-card border border-border shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200"
           role="dialog"
-          aria-label="Help & Resources Bot"
+          aria-label="AI Learning Assistant"
         >
           {/* Header */}
           <div className="flex items-center gap-3 p-4 border-b bg-gradient-to-r from-primary to-accent text-primary-foreground">
@@ -93,8 +89,8 @@ export default function SkillPowerWidget() {
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm truncate">Help & Resources Bot</p>
-              <p className="text-xs opacity-90 truncate">EcoLearn Support Assistant</p>
+              <p className="font-semibold text-sm truncate">AI Learning Assistant</p>
+              <p className="text-xs opacity-90 truncate">Powered by Gemini</p>
             </div>
             <button
               onClick={() => setOpen(false)}
