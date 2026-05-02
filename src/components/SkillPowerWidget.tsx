@@ -79,7 +79,7 @@ export default function SkillPowerWidget() {
         <div
           className="fixed bottom-24 right-6 z-50 w-[min(92vw,380px)] h-[min(70vh,560px)] rounded-2xl bg-card border border-border shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200"
           role="dialog"
-          aria-label="Help & Resources Bot"
+          aria-label="AI Learning Assistant"
         >
           {/* Header */}
           <div className="flex items-center gap-3 p-4 border-b bg-gradient-to-r from-primary to-accent text-primary-foreground">
@@ -89,8 +89,8 @@ export default function SkillPowerWidget() {
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm truncate">Help & Resources Bot</p>
-              <p className="text-xs opacity-90 truncate">EcoLearn Support Assistant</p>
+              <p className="font-semibold text-sm truncate">AI Learning Assistant</p>
+              <p className="text-xs opacity-90 truncate">Powered by Gemini</p>
             </div>
             <button
               onClick={() => setOpen(false)}
