@@ -171,37 +171,7 @@ export function AIEcoCoach() {
         </p>
       </div>
 
-      {/* Quick Solution — Gemini tutor */}
-      <Card variant="eco">
-        <CardHeader className="border-b">
-          <CardTitle className="flex items-center gap-2">
-            <Wand2 className="h-5 w-5 text-primary" />
-            Quick Solution
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 space-y-3">
-          <Textarea
-            value={tutorInput}
-            onChange={(e) => setTutorInput(e.target.value)}
-            placeholder="Type your question and get a clear, step-by-step solution…"
-            disabled={tutorLoading}
-            className="min-h-[100px]"
-          />
-          <Button
-            onClick={handleAsk}
-            disabled={tutorLoading || !tutorInput.trim()}
-            variant="hero"
-            className="w-full"
-          >
-            {tutorLoading ? "Thinking..." : "Get Solution"}
-          </Button>
-          {tutorOutput && (
-            <div className="mt-2 p-4 rounded-lg bg-muted text-foreground whitespace-pre-wrap text-sm leading-relaxed border border-border">
-              {tutorOutput}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+
 
       <div className="grid lg:grid-cols-4 gap-6">
         {/* Quick Prompts Sidebar */}
