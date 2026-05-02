@@ -68,7 +68,7 @@ export default function SkillPowerWidget() {
       {/* Floating button */}
       <button
         onClick={() => setOpen((v) => !v)}
-        aria-label="Open Help & Resources Bot"
+        aria-label="Open AI Learning Assistant"
         className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-eco-glow hover:scale-105 active:scale-95 transition flex items-center justify-center"
       >
         {open ? <X className="h-6 w-6" /> : <HelpCircle className="h-7 w-7" />}
