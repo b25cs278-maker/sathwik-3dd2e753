@@ -22,5 +22,6 @@
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
-  }
+  },
+  "exclude": ["ecolearn-ai-hub", "node_modules", "dist"]
 }
