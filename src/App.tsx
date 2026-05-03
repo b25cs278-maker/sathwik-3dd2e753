@@ -43,6 +43,7 @@ const App = () => (
             <AuthProvider>
             <Routes>
               <Route path="/" element={<LandingPage />} />
+              <Route path="/prompt-mastery" element={<PromptMastery />} />
               <Route path="/home" element={<Navigate to="/" replace />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
