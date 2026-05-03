@@ -9,6 +9,7 @@ import { GuestProvider } from "@/contexts/GuestContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import Index from "./pages/Index";
 import LandingPage from "./pages/LandingPage";
+import PromptMastery from "./pages/PromptMastery";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
