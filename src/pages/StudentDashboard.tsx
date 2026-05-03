@@ -28,10 +28,11 @@ import { AIEcoCoach } from "@/components/coach/AIEcoCoach";
 
 import { VideoModulesGrid } from "@/components/modules/VideoModulesGrid";
 import { ReferralQuizFlow } from "@/components/referral/ReferralQuizFlow";
+import PromptMastery from "@/pages/PromptMastery";
 import { 
   Award, Target, TrendingUp, Clock, CheckCircle2, 
   Leaf, Trophy, Star, Camera, Lightbulb, Bell, HelpCircle, Swords, GraduationCap,
-  Bot, Video, Share2
+  Bot, Video, Share2, Sparkles
 } from "lucide-react";
 import { toast } from "sonner";
 
