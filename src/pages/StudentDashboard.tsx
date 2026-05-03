@@ -28,10 +28,11 @@ import { AIEcoCoach } from "@/components/coach/AIEcoCoach";
 
 import { VideoModulesGrid } from "@/components/modules/VideoModulesGrid";
 import { ReferralQuizFlow } from "@/components/referral/ReferralQuizFlow";
+import PromptMastery from "@/pages/PromptMastery";
 import { 
   Award, Target, TrendingUp, Clock, CheckCircle2, 
   Leaf, Trophy, Star, Camera, Lightbulb, Bell, HelpCircle, Swords, GraduationCap,
-  Bot, Video, Share2
+  Bot, Video, Share2, Sparkles
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -173,12 +174,11 @@ export default function Dashboard() {
 
   const sidebarItems = [
     { id: "dashboard", label: "Overview Dashboard", icon: <Target className="h-4 w-4" /> },
-    { id: "quiz-referral", label: "Quiz & Referrals", icon: <Share2 className="h-4 w-4" /> },
+    { id: "prompt-mastery", label: "Prompt Mastery", icon: <Sparkles className="h-4 w-4" /> },
     { id: "competitions", label: "Competitions", icon: <Trophy className="h-4 w-4" /> },
     { id: "community", label: "Learner Interaction Space", icon: <Lightbulb className="h-4 w-4" /> },
     
     { id: "coach", label: "AI Learning Assistant", icon: <Bot className="h-4 w-4" /> },
-    { id: "support", label: "Help & Resources", icon: <HelpCircle className="h-4 w-4" /> },
   ];
 
   if (loading) {
@@ -480,13 +480,12 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (activeSection) {
       case "dashboard": return renderDashboardContent();
-      case "quiz-referral": return <ReferralQuizFlow />;
+      case "prompt-mastery": return <PromptMastery />;
       
       
       case "competitions": return renderCompetitionsContent();
       case "community": return <LearnerNetwork />;
       case "coach": return <AIEcoCoach />;
-      case "support": return <FeedbackSupport />;
       default: return renderDashboardContent();
     }
   };
