@@ -479,13 +479,12 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (activeSection) {
       case "dashboard": return renderDashboardContent();
-      case "quiz-referral": return <ReferralQuizFlow />;
+      case "prompt-mastery": return <PromptMastery />;
       
       
       case "competitions": return renderCompetitionsContent();
       case "community": return <LearnerNetwork />;
       case "coach": return <AIEcoCoach />;
-      case "support": return <FeedbackSupport />;
       default: return renderDashboardContent();
     }
   };
