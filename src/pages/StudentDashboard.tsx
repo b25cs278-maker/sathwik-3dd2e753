@@ -173,12 +173,11 @@ export default function Dashboard() {
 
   const sidebarItems = [
     { id: "dashboard", label: "Overview Dashboard", icon: <Target className="h-4 w-4" /> },
-    { id: "quiz-referral", label: "Quiz & Referrals", icon: <Share2 className="h-4 w-4" /> },
+    { id: "prompt-mastery", label: "Prompt Mastery", icon: <Sparkles className="h-4 w-4" /> },
     { id: "competitions", label: "Competitions", icon: <Trophy className="h-4 w-4" /> },
     { id: "community", label: "Learner Interaction Space", icon: <Lightbulb className="h-4 w-4" /> },
     
     { id: "coach", label: "AI Learning Assistant", icon: <Bot className="h-4 w-4" /> },
-    { id: "support", label: "Help & Resources", icon: <HelpCircle className="h-4 w-4" /> },
   ];
 
   if (loading) {
