@@ -1,19 +1,7 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import { motion } from "motion/react";
-import { 
-  Trophy, 
-  Target, 
-  ChevronRight
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { Trophy, Target, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Task {
   id: number;
@@ -58,34 +46,36 @@ const BUTTON_COLORS = [
 
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.05 }
-  }
+  visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
 };
 
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
-  visible: { y: 0, opacity: 1 }
+  visible: { y: 0, opacity: 1 },
 };
 
-export default function App() {
-  const totalPassed = tasks.filter(t => t.passed).length;
+export default function IntermediateJourney() {
+  const navigate = useNavigate();
+  const totalPassed = tasks.filter((t) => t.passed).length;
   const totalTasks = tasks.length;
   const progressPercent = Math.round((totalPassed / totalTasks) * 100);
 
   return (
-    <div className="min-h-screen bg-[#F9FBFC] pb-20">
-      {/* Navbar Header */}
+    <div className="min-h-screen bg-[#F9FBFC] pb-20 text-slate-900">
       <header className="bg-white px-4 md:px-8 py-6 shadow-sm">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-black flex items-center gap-2">
-              Level 2 — <span className="text-[#3b82f6]">Intermediate</span>
-            </h1>
-            <p className="text-sm font-medium text-slate-500 mt-1">
-              Master structured approaches to prompt design and professional context management.
-            </p>
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/prompt-mastery")}>
+              <ArrowLeft className="h-4 w-4 mr-2" /> Back
+            </Button>
+            <div>
+              <h1 className="text-3xl font-black flex items-center gap-2">
+                Level 2 — <span className="text-[#3b82f6]">Intermediate</span>
+              </h1>
+              <p className="text-sm font-medium text-slate-500 mt-1">
+                Master structured approaches to prompt design and professional context management.
+              </p>
+            </div>
           </div>
 
           <div className="flex gap-4">
@@ -102,7 +92,6 @@ export default function App() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 mt-10">
-        {/* Progress Card */}
         <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm mb-12 relative overflow-hidden">
           <div className="flex justify-between items-end mb-6">
             <div>
@@ -113,15 +102,17 @@ export default function App() {
             </div>
             <span className="text-5xl font-black text-[#052c22]">{progressPercent}%</span>
           </div>
-          <div className="progress-bar-bg">
-            <div className="progress-bar-fill" style={{ width: `${progressPercent}%` }}></div>
+          <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#10b981] rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${progressPercent}%` }}
+            />
           </div>
         </div>
 
-        {/* Section Title */}
         <div className="mb-10">
           <div className="flex items-center gap-3 mb-4">
-            <div className="h-[2px] w-8 bg-[#8b4513]"></div>
+            <div className="h-[2px] w-8 bg-[#8b4513]" />
             <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">The Intermediate Grid</p>
           </div>
           <h2 className="text-4xl font-black text-slate-900 mb-4">Mastering the Nuance</h2>
@@ -130,8 +121,7 @@ export default function App() {
           </p>
         </div>
 
-        {/* Task Grid */}
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           variants={containerVariants}
           initial="hidden"
@@ -139,40 +129,33 @@ export default function App() {
         >
           {tasks.map((task, index) => {
             const colorClass = BUTTON_COLORS[index % BUTTON_COLORS.length];
-            
             return (
               <motion.div
                 key={task.id}
                 variants={itemVariants}
                 className="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm flex flex-col hover:border-blue-100 transition-colors"
-                data-testid={`task-card-${task.id}`}
               >
-                {/* Status Indicator */}
                 <div className="flex items-center gap-2 mb-4">
                   {task.passed ? (
                     <>
-                      <div className="w-2 h-2 rounded-full bg-[#22c55e]"></div>
+                      <div className="w-2 h-2 rounded-full bg-[#22c55e]" />
                       <span className="text-[10px] font-black text-[#22c55e] uppercase tracking-wider">Passed</span>
                     </>
                   ) : (
                     <>
-                      <div className="pending-dot"></div>
+                      <div className="w-2 h-2 rounded-full bg-[#ef4444]" />
                       <span className="text-[10px] font-black text-[#ef4444] uppercase tracking-wider">Pending</span>
                     </>
                   )}
                 </div>
 
-                {/* Header: ID and Name */}
                 <div className="flex items-center gap-3 mb-8">
                   <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
                     <span className="text-sm font-black text-slate-900">{task.id}</span>
                   </div>
-                  <h3 className="text-lg font-black text-slate-900 leading-tight">
-                    {task.name}
-                  </h3>
+                  <h3 className="text-lg font-black text-slate-900 leading-tight">{task.name}</h3>
                 </div>
 
-                {/* Stats Row */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div>
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1">Best Score</p>
@@ -184,15 +167,13 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Rating Row */}
                 <div className="mb-8">
                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1">Rating</p>
-                  <p className={`text-lg font-black ${task.passed ? 'text-[#22c55e]' : 'text-[#ef4444]'}`}>
+                  <p className={`text-lg font-black ${task.passed ? "text-[#22c55e]" : "text-[#ef4444]"}`}>
                     {task.rating}
                   </p>
                 </div>
 
-                {/* Action Button */}
                 <button
                   className={`w-full py-4 px-6 rounded-2xl text-white font-black text-base transition-transform active:scale-95 ${colorClass}`}
                 >
@@ -204,22 +185,18 @@ export default function App() {
         </motion.div>
       </main>
 
-      {/* Level 3 Awaits Footer */}
       <footer className="w-full bg-[#111111] py-24 mt-20">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-[14px] font-black tracking-[0.3em] text-slate-400 uppercase mb-8">
-            Level 3 Awaits
-          </p>
+          <p className="text-[14px] font-black tracking-[0.3em] text-slate-400 uppercase mb-8">Level 3 Awaits</p>
           <h2 className="text-4xl md:text-6xl text-white font-serif mb-12 flex flex-col items-center">
             <span>Ready to go beyond</span>
             <span>intermediate?</span>
           </h2>
           <div className="flex justify-center">
-            <div className="w-16 h-[3px] bg-[#f97316]"></div>
+            <div className="w-16 h-[3px] bg-[#f97316]" />
           </div>
         </div>
       </footer>
     </div>
   );
 }
-
