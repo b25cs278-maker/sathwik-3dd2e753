@@ -14,12 +14,11 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import promptStrip1 from "@/assets/prompt-strip-1.jpg";
-import promptStrip2 from "@/assets/prompt-strip-2.jpg";
-import promptStrip3 from "@/assets/prompt-strip-3.jpg";
-import promptStrip4 from "@/assets/prompt-strip-4.jpg";
+import promptStrip1 from "@/assets/prompt-card-1.jpg";
+import promptStrip2 from "@/assets/prompt-card-2.jpg";
+import promptStrip3 from "@/assets/prompt-card-3.jpg";
 
-const stripImages = [promptStrip1, promptStrip2, promptStrip3, promptStrip4];
+const stripImages = [promptStrip1, promptStrip2, promptStrip3];
 
 const stats = [
   { label: "Lessons Available", value: "48+", icon: BookOpen },
@@ -148,7 +147,7 @@ export default function PromptMastery() {
                   loading="lazy"
                   width={512}
                   height={512}
-                  className="h-16 w-16 rounded-2xl object-cover shadow-lg shadow-black/30 ring-1 ring-white/20 md:h-20 md:w-20"
+                  className="h-20 w-32 rounded-2xl object-cover bg-white shadow-xl shadow-black/30 ring-1 ring-white/20 md:h-24 md:w-44"
                 />
               ))}
             </motion.div>
