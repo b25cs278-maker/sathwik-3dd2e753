@@ -147,7 +147,7 @@ export default function PromptMastery() {
                   loading="lazy"
                   width={512}
                   height={512}
-                  className="h-16 w-16 rounded-2xl object-cover shadow-lg shadow-black/30 ring-1 ring-white/20 md:h-20 md:w-20"
+                  className="h-20 w-32 rounded-2xl object-cover bg-white shadow-xl shadow-black/30 ring-1 ring-white/20 md:h-24 md:w-44"
                 />
               ))}
             </motion.div>
