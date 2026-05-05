@@ -15,6 +15,7 @@ import {
   Mail,
 } from 'lucide-react';
 import { mockData } from '@/utils/mockData';
+import aiInnovationImg from '@/assets/ai-innovation.jpg';
 import '@/styles/landing.css';
 
 const LandingPage: React.FC = () => {
