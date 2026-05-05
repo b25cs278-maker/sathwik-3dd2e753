@@ -126,7 +126,7 @@ export function SettingsPanel() {
       for (const setting of settingsToSave) {
         const { error } = await supabase
           .from('app_settings')
-          .upsert(setting, { onConflict: 'key' });
+          .upsert(setting as any, { onConflict: 'key' });
 
         if (error) throw error;
       }

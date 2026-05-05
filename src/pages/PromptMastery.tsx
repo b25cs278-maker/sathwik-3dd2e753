@@ -69,7 +69,7 @@ const levels = [
     ],
     color: "purple",
     icon: GitBranch,
-    locked: true,
+    locked: false,
   },
 ];
 
@@ -220,6 +220,7 @@ export default function PromptMastery() {
                       onClick={() => {
                         if (lvl.level === 1) navigate("/prompt-mastery/beginner");
                         else if (lvl.level === 2) navigate("/prompt-mastery/intermediate");
+                        else if (lvl.level === 3) navigate("/prompt-mastery/advanced");
                       }}
                       className={`group/btn flex w-full items-center justify-between rounded-xl bg-${lvl.color}-500 px-6 py-4 text-sm font-bold text-white transition-all hover:bg-${lvl.color}-600 active:scale-95 shadow-lg shadow-${lvl.color}-500/30`}
                     >

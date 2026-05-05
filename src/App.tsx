@@ -12,6 +12,7 @@ import LandingPage from "./pages/LandingPage";
 import PromptMastery from "./pages/PromptMastery";
 import BeginnerJourney from "./pages/BeginnerJourney";
 import IntermediateJourney from "./pages/IntermediateJourney";
+import AdvancedJourney from "./pages/AdvancedJourney";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -48,6 +49,7 @@ const App = () => (
               <Route path="/prompt-mastery" element={<PromptMastery />} />
               <Route path="/prompt-mastery/beginner" element={<BeginnerJourney />} />
               <Route path="/prompt-mastery/intermediate" element={<IntermediateJourney />} />
+              <Route path="/prompt-mastery/advanced" element={<AdvancedJourney />} />
               <Route path="/home" element={<Navigate to="/" replace />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
