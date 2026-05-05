@@ -132,7 +132,27 @@ export default function PromptMastery() {
             challenges.
           </motion.p>
 
-          <div className="container mx-auto max-w-5xl">
+          <div className="container mx-auto max-w-5xl relative">
+            {/* Floating image strip - overlays the top of stat boxes */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="pointer-events-none absolute left-1/2 -top-12 z-20 flex -translate-x-1/2 items-center justify-center gap-4 md:gap-6"
+            >
+              {stripImages.map((src, i) => (
+                <img
+                  key={i}
+                  src={src}
+                  alt=""
+                  loading="lazy"
+                  width={512}
+                  height={512}
+                  className="h-16 w-16 rounded-2xl object-cover shadow-lg shadow-black/30 ring-1 ring-white/20 md:h-20 md:w-20"
+                />
+              ))}
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
