@@ -210,8 +210,8 @@ const LandingPage: React.FC = () => {
             viewport={{ once: true }}
           >
             <img
-              src="https://images.unsplash.com/photo-1620712943543-bcc4628c9757"
-              alt="innovation"
+              src={aiInnovationImg}
+              alt="AI Innovation"
               referrerPolicy="no-referrer"
             />
             <div className="innovation-overlay">
