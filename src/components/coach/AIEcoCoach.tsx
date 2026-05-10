@@ -173,30 +173,9 @@ export function AIEcoCoach() {
 
 
 
-      <div className="grid lg:grid-cols-4 gap-6">
-        {/* Quick Prompts Sidebar */}
-        <Card variant="eco" className="lg:col-span-1">
-          <CardHeader>
-            <CardTitle className="text-sm">Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {quickPrompts.map((item, i) => (
-              <Button
-                key={i}
-                variant="outline"
-                className="w-full justify-start text-left h-auto py-3"
-                onClick={() => sendMessage(item.prompt)}
-                disabled={isLoading}
-              >
-                <item.icon className="h-4 w-4 mr-2 shrink-0 text-primary" />
-                <span className="text-sm">{item.text}</span>
-              </Button>
-            ))}
-          </CardContent>
-        </Card>
-
+      <div className="grid gap-6">
         {/* Chat Interface */}
-        <Card variant="eco" className="lg:col-span-3">
+        <Card variant="eco">
           <CardHeader className="border-b">
             <CardTitle className="flex items-center gap-2">
               <Bot className="h-5 w-5 text-primary" />
