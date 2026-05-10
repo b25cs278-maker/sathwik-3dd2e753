@@ -313,42 +313,6 @@ export default function Dashboard() {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Quick Actions */}
-          <Card variant="eco">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-primary" />
-                Get Started
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <Link to="/tasks">
-                  <div className="p-4 rounded-xl border border-border hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer group">
-                    <Leaf className="h-8 w-8 text-primary mb-3" />
-                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                      Explore Workshops
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Discover hands-on learning activities
-                    </p>
-                  </div>
-                </Link>
-                <Link to="/tracks">
-                  <div className="p-4 rounded-xl border border-border hover:border-eco-sky/50 hover:bg-eco-sky/5 transition-all cursor-pointer group">
-                    <GraduationCap className="h-8 w-8 text-eco-sky mb-3" />
-                    <h3 className="font-semibold text-foreground group-hover:text-eco-sky transition-colors">
-                      Learning Tracks
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Advance your skills with guided courses
-                    </p>
-                  </div>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Learning Track Progress */}
           <Card variant="eco">
             <CardHeader>

@@ -65,7 +65,7 @@ export default function AdvancedJourney() {
       <header className="bg-white px-4 md:px-8 py-6 shadow-sm">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/prompt-mastery")}>
+            <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
               <ArrowLeft className="h-4 w-4 mr-2" /> Back
             </Button>
             <div>
