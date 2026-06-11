@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
@@ -15,12 +16,12 @@ export default {
   	extend: {
   		fontFamily: {
   			display: [
-  				'Plus Jakarta Sans"',
+  				'"Plus Jakarta Sans"',
   				'system-ui',
   				'sans-serif'
   			],
   			body: [
-  				'DM Sans"',
+  				'"DM Sans"',
   				'system-ui',
   				'sans-serif'
   			],
@@ -153,5 +154,5 @@ export default {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;
