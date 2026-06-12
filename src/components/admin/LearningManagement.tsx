@@ -93,13 +93,10 @@ export function LearningManagement() {
 
   const fetchQuizzes = async () => {
     try {
-      const { data, error } = await supabase
-        .from('quizzes')
-        .select('*')
-        .order('created_at', { ascending: false });
-
+      // Use admin RPC to access full quizzes including answer keys
+      const { data, error } = await supabase.rpc('admin_get_quizzes');
       if (error) throw error;
-      setQuizzes(data || []);
+      setQuizzes((data as any) || []);
     } catch (error) {
       console.error('Error fetching quizzes:', error);
       toast.error('Failed to load quizzes');

@@ -69,17 +69,14 @@ export function EcoQuizBattles() {
     }
   }, [timeLeft, activeQuiz, quizComplete]);
 
+  const [answersGiven, setAnswersGiven] = useState<(number | null)[]>([]);
+
   const fetchQuizzes = async () => {
     try {
-      const { data, error } = await supabase
-        .from('quizzes')
-        .select('*')
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
-
+      // Secure RPC: questions returned WITHOUT correctAnswer field
+      const { data, error } = await supabase.rpc('get_active_quizzes_for_play');
       if (error) throw error;
-      // Parse questions from JSON
-      const parsedQuizzes = (data || []).map(quiz => ({
+      const parsedQuizzes = (data || []).map((quiz: any) => ({
         ...quiz,
         questions: Array.isArray(quiz.questions) ? (quiz.questions as unknown as QuizQuestion[]) : []
       }));
@@ -93,7 +90,6 @@ export function EcoQuizBattles() {
 
   const fetchRecentAttempts = async () => {
     if (!user) return;
-    
     try {
       const { data, error } = await supabase
         .from('quiz_attempts')
@@ -101,7 +97,6 @@ export function EcoQuizBattles() {
         .eq('user_id', user.id)
         .order('completed_at', { ascending: false })
         .limit(5);
-
       if (error) throw error;
       setRecentAttempts(data || []);
     } catch (error) {
@@ -122,26 +117,24 @@ export function EcoQuizBattles() {
     setQuizComplete(false);
     setSelectedAnswer(null);
     setShowResult(false);
+    setAnswersGiven(new Array(quiz.questions.length).fill(null));
   };
 
   const handleAnswer = (answerIndex: number) => {
     if (showResult || !activeQuiz) return;
-    
     setSelectedAnswer(answerIndex);
-    const question = activeQuiz.questions[currentQuestion];
-    const correct = answerIndex === question.correctAnswer;
-    setIsCorrect(correct);
+    setAnswersGiven(prev => {
+      const next = [...prev];
+      next[currentQuestion] = answerIndex;
+      return next;
+    });
+    // Mark answered (no client-side correctness — server grades)
     setShowResult(true);
-    
-    if (correct) {
-      setScore(prev => prev + Math.floor(activeQuiz.base_points / activeQuiz.questions.length));
-      setCorrectCount(prev => prev + 1);
-    }
+    setIsCorrect(true);
   };
 
   const nextQuestion = () => {
     if (!activeQuiz) return;
-    
     if (currentQuestion < activeQuiz.questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
       setSelectedAnswer(null);
@@ -153,45 +146,22 @@ export function EcoQuizBattles() {
 
   const handleQuizComplete = async () => {
     if (!activeQuiz || !user || quizComplete) return;
-    
     setQuizComplete(true);
-    
     try {
-      // Save quiz attempt
-      const { error: attemptError } = await supabase
-        .from('quiz_attempts')
-        .insert({
-          user_id: user.id,
-          quiz_id: activeQuiz.id,
-          score: Math.round((correctCount / activeQuiz.questions.length) * 100),
-          correct_answers: correctCount,
-          total_questions: activeQuiz.questions.length,
-          points_earned: score,
-          time_taken_seconds: activeQuiz.time_limit_seconds - timeLeft
-        });
-
-      if (attemptError) throw attemptError;
-
-      // Update points in profile
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('points')
-        .eq('id', user.id)
-        .maybeSingle();
-      
-      if (profile) {
-        await supabase
-          .from('profiles')
-          .update({ points: (profile.points || 0) + score })
-          .eq('id', user.id);
-      }
-
-      toast.success(`Quiz complete! You earned ${score} learning credits!`);
+      const { data, error } = await supabase.rpc('submit_quiz_attempt', {
+        p_quiz_id: activeQuiz.id,
+        p_answers: answersGiven as any,
+        p_time_taken_seconds: activeQuiz.time_limit_seconds - timeLeft,
+      });
+      if (error) throw error;
+      const result = data as { correct_answers: number; total_questions: number; points_earned: number };
+      setCorrectCount(result.correct_answers);
+      setScore(result.points_earned);
+      toast.success(`Quiz complete! You earned ${result.points_earned} learning credits!`);
       fetchRecentAttempts();
     } catch (error) {
       console.error('Error saving quiz attempt:', error);
-      // Still show completion even if save fails
-      toast.success(`Quiz complete! Score: ${correctCount}/${activeQuiz.questions.length}`);
+      toast.error('Could not record quiz attempt');
     }
   };
 
@@ -276,15 +246,9 @@ export function EcoQuizBattles() {
                 onClick={() => handleAnswer(index)}
                 disabled={showResult}
                 className={`w-full p-4 rounded-xl border text-left transition-all ${
-                  showResult
-                    ? index === question.correctAnswer
-                      ? 'bg-primary/10 border-primary text-primary'
-                      : index === selectedAnswer
-                        ? 'bg-destructive/10 border-destructive text-destructive'
-                        : 'bg-muted/30 border-border'
-                    : selectedAnswer === index
-                      ? 'bg-primary/10 border-primary'
-                      : 'bg-background border-border hover:border-primary/50 hover:bg-primary/5'
+                  selectedAnswer === index
+                    ? 'bg-primary/10 border-primary'
+                    : 'bg-background border-border hover:border-primary/50 hover:bg-primary/5'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -292,11 +256,8 @@ export function EcoQuizBattles() {
                     {String.fromCharCode(65 + index)}
                   </span>
                   <span>{option}</span>
-                  {showResult && index === question.correctAnswer && (
+                  {showResult && index === selectedAnswer && (
                     <CheckCircle2 className="h-5 w-5 ml-auto text-primary" />
-                  )}
-                  {showResult && index === selectedAnswer && index !== question.correctAnswer && (
-                    <XCircle className="h-5 w-5 ml-auto text-destructive" />
                   )}
                 </div>
               </button>
@@ -305,9 +266,7 @@ export function EcoQuizBattles() {
 
           {showResult && (
             <div className="flex items-center justify-between pt-4">
-              <p className={`font-medium ${isCorrect ? 'text-primary' : 'text-destructive'}`}>
-                {isCorrect ? '✓ Correct!' : '✗ Wrong answer'}
-              </p>
+              <p className="font-medium text-muted-foreground">Answer recorded</p>
               <Button onClick={nextQuestion}>
                 {currentQuestion < activeQuiz.questions.length - 1 ? 'Next Question' : 'Finish Quiz'}
               </Button>
