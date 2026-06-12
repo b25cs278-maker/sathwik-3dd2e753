@@ -1383,6 +1383,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_get_quizzes: {
+        Args: never
+        Returns: {
+          base_points: number
+          category: Database["public"]["Enums"]["quiz_category"]
+          created_at: string
+          created_by: string | null
+          description: string | null
+          difficulty: Database["public"]["Enums"]["quiz_difficulty"]
+          id: string
+          is_active: boolean
+          level: number
+          questions: Json
+          time_limit_seconds: number
+          title: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "quizzes"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       award_submission_points: {
         Args: {
           p_points: number
