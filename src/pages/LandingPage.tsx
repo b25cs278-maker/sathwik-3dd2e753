@@ -133,6 +133,10 @@ const LandingPage: React.FC = () => {
               src="https://images.unsplash.com/photo-1677442136019-21780ecad995"
               alt="AI Concept"
               className="hero-image"
+              width={800}
+              height={600}
+              fetchPriority="high"
+              decoding="async"
               referrerPolicy="no-referrer"
             />
             <div className="floating-badge badge-1">
@@ -407,9 +411,15 @@ const LandingPage: React.FC = () => {
               AI and technology-driven education.
             </p>
             <div className="flex gap-4 mt-2">
-              <Twitter className="w-5 h-5 text-gray-400 cursor-pointer hover:text-cyan-400" />
-              <Github className="w-5 h-5 text-gray-400 cursor-pointer hover:text-white" />
-              <Linkedin className="w-5 h-5 text-gray-400 cursor-pointer hover:text-cyan-600" />
+              <a href="https://twitter.com/ecolearn" target="_blank" rel="noopener noreferrer" aria-label="EcoLearn on Twitter">
+                <Twitter className="w-5 h-5 text-gray-400 cursor-pointer hover:text-cyan-400" aria-hidden="true" />
+              </a>
+              <a href="https://github.com/ecolearn" target="_blank" rel="noopener noreferrer" aria-label="EcoLearn on GitHub">
+                <Github className="w-5 h-5 text-gray-400 cursor-pointer hover:text-white" aria-hidden="true" />
+              </a>
+              <a href="https://linkedin.com/company/ecolearn" target="_blank" rel="noopener noreferrer" aria-label="EcoLearn on LinkedIn">
+                <Linkedin className="w-5 h-5 text-gray-400 cursor-pointer hover:text-cyan-600" aria-hidden="true" />
+              </a>
             </div>
           </div>
 
@@ -425,9 +435,13 @@ const LandingPage: React.FC = () => {
             <h4>Stay Updated</h4>
             <p className="text-xs text-gray-500 mb-3">Join 5,000+ subscribers for AI & eco-tech updates.</p>
             <form onSubmit={handleSubscribe} className="flex flex-col gap-2">
+              <label htmlFor="newsletter-email" className="sr-only">Email address</label>
               <input
+                id="newsletter-email"
+                name="email"
                 type="email"
                 placeholder="email@example.com"
+                aria-label="Email address for newsletter"
                 required
                 className="bg-gray-800/50 border border-cyan-400/20 rounded-lg p-2 text-sm focus:outline-none focus:border-cyan-400"
                 value={email}
@@ -442,6 +456,7 @@ const LandingPage: React.FC = () => {
               </button>
             </form>
           </div>
+
 
           <div className="footer-column">
             <h4>Support</h4>

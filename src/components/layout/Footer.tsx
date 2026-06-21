@@ -21,35 +21,39 @@ export function Footer() {
               Learn, build, and make a real impact on our planet through hands-on projects.
             </p>
             <div className="flex items-center gap-4">
-              <a 
-                href="https://linkedin.com/company/ecolearn" 
-                target="_blank" 
+              <a
+                href="https://linkedin.com/company/ecolearn"
+                target="_blank"
                 rel="noopener noreferrer"
+                aria-label="EcoLearn on LinkedIn"
                 className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
-                <Linkedin className="h-5 w-5" />
+                <Linkedin className="h-5 w-5" aria-hidden="true" />
               </a>
-              <a 
-                href="https://instagram.com/ecolearn" 
-                target="_blank" 
+              <a
+                href="https://instagram.com/ecolearn"
+                target="_blank"
                 rel="noopener noreferrer"
+                aria-label="EcoLearn on Instagram"
                 className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
-                <Instagram className="h-5 w-5" />
+                <Instagram className="h-5 w-5" aria-hidden="true" />
               </a>
-              <a 
-                href="https://youtube.com/@ecolearn" 
-                target="_blank" 
+              <a
+                href="https://youtube.com/@ecolearn"
+                target="_blank"
                 rel="noopener noreferrer"
+                aria-label="EcoLearn on YouTube"
                 className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
-                <Youtube className="h-5 w-5" />
+                <Youtube className="h-5 w-5" aria-hidden="true" />
               </a>
-              <a 
+              <a
                 href="mailto:hello@ecolearn.com"
+                aria-label="Email EcoLearn"
                 className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
-                <Mail className="h-5 w-5" />
+                <Mail className="h-5 w-5" aria-hidden="true" />
               </a>
             </div>
           </div>

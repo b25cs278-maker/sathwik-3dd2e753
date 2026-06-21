@@ -1,0 +1,21 @@
+# EcoLearn
+
+> AI and environmental innovation learning platform. Master practical AI skills through real-world environmental projects, hands-on tasks, quizzes, and a global community of learners.
+
+EcoLearn combines structured learning tracks (AI Innovation and Environmental Innovation), interactive video lessons, AI-generated flashcards, quizzes, real-world tasks with photo + GPS verification, a learner network, leaderboards, and a referral program. Learners earn Learning Credits and badges as they progress.
+
+## Pages
+
+- [Home](/): Overview of the platform, learning tracks, and community.
+- [Learning Tracks](/tracks): Browse AI Innovation and Environmental Innovation tracks with lessons, videos, and projects.
+- [Prompt Mastery](/prompt-mastery): Multi-level journey to master AI prompting skills.
+- [Beginner Prompt Journey](/prompt-mastery/beginner): Introductory prompting lessons and exercises.
+- [Intermediate Prompt Journey](/prompt-mastery/intermediate): Intermediate prompting techniques.
+- [Advanced Prompt Journey](/prompt-mastery/advanced): Advanced prompting patterns and applications.
+- [Tasks](/tasks): Real-world environmental tasks learners can complete to earn credits.
+- [Sign Up](/signup): Create an EcoLearn account.
+- [Log In](/login): Sign in to EcoLearn.
+
+## Optional
+
+- [Forgot Password](/forgot-password): Reset account password.
