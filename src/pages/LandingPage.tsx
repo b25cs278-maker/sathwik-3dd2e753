@@ -85,6 +85,7 @@ const LandingPage: React.FC = () => {
         </div>
       </nav>
 
+      <main>
       {/* Hero */}
       <section className="hero-section">
         <motion.div
