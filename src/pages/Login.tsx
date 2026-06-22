@@ -21,34 +21,35 @@ export default function Login() {
 
   // Redirect authenticated users based on their role
   useEffect(() => {
-    if (user && role) {
-      // If user selected admin tab but isn't admin, sign them out
-      if (loginType === "admin" && role !== "admin") {
-        signOut();
-        toast({
-          title: "Access Denied",
-          description: "You don't have admin privileges. Please use the Student tab.",
-          variant: "destructive",
-        });
-        return;
-      }
-      // If user selected student tab but is admin, sign them out  
-      if (loginType === "student" && role === "admin") {
-        signOut();
-        toast({
-          title: "Access Denied", 
-          description: "Admin accounts must use the Admin tab to login.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // Redirect to appropriate dashboard
-      if (role === "admin") {
-        navigate("/admin/dashboard");
-      } else {
-        navigate("/student/dashboard");
-      }
+    // Wait until both user AND role are resolved to avoid false "access denied"
+    if (!user || !role) return;
+
+    // If user selected admin tab but isn't admin, sign them out
+    if (loginType === "admin" && role !== "admin") {
+      signOut();
+      toast({
+        title: "Access Denied",
+        description: "You don't have admin privileges. Please use the Student tab.",
+        variant: "destructive",
+      });
+      return;
+    }
+    // If user selected student tab but is admin, sign them out
+    if (loginType === "student" && role === "admin") {
+      signOut();
+      toast({
+        title: "Access Denied",
+        description: "Admin accounts must use the Admin tab to login.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Redirect to appropriate dashboard
+    if (role === "admin") {
+      navigate("/admin/dashboard");
+    } else {
+      navigate("/student/dashboard");
     }
   }, [user, role, loginType, navigate, signOut, toast]);
 
