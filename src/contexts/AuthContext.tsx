@@ -22,18 +22,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchUserRole = async (userId: string) => {
+  const fetchUserRole = async (userId: string, attempt = 0): Promise<UserRole | null> => {
+    const MAX_ATTEMPTS = 4;
     const { data, error } = await supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", userId)
       .maybeSingle();
-    
+
     if (error) {
-      console.error("Error fetching role:", error);
+      console.error(`Error fetching role (attempt ${attempt + 1}):`, error);
+      if (attempt < MAX_ATTEMPTS - 1) {
+        await new Promise((r) => setTimeout(r, 400 * Math.pow(2, attempt)));
+        return fetchUserRole(userId, attempt + 1);
+      }
       return null;
     }
-    return data?.role as UserRole | null;
+    // Role row may not exist yet right after signup (trigger lag) — retry briefly
+    if (!data && attempt < MAX_ATTEMPTS - 1) {
+      await new Promise((r) => setTimeout(r, 400 * Math.pow(2, attempt)));
+      return fetchUserRole(userId, attempt + 1);
+    }
+    return (data?.role as UserRole) ?? null;
   };
 
   const updateLastActive = async (userId: string) => {
