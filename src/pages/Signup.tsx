@@ -21,6 +21,16 @@ export default function Signup() {
   const refCode = searchParams.get("ref") || "";
   const { toast } = useToast();
   const { signUp, user } = useAuth();
+  const online = useOnlineStatus();
+  const [wasOffline, setWasOffline] = useState(false);
+
+  useEffect(() => {
+    if (!online) setWasOffline(true);
+    else if (wasOffline) {
+      toast({ title: "Back online", description: "You can try creating your account again." });
+      setWasOffline(false);
+    }
+  }, [online, wasOffline, toast]);
 
   // Redirect authenticated users to dashboard
   useEffect(() => {
