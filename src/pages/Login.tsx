@@ -21,8 +21,21 @@ export default function Login() {
 
   // Redirect authenticated users based on their role
   useEffect(() => {
-    // Wait until both user AND role are resolved to avoid false "access denied"
-    if (!user || !role) return;
+    if (!user) return;
+
+    // If signed in but role hasn't resolved yet, wait — but warn after 8s
+    if (!role) {
+      const timer = setTimeout(() => {
+        toast({
+          title: "Still loading your account…",
+          description:
+            "We're having trouble loading your profile. Please refresh the page or try signing in again.",
+          variant: "destructive",
+        });
+        setLoading(false);
+      }, 8000);
+      return () => clearTimeout(timer);
+    }
 
     // If user selected admin tab but isn't admin, sign them out
     if (loginType === "admin" && role !== "admin") {
