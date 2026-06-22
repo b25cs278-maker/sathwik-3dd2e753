@@ -66,21 +66,56 @@ export default function Login() {
     }
     
     setLoading(true);
-    
-    const { error } = await signIn(email, password);
-    
+
+    const attemptSignIn = async (retries = 2): Promise<{ error: Error | null }> => {
+      const result = await signIn(email, password);
+      if (!result.error) return result;
+      const msg = result.error.message?.toLowerCase() ?? "";
+      const isNetwork =
+        msg.includes("failed to fetch") ||
+        msg.includes("network") ||
+        msg.includes("timeout") ||
+        msg.includes("load failed");
+      if (isNetwork && retries > 0) {
+        await new Promise((r) => setTimeout(r, 600));
+        return attemptSignIn(retries - 1);
+      }
+      return result;
+    };
+
+    const { error } = await attemptSignIn();
+
     if (error) {
-      toast({
-        title: "Login failed",
-        description: error.message || "Invalid email or password. Please try again.",
-        variant: "destructive",
-      });
+      const raw = error.message || "";
+      const lower = raw.toLowerCase();
+      let title = "Login failed";
+      let description = raw || "Something went wrong. Please try again.";
+
+      if (lower.includes("invalid login") || lower.includes("invalid credentials")) {
+        title = "Incorrect email or password";
+        description = "Double-check your email and password, then try again.";
+      } else if (lower.includes("email not confirmed")) {
+        title = "Email not verified";
+        description = "Please confirm your email from the link we sent before signing in.";
+      } else if (lower.includes("rate") || lower.includes("too many")) {
+        title = "Too many attempts";
+        description = "You've tried too many times. Please wait a minute and try again.";
+      } else if (
+        lower.includes("failed to fetch") ||
+        lower.includes("network") ||
+        lower.includes("load failed") ||
+        lower.includes("timeout")
+      ) {
+        title = "Connection issue";
+        description = "We couldn't reach the server. Check your internet and try again.";
+      } else if (lower.includes("user not found")) {
+        title = "No account found";
+        description = "No account exists with that email. Try signing up instead.";
+      }
+
+      toast({ title, description, variant: "destructive" });
     } else {
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
-      });
-      // Navigation is handled by the useEffect above
+      toast({ title: "Welcome back!", description: "Signing you in…" });
     }
     setLoading(false);
   };
