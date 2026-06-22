@@ -42,18 +42,44 @@ export default function ForgotPassword() {
 
     setLoading(true);
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
+    const attempt = async (retries = 1): Promise<{ error: { message: string } | null }> => {
+      try {
+        const res = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (res.error && /failed to fetch|network|timeout|load failed/i.test(res.error.message) && retries > 0) {
+          await new Promise((r) => setTimeout(r, 600));
+          return attempt(retries - 1);
+        }
+        return { error: res.error };
+      } catch (err) {
+        if (retries > 0) {
+          await new Promise((r) => setTimeout(r, 600));
+          return attempt(retries - 1);
+        }
+        return { error: { message: (err as Error).message || "Network error" } };
+      }
+    };
+
+    const { error: resetError } = await attempt();
 
     setLoading(false);
 
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message,
-      });
+    if (resetError) {
+      const lower = (resetError.message || "").toLowerCase();
+      let title = "Couldn't send reset email";
+      let description = resetError.message || "Please try again.";
+      if (lower.includes("rate") || lower.includes("too many") || lower.includes("limit")) {
+        title = "Too many requests";
+        description = "You've requested too many resets. Please wait a few minutes and try again.";
+      } else if (lower.includes("invalid") && lower.includes("email")) {
+        title = "Invalid email";
+        description = "Please enter a valid email address.";
+      } else if (/failed to fetch|network|timeout|load failed/.test(lower)) {
+        title = "Connection issue";
+        description = "We couldn't reach the server. Check your internet and try again.";
+      }
+      toast({ variant: "destructive", title, description });
       return;
     }
 
