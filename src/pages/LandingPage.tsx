@@ -15,6 +15,7 @@ import {
   Mail,
 } from 'lucide-react';
 import { mockData } from '@/utils/mockData';
+import { useAuth } from '@/contexts/AuthContext';
 import aiInnovationImg from '@/assets/ai-innovation.jpg';
 import '@/styles/landing.css';
 
