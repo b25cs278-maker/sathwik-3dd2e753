@@ -276,6 +276,39 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
+      {/* Testimonials / Member Reviews */}
+      <section className="testimonials-section">
+        <div className="section-header">
+          <div className="section-badge">Member Reviews</div>
+          <h2 className="section-title">Loved by learners worldwide</h2>
+          <p className="section-description">
+            See how EcoLearn is helping innovators build real skills and make an impact.
+          </p>
+        </div>
+
+        <div className="testimonials-grid">
+          {mockData.testimonials.map((testimonial, i) => (
+            <motion.div
+              key={i}
+              className="testimonial-card glass-card"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+            >
+              <div className="testimonial-header">
+                <div className="testimonial-avatar">{testimonial.avatar}</div>
+                <div>
+                  <div className="testimonial-name">{testimonial.name}</div>
+                  <div className="testimonial-role">{testimonial.role}</div>
+                </div>
+              </div>
+              <p className="testimonial-text">{testimonial.text}</p>
+              <div className="testimonial-achievement">{testimonial.achievement}</div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
 
       {/* Final CTA */}
       <section className="final-cta-section" id="cta">
