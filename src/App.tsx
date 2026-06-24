@@ -32,6 +32,16 @@ import AdminReview from "./pages/AdminReview";
 import Productivity from "./pages/Productivity";
 import NotFound from "./pages/NotFound";
 import SkillPowerWidget from "./components/SkillPowerWidget";
+import Profile from "./pages/profile/Profile";
+import ProfileEdit from "./pages/profile/ProfileEdit";
+import ProfileActivity from "./pages/profile/ProfileActivity";
+import ProfileProjects from "./pages/profile/ProfileProjects";
+import ProfileSkills from "./pages/profile/ProfileSkills";
+import ProfileCertificates from "./pages/profile/ProfileCertificates";
+import ProfileConnections from "./pages/profile/ProfileConnections";
+import ProfileAnalytics from "./pages/profile/ProfileAnalytics";
+import ProfileSettings from "./pages/profile/ProfileSettings";
+import ProfilePublic from "./pages/profile/ProfilePublic";
 
 const queryClient = new QueryClient();
 
@@ -116,6 +126,17 @@ const App = () => (
                   <AdminReview />
                 </ProtectedRoute>
               } />
+              {/* Profile ecosystem */}
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/profile/edit" element={<ProtectedRoute><ProfileEdit /></ProtectedRoute>} />
+              <Route path="/profile/activity" element={<ProtectedRoute><ProfileActivity /></ProtectedRoute>} />
+              <Route path="/profile/projects" element={<ProtectedRoute><ProfileProjects /></ProtectedRoute>} />
+              <Route path="/profile/skills" element={<ProtectedRoute><ProfileSkills /></ProtectedRoute>} />
+              <Route path="/profile/certificates" element={<ProtectedRoute><ProfileCertificates /></ProtectedRoute>} />
+              <Route path="/profile/connections" element={<ProtectedRoute><ProfileConnections /></ProtectedRoute>} />
+              <Route path="/profile/analytics" element={<ProtectedRoute><ProfileAnalytics /></ProtectedRoute>} />
+              <Route path="/profile/settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
+              <Route path="/u/:username" element={<ProfilePublic />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
