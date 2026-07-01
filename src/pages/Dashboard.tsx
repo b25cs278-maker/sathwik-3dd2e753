@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 // This component redirects to the appropriate dashboard based on user role
 export default function Dashboard() {
-  const { user, role, loading } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,13 +15,8 @@ export default function Dashboard() {
       return;
     }
 
-    // Redirect based on role
-    if (role === 'admin') {
-      navigate('/admin/dashboard', { replace: true });
-    } else {
-      navigate('/student/dashboard', { replace: true });
-    }
-  }, [user, role, loading, navigate]);
+    navigate('/student/dashboard', { replace: true });
+  }, [user, loading, navigate]);
 
   // Show loading while determining role
   return (

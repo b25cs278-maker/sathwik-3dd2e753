@@ -21,7 +21,7 @@ import '@/styles/landing.css';
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user, role, loading } = useAuth();
+  const { user, loading } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
@@ -31,12 +31,8 @@ const LandingPage: React.FC = () => {
   useEffect(() => {
     if (loading) return;
     if (!user) return;
-    if (role === 'admin') {
-      navigate('/admin', { replace: true });
-    } else {
-      navigate('/student/dashboard', { replace: true });
-    }
-  }, [user, role, loading, navigate]);
+    navigate('/student/dashboard', { replace: true });
+  }, [user, loading, navigate]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);

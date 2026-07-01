@@ -2,8 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
-  Leaf, Menu, X, User, LogOut, LayoutDashboard, 
-  Shield, Zap 
+  Leaf, Menu, X, User, LogOut, LayoutDashboard, Zap 
 } from "lucide-react";
 import { useState } from "react";
 import {
@@ -19,7 +18,7 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, role, signOut } = useAuth();
+  const { user, signOut } = useAuth();
 
   const handleLogout = async () => {
     await signOut();
@@ -30,21 +29,13 @@ export function Navbar() {
     { href: "/tracks", label: "Learn", icon: null },
   ];
 
-  // Different nav links based on role
   const studentLinks = [
     { href: "/student/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/productivity", label: "Productivity", icon: Zap },
     { href: "/tracks", label: "Learn", icon: null },
   ];
 
-  const adminLinks = [
-    { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/review", label: "Review", icon: Shield },
-  ];
-
-  const navLinks = user 
-    ? (role === 'admin' ? adminLinks : studentLinks) 
-    : publicLinks;
+  const navLinks = user ? studentLinks : publicLinks;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
@@ -87,7 +78,7 @@ export function Navbar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
-                  <Link to={role === 'admin' ? '/admin/dashboard' : '/student/dashboard'} className="flex items-center gap-2">
+                  <Link to="/student/dashboard" className="flex items-center gap-2">
                     <LayoutDashboard className="h-4 w-4" />
                     Dashboard
                   </Link>
@@ -98,25 +89,12 @@ export function Navbar() {
                     Profile
                   </Link>
                 </DropdownMenuItem>
-                {role !== 'admin' && (
-                  <DropdownMenuItem asChild>
-                    <Link to="/portfolio" className="flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      Portfolio
-                    </Link>
-                  </DropdownMenuItem>
-                )}
-                {role === 'admin' && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin/review" className="flex items-center gap-2">
-                        <Shield className="h-4 w-4" />
-                        Admin Review
-                      </Link>
-                    </DropdownMenuItem>
-                  </>
-                )}
+                <DropdownMenuItem asChild>
+                  <Link to="/portfolio" className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    Portfolio
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-destructive">
                   <LogOut className="h-4 w-4 mr-2" />
@@ -178,7 +156,7 @@ export function Navbar() {
             <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-border">
               {user ? (
                 <>
-                  <Link to={role === 'admin' ? '/admin/dashboard' : '/student/dashboard'} onClick={() => setMobileMenuOpen(false)}>
+                  <Link to="/student/dashboard" onClick={() => setMobileMenuOpen(false)}>
                     <Button variant="outline" className="w-full justify-start">
                       <LayoutDashboard className="h-4 w-4 mr-2" />
                       Dashboard

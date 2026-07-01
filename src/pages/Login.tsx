@@ -4,9 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Leaf, Mail, Lock, Loader2, Shield, Eye, EyeOff } from "lucide-react";
+import { Leaf, Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { OfflineBanner } from "@/components/shared/OfflineBanner";
@@ -15,59 +14,18 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [loginType, setLoginType] = useState<"student" | "admin">("student");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { signIn, signOut, user, role } = useAuth();
+  const { signIn, user } = useAuth();
   const online = useOnlineStatus();
 
-  // Redirect authenticated users based on their role
+  // Redirect every authenticated user to the student dashboard.
   useEffect(() => {
     if (!user) return;
 
-    // If signed in but role hasn't resolved yet, wait — but warn after 8s
-    if (!role) {
-      const timer = setTimeout(() => {
-        toast({
-          title: "Still loading your account…",
-          description:
-            "We're having trouble loading your profile. Please refresh the page or try signing in again.",
-          variant: "destructive",
-        });
-        setLoading(false);
-      }, 8000);
-      return () => clearTimeout(timer);
-    }
-
-    // If user selected admin tab but isn't admin, sign them out
-    if (loginType === "admin" && role !== "admin") {
-      signOut();
-      toast({
-        title: "Access Denied",
-        description: "You don't have admin privileges. Please use the Student tab.",
-        variant: "destructive",
-      });
-      return;
-    }
-    // If user selected student tab but is admin, sign them out
-    if (loginType === "student" && role === "admin") {
-      signOut();
-      toast({
-        title: "Access Denied",
-        description: "Admin accounts must use the Admin tab to login.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Redirect to appropriate dashboard
-    if (role === "admin") {
-      navigate("/admin/dashboard");
-    } else {
-      navigate("/student/dashboard");
-    }
-  }, [user, role, loginType, navigate, signOut, toast]);
+    navigate("/student/dashboard", { replace: true });
+  }, [user, navigate]);
 
   // Notify on reconnect
   const [wasOffline, setWasOffline] = useState(false);
@@ -175,19 +133,6 @@ export default function Login() {
         </CardHeader>
         
         <CardContent>
-          <Tabs value={loginType} onValueChange={(v) => setLoginType(v as "student" | "admin")} className="mb-4">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="student" className="flex items-center gap-2">
-                <Leaf className="h-4 w-4" />
-                Student
-              </TabsTrigger>
-              <TabsTrigger value="admin" className="flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                Admin
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-
           {!online && <OfflineBanner className="mb-4" />}
 
           <form onSubmit={handleLogin} className="space-y-4">
@@ -242,7 +187,7 @@ export default function Login() {
               {loading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <>Sign In as {loginType === "admin" ? "Admin" : "Student"}</>
+                <>Sign In</>
               )}
             </Button>
 

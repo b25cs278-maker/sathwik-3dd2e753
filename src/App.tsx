@@ -24,11 +24,8 @@ import Project from "./pages/Project";
 import Portfolio from "./pages/Portfolio";
 import Dashboard from "./pages/Dashboard";
 import StudentDashboard from "./pages/StudentDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
 import Tasks from "./pages/Tasks";
 import TaskDetail from "./pages/TaskDetail";
-
-import AdminReview from "./pages/AdminReview";
 import Productivity from "./pages/Productivity";
 import NotFound from "./pages/NotFound";
 import SkillPowerWidget from "./components/SkillPowerWidget";
@@ -98,17 +95,6 @@ const App = () => (
                   <StudentDashboard />
                 </ProtectedRoute>
               } />
-              {/* Admin Dashboard */}
-              <Route path="/admin" element={
-                <ProtectedRoute requiredRole="admin">
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/dashboard" element={
-                <ProtectedRoute requiredRole="admin">
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } />
               <Route path="/tasks" element={<Tasks />} />
               <Route path="/task/:id" element={
                 <ProtectedRoute allowGuest>
@@ -119,11 +105,6 @@ const App = () => (
               <Route path="/productivity" element={
                 <ProtectedRoute>
                   <Productivity />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/review" element={
-                <ProtectedRoute requiredRole="admin">
-                  <AdminReview />
                 </ProtectedRoute>
               } />
               {/* Profile ecosystem */}

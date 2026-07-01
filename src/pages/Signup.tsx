@@ -35,7 +35,7 @@ export default function Signup() {
   // Redirect authenticated users to dashboard
   useEffect(() => {
     if (user) {
-      navigate("/dashboard");
+      navigate("/student/dashboard", { replace: true });
     }
   }, [user, navigate]);
 
