@@ -31,11 +31,7 @@ const LandingPage: React.FC = () => {
   useEffect(() => {
     if (loading) return;
     if (!user) return;
-    if (role === 'admin') {
-      navigate('/admin', { replace: true });
-    } else {
-      navigate('/student/dashboard', { replace: true });
-    }
+    navigate('/student/dashboard', { replace: true });
   }, [user, role, loading, navigate]);
 
   useEffect(() => {
