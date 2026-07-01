@@ -17,29 +17,15 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { signIn, user, role } = useAuth();
+  const { signIn, user } = useAuth();
   const online = useOnlineStatus();
 
   // Redirect every authenticated user to the student dashboard.
   useEffect(() => {
     if (!user) return;
 
-    // If signed in but role hasn't resolved yet, wait — but warn after 8s
-    if (!role) {
-      const timer = setTimeout(() => {
-        toast({
-          title: "Still loading your account…",
-          description:
-            "We're having trouble loading your profile. Please refresh the page or try signing in again.",
-          variant: "destructive",
-        });
-        setLoading(false);
-      }, 8000);
-      return () => clearTimeout(timer);
-    }
-
     navigate("/student/dashboard", { replace: true });
-  }, [user, role, navigate, toast]);
+  }, [user, navigate]);
 
   // Notify on reconnect
   const [wasOffline, setWasOffline] = useState(false);
