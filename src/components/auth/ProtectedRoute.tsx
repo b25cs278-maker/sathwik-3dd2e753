@@ -30,7 +30,7 @@ export function ProtectedRoute({ children, requiredRole, allowGuest = false }: P
     return <Navigate to="/login" replace />;
   }
 
-  if (requiredRole && role !== requiredRole) {
+  if (requiredRole && role && role !== requiredRole) {
     return <Navigate to="/dashboard" replace />;
   }
 

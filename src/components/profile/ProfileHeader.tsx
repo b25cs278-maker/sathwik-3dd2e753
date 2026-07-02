@@ -3,16 +3,27 @@ import type { UserProfile } from '@/types/profile';
 import { Flame, Share2 } from 'lucide-react';
 
 export function ProfileHeader({ profile }: { profile: UserProfile }) {
+  const initials = profile.displayName
+    .split(' ')
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <div className="mb-8">
-      <div className="relative h-40 md:h-48 mb-6 overflow-hidden rounded-lg">
-        <img src={profile.coverImage} alt="Cover" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="relative mb-6 h-40 overflow-hidden rounded-lg bg-gradient-to-br from-primary/20 via-background to-eco-leaf/20 md:h-48">
+        {profile.coverImage && <img src={profile.coverImage} alt="Profile cover" className="absolute inset-0 h-full w-full object-cover" />}
       </div>
 
       <div className="flex flex-col md:flex-row md:items-start md:justify-between -mt-16 px-2 md:px-8 pb-8 gap-4">
         <div className="flex flex-col md:flex-row gap-6">
-          <div className="relative h-28 w-28 md:h-32 md:w-32 rounded-lg overflow-hidden border-4 border-card bg-muted flex-shrink-0">
-            <img src={profile.avatar} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="relative flex h-28 w-28 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border-4 border-card bg-muted text-3xl font-bold text-primary md:h-32 md:w-32">
+            {profile.avatar ? (
+              <img src={profile.avatar} alt={profile.displayName} className="absolute inset-0 h-full w-full object-cover" />
+            ) : (
+              <span>{initials}</span>
+            )}
           </div>
           <div className="md:pt-4">
             <h1 className="text-2xl md:text-3xl font-bold text-foreground">{profile.displayName}</h1>

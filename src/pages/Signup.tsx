@@ -20,7 +20,7 @@ export default function Signup() {
   const [searchParams] = useSearchParams();
   const refCode = searchParams.get("ref") || "";
   const { toast } = useToast();
-  const { signUp, user } = useAuth();
+  const { signUp, user, loading: authLoading } = useAuth();
   const online = useOnlineStatus();
   const [wasOffline, setWasOffline] = useState(false);
 
@@ -59,7 +59,10 @@ export default function Signup() {
       return;
     }
 
-    if (!name || !email || !password) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const trimmedName = name.trim();
+
+    if (!trimmedName || !normalizedEmail || !password) {
       toast({
         title: "Missing fields",
         description: "Please fill in all fields.",
@@ -79,7 +82,7 @@ export default function Signup() {
     
     setLoading(true);
     
-    const { error } = await signUp(email, password, name, refCode);
+    const { error } = await signUp(normalizedEmail, password, trimmedName, refCode);
     
     if (error) {
       let errorMessage = error.message;
@@ -201,9 +204,9 @@ export default function Signup() {
               type="submit" 
               variant="hero" 
               className="w-full" 
-              disabled={loading || !online}
+              disabled={loading || authLoading || !online}
             >
-              {loading ? (
+              {loading || authLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 "Create Account"

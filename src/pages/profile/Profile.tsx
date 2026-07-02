@@ -1,18 +1,14 @@
 import { Link } from 'react-router-dom';
 import { ProfileLayout } from '@/components/profile/ProfileLayout';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
-import { SkillCard } from '@/components/profile/SkillCard';
-import { ProjectCard } from '@/components/profile/ProjectCard';
-import { AIChatPanel } from '@/components/profile/AIChatPanel';
-import { skills, projects, activityFeed, aiInsights } from '@/data/profileMockData';
+import { ProfileComingSoon } from '@/components/profile/ProfileComingSoon';
 import { Award, Code, TrendingUp } from 'lucide-react';
 import { useProfileUser } from '@/hooks/useProfileUser';
 
 export default function Profile() {
-  const { profile } = useProfileUser();
-  const topSkills = skills.slice(0, 6);
-  const featuredProjects = projects.slice(0, 3);
-  const recentActivity = activityFeed.slice(0, 5);
+  const { profile, raw } = useProfileUser();
+  const skills = Array.isArray(raw?.skills) ? raw.skills.filter(Boolean) : [];
+  const projectsCount = 0;
 
   return (
     <ProfileLayout>
@@ -22,43 +18,32 @@ export default function Profile() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
           <div className="lg:col-span-2 space-y-8">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <StatTile icon={<TrendingUp className="h-5 w-5 text-primary" />} value={profile.totalXp.toLocaleString()} label="Total XP" delta="+12%" />
-              <StatTile icon={<Award className="h-5 w-5 text-primary" />} value={skills.length} label="Skills" delta="+2" />
-              <StatTile icon={<Code className="h-5 w-5 text-primary" />} value={projects.length} label="Projects" delta="+1" />
+              <StatTile icon={<TrendingUp className="h-5 w-5 text-primary" />} value={profile.totalXp.toLocaleString()} label="Learning Credits" />
+              <StatTile icon={<Award className="h-5 w-5 text-primary" />} value={skills.length} label="Skills" />
+              <StatTile icon={<Code className="h-5 w-5 text-primary" />} value={projectsCount} label="Projects" />
             </div>
 
             <Section title="Top Skills" link="/profile/skills">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {topSkills.map((s) => <SkillCard key={s.id} skill={s} />)}
-              </div>
+              {skills.length ? (
+                <div className="flex flex-wrap gap-2 rounded-lg border border-border bg-card p-4">
+                  {skills.slice(0, 8).map((skill) => (
+                    <span key={skill} className="rounded-lg bg-primary/10 px-3 py-2 text-sm font-medium text-primary">{skill}</span>
+                  ))}
+                </div>
+              ) : <ProfileComingSoon message="Skills will show here after you add them to your profile." />}
             </Section>
 
             <Section title="Featured Projects" link="/profile/projects">
-              <div className="grid gap-4">
-                {featuredProjects.map((p) => <ProjectCard key={p.id} project={p} />)}
-              </div>
+              <ProfileComingSoon message="Your real projects will show here when project uploads are available." />
             </Section>
 
             <Section title="Recent Activity" link="/profile/activity">
-              <div className="bg-card border border-border rounded-lg divide-y divide-border">
-                {recentActivity.map((a) => (
-                  <div key={a.id} className="p-4 hover:bg-muted/20 transition-colors">
-                    <div className="flex items-start gap-4">
-                      <div className="text-2xl">🎯</div>
-                      <div className="flex-1">
-                        <h3 className="font-medium text-foreground">{a.title}</h3>
-                        {a.description && <p className="text-sm text-muted-foreground mt-1">{a.description}</p>}
-                        <p className="text-xs text-muted-foreground mt-2">{a.timestamp.toLocaleDateString()}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <ProfileComingSoon message="Learning activity will appear here after you complete lessons, quizzes, or tasks." />
             </Section>
           </div>
 
           <div className="lg:col-span-1">
-            <AIChatPanel insights={aiInsights} />
+            <ProfileComingSoon title="AI profile assistant coming soon" message="Personal profile insights will appear here after enough real learning data is collected." />
           </div>
         </div>
       </div>
@@ -66,12 +51,11 @@ export default function Profile() {
   );
 }
 
-function StatTile({ icon, value, label, delta }: { icon: React.ReactNode; value: React.ReactNode; label: string; delta: string }) {
+function StatTile({ icon, value, label }: { icon: React.ReactNode; value: React.ReactNode; label: string }) {
   return (
     <div className="bg-card border border-border rounded-lg p-4">
       <div className="flex items-center justify-between mb-2">
         {icon}
-        <span className="text-xs text-green-500 font-medium">{delta}</span>
       </div>
       <p className="text-2xl font-bold text-foreground">{value}</p>
       <p className="text-sm text-muted-foreground">{label}</p>

@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import { ProfileLayout } from '@/components/profile/ProfileLayout';
-import { SkillCard } from '@/components/profile/SkillCard';
-import { skills } from '@/data/profileMockData';
-import { Plus, Search } from 'lucide-react';
+import { ProfileComingSoon } from '@/components/profile/ProfileComingSoon';
+import { useProfileUser } from '@/hooks/useProfileUser';
+import { Search } from 'lucide-react';
 
 export default function ProfileSkills() {
   const [search, setSearch] = useState('');
-  const [cat, setCat] = useState<string | null>(null);
-  const categories = Array.from(new Set(skills.map((s) => s.category)));
-  const filtered = skills.filter(
-    (s) => s.name.toLowerCase().includes(search.toLowerCase()) && (!cat || s.category === cat)
-  );
+  const { raw } = useProfileUser();
+  const skills = Array.isArray(raw?.skills) ? raw.skills.filter(Boolean) : [];
+  const filtered = skills.filter((skill: string) => skill.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <ProfileLayout>
@@ -31,44 +29,15 @@ export default function ProfileSkills() {
               className="w-full pl-10 pr-4 py-2 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 font-medium">
-            <Plus className="h-5 w-5" /> Add Skill
-          </button>
         </div>
 
-        <div className="flex gap-2 mb-8 flex-wrap">
-          <button
-            onClick={() => setCat(null)}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${cat === null ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground hover:bg-muted/80'}`}
-          >
-            All Skills
-          </button>
-          {categories.map((c) => (
-            <button
-              key={c}
-              onClick={() => setCat(c)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${cat === c ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground hover:bg-muted/80'}`}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((s) => <SkillCard key={s.id} skill={s} />)}
-        </div>
-
-        <section className="mt-12 bg-card border border-border rounded-lg p-6">
-          <h2 className="text-xl font-bold text-foreground mb-4">Recommended Skills</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {['Kubernetes', 'GraphQL', 'Rust', 'Scala'].map((s) => (
-              <div key={s} className="p-3 bg-muted/30 border border-border rounded-lg flex items-center justify-between">
-                <span className="font-medium text-foreground">{s}</span>
-                <button className="px-3 py-1 text-sm bg-primary text-primary-foreground rounded">Add</button>
-              </div>
+        {filtered.length ? (
+          <div className="flex flex-wrap gap-3 rounded-lg border border-border bg-card p-6">
+            {filtered.map((skill: string) => (
+              <span key={skill} className="rounded-lg bg-primary/10 px-4 py-2 font-medium text-primary">{skill}</span>
             ))}
           </div>
-        </section>
+        ) : <ProfileComingSoon message="Skills will appear here after you add them to your profile." />}
       </div>
     </ProfileLayout>
   );

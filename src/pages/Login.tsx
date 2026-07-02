@@ -17,7 +17,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { signIn, user } = useAuth();
+  const { signIn, user, loading: authLoading } = useAuth();
   const online = useOnlineStatus();
 
   // Redirect every authenticated user to the student dashboard.
@@ -50,7 +50,9 @@ export default function Login() {
       return;
     }
 
-    if (!email || !password) {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail || !password) {
       toast({
         title: "Missing fields",
         description: "Please enter both email and password.",
@@ -62,7 +64,7 @@ export default function Login() {
     setLoading(true);
 
     const attemptSignIn = async (retries = 2): Promise<{ error: Error | null }> => {
-      const result = await signIn(email, password);
+      const result = await signIn(normalizedEmail, password);
       if (!result.error) return result;
       const msg = result.error.message?.toLowerCase() ?? "";
       const isNetwork =
@@ -87,7 +89,10 @@ export default function Login() {
 
       if (lower.includes("invalid login") || lower.includes("invalid credentials")) {
         title = "Incorrect email or password";
-        description = "Double-check your email and password, then try again.";
+        description = "Use the same email and password you used when creating the account.";
+      } else if (lower.includes("refresh token") || lower.includes("session")) {
+        title = "Session refreshed";
+        description = "Your old session was cleared. Please try signing in one more time.";
       } else if (lower.includes("rate") || lower.includes("too many")) {
         title = "Too many attempts";
         description = "You've tried too many times. Please wait a minute and try again.";
@@ -183,8 +188,8 @@ export default function Login() {
               </div>
             </div>
             
-            <Button type="submit" variant="hero" className="w-full" disabled={loading || !online}>
-              {loading ? (
+            <Button type="submit" variant="hero" className="w-full" disabled={loading || authLoading || !online}>
+              {loading || authLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <>Sign In</>
