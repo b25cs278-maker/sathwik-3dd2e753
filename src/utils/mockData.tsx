@@ -154,7 +154,7 @@ export const mockData = {
       name: 'Priya Sharma',
       role: 'AI Developer at Tech Corp',
       avatar: 'PS',
-      text: 'EcoLearn transformed my career. The AI track gave me practical skills I use daily. Within 6 months, I landed my dream job as an AI developer!',
+      text: 'NexusCraft transformed my career. The AI track gave me practical skills I use daily. Within 6 months, I landed my dream job as an AI developer!',
       achievement: '🎯 Completed 45 AI modules • 2,340 credits earned'
     },
     {

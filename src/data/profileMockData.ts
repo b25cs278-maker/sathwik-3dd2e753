@@ -14,8 +14,8 @@ import type {
 export const currentUser: UserProfile = {
   id: 'user-1',
   username: 'learner',
-  displayName: 'EcoLearn Member',
-  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=EcoLearn',
+  displayName: 'NexusCraft Member',
+  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=NexusCraft',
   coverImage:
     'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&h=300&fit=crop',
   bio: 'Lifelong learner exploring AI, sustainability, and building real-world projects.',
@@ -74,7 +74,7 @@ export const certificates: Certificate[] = [
   {
     id: 'cert-1',
     name: 'AI Foundations',
-    issuer: 'EcoLearn Academy',
+    issuer: 'NexusCraft Academy',
     issueDate: new Date(Date.now() - 60 * 86400000),
     verificationId: 'EL-AI-FOUND-001',
     url: '#',
@@ -85,7 +85,7 @@ export const activityFeed: ActivityItem[] = [
   {
     id: 'act-1',
     type: 'achievement',
-    title: 'Welcome to EcoLearn',
+    title: 'Welcome to NexusCraft',
     description: 'You created your learner profile.',
     timestamp: new Date(),
   },

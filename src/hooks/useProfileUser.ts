@@ -10,7 +10,7 @@ const emptyProfile: UserProfile = {
   avatar: '',
   coverImage: '',
   bio: 'Your profile is ready. Add more details when profile editing is available.',
-  tagline: 'EcoLearn member',
+  tagline: 'NexusCraft member',
   level: 1,
   xp: 0,
   streak: 0,

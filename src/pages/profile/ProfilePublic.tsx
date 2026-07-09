@@ -16,7 +16,7 @@ export default function ProfilePublic() {
     <div className="min-h-screen bg-background">
       <nav className="border-b border-border bg-card sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-8 py-4 flex items-center justify-between">
-          <Link to="/" className="font-bold text-foreground">EcoLearn</Link>
+          <Link to="/" className="font-bold text-foreground">NexusCraft</Link>
           <div className="flex gap-2">
             <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg" aria-label="Share">
               <Share2 className="h-5 w-5" />

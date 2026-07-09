@@ -98,7 +98,7 @@ export default function Signup() {
     } else {
       toast({
         title: "Account created!",
-        description: "Welcome to EcoLearn! Redirecting to dashboard...",
+        description: "Welcome to NexusCraft! Redirecting to dashboard...",
       });
       // Navigation is handled by the useEffect above
     }

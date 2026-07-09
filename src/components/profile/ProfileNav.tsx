@@ -38,7 +38,7 @@ export function ProfileNav() {
         <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center">
           <Leaf className="h-5 w-5 text-primary-foreground" />
         </div>
-        <span className="font-bold text-foreground">EcoLearn Profile</span>
+        <span className="font-bold text-foreground">NexusCraft Profile</span>
       </Link>
 
       <div className="flex md:flex-col md:space-y-1 gap-1 flex-1 min-w-max">

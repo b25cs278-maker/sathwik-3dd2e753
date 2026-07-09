@@ -82,7 +82,7 @@ const LandingPage: React.FC = () => {
             <div className="logo-image bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center">
               <Terminal className="text-white w-6 h-6" />
             </div>
-            <span className="logo-text">EcoLearn</span>
+            <span className="logo-text">NexusCraft</span>
           </div>
           <div className="nav-links">
             <button className="nav-link" onClick={() => scrollToSection('innovations')}>Innovations</button>
@@ -278,7 +278,7 @@ const LandingPage: React.FC = () => {
           <div className="section-badge">Member Reviews</div>
           <h2 className="section-title">Loved by learners worldwide</h2>
           <p className="section-description">
-            See how EcoLearn is helping innovators build real skills and make an impact.
+            See how NexusCraft is helping innovators build real skills and make an impact.
           </p>
         </div>
 
@@ -333,20 +333,20 @@ const LandingPage: React.FC = () => {
               <div className="logo-image bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center">
                 <Terminal className="text-white w-6 h-6" />
               </div>
-              <span className="logo-text">EcoLearn</span>
+              <span className="logo-text">NexusCraft</span>
             </div>
             <p className="footer-tagline">
               Empowering innovators to solve global challenges through
               AI and technology-driven education.
             </p>
             <div className="flex gap-4 mt-2">
-              <a href="https://twitter.com/ecolearn" target="_blank" rel="noopener noreferrer" aria-label="EcoLearn on Twitter">
+              <a href="https://twitter.com/nexuscraft" target="_blank" rel="noopener noreferrer" aria-label="NexusCraft on Twitter">
                 <Twitter className="w-5 h-5 text-gray-400 cursor-pointer hover:text-cyan-400" aria-hidden="true" />
               </a>
-              <a href="https://github.com/ecolearn" target="_blank" rel="noopener noreferrer" aria-label="EcoLearn on GitHub">
+              <a href="https://github.com/nexuscraft" target="_blank" rel="noopener noreferrer" aria-label="NexusCraft on GitHub">
                 <Github className="w-5 h-5 text-gray-400 cursor-pointer hover:text-white" aria-hidden="true" />
               </a>
-              <a href="https://linkedin.com/company/ecolearn" target="_blank" rel="noopener noreferrer" aria-label="EcoLearn on LinkedIn">
+              <a href="https://linkedin.com/company/nexuscraft" target="_blank" rel="noopener noreferrer" aria-label="NexusCraft on LinkedIn">
                 <Linkedin className="w-5 h-5 text-gray-400 cursor-pointer hover:text-cyan-600" aria-hidden="true" />
               </a>
             </div>
@@ -394,12 +394,12 @@ const LandingPage: React.FC = () => {
             <a href="#">Terms of Service</a>
             <div className="flex items-center gap-2 text-gray-400 mt-4">
               <Mail className="w-4 h-4" />
-              <span>support@ecolearn.ai</span>
+              <span>support@nexuscraft.ai</span>
             </div>
           </div>
         </div>
         <div className="footer-bottom">
-          &copy; 2026 EcoLearn AI Hub. All rights reserved. Built for a sustainable future.
+          &copy; 2026 NexusCraft AI Hub. All rights reserved. Built for a sustainable future.
         </div>
       </footer>
     </div>

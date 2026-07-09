@@ -101,7 +101,7 @@ export default function Index() {
               
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold text-foreground mb-6 leading-[1.1]">
                 Learn, Innovate & Grow with{" "}
-                <span className="eco-gradient-text">EcoLearn</span>{" "}
+                <span className="eco-gradient-text">NexusCraft</span>{" "}
                 <span className="inline-block animate-float">🌱</span>
               </h1>
               
@@ -147,7 +147,7 @@ export default function Index() {
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                   <img 
                     src={heroIllustration} 
-                    alt="EcoLearn - AI and Environmental Learning Platform" 
+                    alt="NexusCraft - AI and Environmental Learning Platform" 
                     className="w-full h-auto object-cover"
                   />
                 </div>
