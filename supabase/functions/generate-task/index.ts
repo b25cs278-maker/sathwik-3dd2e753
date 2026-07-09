@@ -60,7 +60,7 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are an environmental task creator for an eco-learning platform. Generate creative and actionable environmental tasks based on user prompts.
+    const systemPrompt = `You are an environmental task creator for the NexusCraft learning platform. Generate creative and actionable environmental tasks based on user prompts.
 
 You MUST respond with a valid JSON object in this exact format:
 {
