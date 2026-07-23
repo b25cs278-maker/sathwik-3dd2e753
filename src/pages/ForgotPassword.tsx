@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Leaf, Mail, Loader2, ArrowLeft, CheckCircle } from "lucide-react";
+import { Mail, Loader2, ArrowLeft, CheckCircle, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { OfflineBanner } from "@/components/shared/OfflineBanner";
+import { AuthShell } from "@/components/auth/AuthShell";
 
 const emailSchema = z.string().email("Please enter a valid email address");
 
@@ -24,24 +21,16 @@ export default function ForgotPassword() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
     if (!online) {
-      toast({
-        title: "You're offline",
-        description: "Connect to the internet to request a reset link.",
-        variant: "destructive",
-      });
+      toast({ title: "You're offline", description: "Connect to the internet to request a reset link.", variant: "destructive" });
       return;
     }
-
-    const result = emailSchema.safeParse(email);
-    if (!result.success) {
-      setError(result.error.errors[0].message);
+    const parsed = emailSchema.safeParse(email);
+    if (!parsed.success) {
+      setError(parsed.error.errors[0].message);
       return;
     }
-
     setLoading(true);
-
     const attempt = async (retries = 1): Promise<{ error: { message: string } | null }> => {
       try {
         const res = await supabase.auth.resetPasswordForEmail(email, {
@@ -60,117 +49,92 @@ export default function ForgotPassword() {
         return { error: { message: (err as Error).message || "Network error" } };
       }
     };
-
     const { error: resetError } = await attempt();
-
     setLoading(false);
-
     if (resetError) {
       const lower = (resetError.message || "").toLowerCase();
       let title = "Couldn't send reset email";
       let description = resetError.message || "Please try again.";
       if (lower.includes("rate") || lower.includes("too many") || lower.includes("limit")) {
         title = "Too many requests";
-        description = "You've requested too many resets. Please wait a few minutes and try again.";
-      } else if (lower.includes("invalid") && lower.includes("email")) {
-        title = "Invalid email";
-        description = "Please enter a valid email address.";
+        description = "Please wait a few minutes and try again.";
       } else if (/failed to fetch|network|timeout|load failed/.test(lower)) {
         title = "Connection issue";
-        description = "We couldn't reach the server. Check your internet and try again.";
+        description = "Check your internet and try again.";
       }
       toast({ variant: "destructive", title, description });
       return;
     }
-
     setSent(true);
-    toast({
-      title: "Email sent",
-      description: "Check your inbox for the password reset link.",
-    });
+    toast({ title: "Email sent", description: "Check your inbox for the password reset link." });
   };
 
   if (sent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-eco-leaf/5 p-4">
-        <Card variant="glass" className="w-full max-w-md animate-scale-in">
-          <CardContent className="pt-8 text-center">
-            <div className="mx-auto w-16 h-16 rounded-full bg-eco-leaf/20 flex items-center justify-center mb-4">
-              <CheckCircle className="h-8 w-8 text-eco-leaf" />
-            </div>
-            <h2 className="text-xl font-bold mb-2">Check your email</h2>
-            <p className="text-muted-foreground mb-6">
-              We've sent a password reset link to <strong>{email}</strong>
-            </p>
-            <Link to="/login">
-              <Button variant="outline" className="w-full">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Login
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
+      <AuthShell>
+        <div className="w-full text-center">
+          <div className="mx-auto w-16 h-16 rounded-full bg-cyan-400/15 border border-cyan-400/20 flex items-center justify-center mb-5">
+            <CheckCircle className="h-8 w-8 text-cyan-400" />
+          </div>
+          <h1 className="text-2xl font-extrabold text-white mb-2">Check your email</h1>
+          <p className="text-gray-400 text-sm mb-8">
+            We've sent a password reset link to <strong className="text-white">{email}</strong>
+          </p>
+          <Link
+            to="/login"
+            className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-white/10 text-gray-200 hover:bg-white/5 transition"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to sign in
+          </Link>
+        </div>
+      </AuthShell>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-eco-leaf/5 p-4">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-eco-leaf/10 rounded-full blur-3xl" />
-      </div>
+    <AuthShell>
+      <div className="w-full">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-extrabold tracking-tight text-white mb-2">Forgot password?</h1>
+          <p className="text-gray-400 text-sm">Enter your email to receive a reset link</p>
+        </div>
 
-      <Card variant="glass" className="w-full max-w-md relative animate-scale-in">
-        <CardHeader className="text-center pb-2">
-          <Link to="/" className="inline-flex items-center justify-center gap-2 mb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-md">
-              <Leaf className="h-5 w-5 text-primary-foreground" />
+        {!online && <OfflineBanner className="mb-4" />}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Email</label>
+            <div className="relative">
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+              <input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={`w-full pl-11 pr-4 py-3 bg-[#0f172a]/80 border rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition ${
+                  error ? "border-red-500/60" : "border-white/10 focus:border-cyan-400/50"
+                }`}
+              />
             </div>
-            <span className="text-2xl font-display font-bold">
-              Eco<span className="text-primary">Learn</span>
-            </span>
-          </Link>
-          <CardTitle className="text-2xl">Forgot Password</CardTitle>
-          <CardDescription>Enter your email to receive a reset link</CardDescription>
-        </CardHeader>
-
-        <CardContent>
-          {!online && <OfflineBanner className="mb-4" />}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={`pl-10 ${error ? "border-destructive" : ""}`}
-                />
-              </div>
-              {error && <p className="text-xs text-destructive">{error}</p>}
-            </div>
-
-            <Button type="submit" variant="hero" className="w-full" disabled={loading || !online}>
-              {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                "Send Reset Link"
-              )}
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <Link to="/login" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
-              <ArrowLeft className="h-3 w-3" />
-              Back to Login
-            </Link>
+            {error && <p className="text-xs text-red-400 mt-2">{error}</p>}
           </div>
-        </CardContent>
-      </Card>
-    </div>
+
+          <button
+            type="submit"
+            disabled={loading || !online}
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-white font-semibold text-sm shadow-lg shadow-cyan-500/20 transition flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : (<>Send reset link <ArrowRight className="h-4 w-4" /></>)}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center">
+          <Link to="/login" className="text-sm text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1">
+            <ArrowLeft className="h-3 w-3" /> Back to sign in
+          </Link>
+        </div>
+      </div>
+    </AuthShell>
   );
 }

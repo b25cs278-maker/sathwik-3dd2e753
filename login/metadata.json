@@ -1,6 +1,0 @@
-{
-  "name": "Skillshare Authentication Portal",
-  "description": "A high-fidelity implementation of the Skillshare login and sign up pages based on the design reference.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
