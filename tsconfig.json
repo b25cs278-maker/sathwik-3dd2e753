@@ -22,5 +22,11 @@
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
-  }
+  },
+  "exclude": [
+    "ecol-earn-ecosystem-build",
+    "login",
+    "node_modules",
+    "dist"
+  ]
 }
